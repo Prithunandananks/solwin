@@ -20,9 +20,15 @@ def health() -> HealthResponse:
 def ready(request: Request) -> ReadinessResponse | JSONResponse:
     if registry(request).is_ready():
         return ReadinessResponse(status="ready", models_ready=True)
-    result = ReadinessResponse(status="not_ready", models_ready=False,
-        detail="No production model is registered. Train and register a model before serving inference.")
-    return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content=result.model_dump())
+    result = ReadinessResponse(
+        status="not_ready",
+        models_ready=False,
+        detail="No production model is registered. Train and register a model before serving.",
+    )
+    return JSONResponse(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=result.model_dump(),
+    )
 
 
 @router.get("/api/v1/models", tags=["models"])
@@ -32,5 +38,16 @@ def list_models(request: Request) -> dict[str, object]:
 
 @router.get("/api/v1/capabilities", tags=["operations"])
 def capabilities() -> dict[str, object]:
-    return {"status": "foundation_only", "available": ["health", "readiness", "model_registry"],
-            "planned": ["classification", "clustering", "urgency", "resolution", "url", "email", "summary"]}
+    return {
+        "status": "foundation_only",
+        "available": ["health", "readiness", "model_registry"],
+        "planned": [
+            "classification",
+            "clustering",
+            "urgency",
+            "resolution",
+            "url",
+            "email",
+            "summary",
+        ],
+    }

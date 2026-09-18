@@ -26,7 +26,8 @@ class ModelRegistry:
     def _load(self) -> dict[str, ModelMetadata]:
         if not self._registry_path.exists():
             return {}
-        records = (yaml.safe_load(self._registry_path.read_text(encoding="utf-8")) or {}).get("models", [])
+        raw = yaml.safe_load(self._registry_path.read_text(encoding="utf-8")) or {}
+        records = raw.get("models", [])
         return {item["model_name"]: ModelMetadata(
             model_name=item["model_name"], version=item["version"],
             training_dataset=item["training_dataset"], training_date=item["training_date"],

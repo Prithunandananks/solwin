@@ -20,7 +20,9 @@ def create_app() -> FastAPI:
     app.state.model_registry = ModelRegistry(settings.model_registry_path)
 
     @app.middleware("http")
-    async def observability(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
+    async def observability(
+        request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
         started = time.perf_counter()
         response = await call_next(request)

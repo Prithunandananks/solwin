@@ -10,7 +10,11 @@ def redact_email(value: str) -> str:
 
 
 def configure_logging(level: str) -> None:
-    logging.basicConfig(level=level, format="%(asctime)s %(levelname)s %(name)s %(message)s", force=True)
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s %(levelname)s %(name)s %(message)s",
+        force=True,
+    )
 
 
 def safe_log(logger: logging.Logger, event: str, **fields: Any) -> None:
