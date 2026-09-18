@@ -49,3 +49,14 @@ class ReadinessResponse(BaseModel):
     status: str
     models_ready: bool
     detail: str | None = None
+
+
+class ClassificationResult(BaseModel):
+    category: BusinessCategory
+    confidence: float = Field(ge=0.0, le=1.0)
+    probabilities: dict[str, float]
+    needs_review: bool
+    model_name: str
+    model_version: str
+    fine_grained_intent: str | None = None
+
