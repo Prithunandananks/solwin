@@ -4,23 +4,12 @@ export type SentimentType = 'Positive' | 'Neutral' | 'Negative';
 export type ResolutionStatus = 'Resolved' | 'Pending' | 'Escalated' | 'Unresolved';
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
-export interface Attachment {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  url?: string;
-  ocr_extracted_text?: string;
-  scan_status?: 'pending' | 'scanned' | 'suspicious' | 'clean';
-}
-
 export interface Message {
   id: string;
   sender: 'customer' | 'agent' | 'system';
   sender_name: string;
   content: string;
   timestamp: string;
-  attachments?: Attachment[];
 }
 
 export interface Conversation {

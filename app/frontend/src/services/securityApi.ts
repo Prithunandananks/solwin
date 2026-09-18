@@ -59,8 +59,22 @@ export async function getSecurityIntelligenceForConversation(
   conversationId: string
 ): Promise<SecurityIntelligence> {
   try {
-    const response = await api.get<SecurityIntelligence>(`/security/analyze/${conversationId}`);
-    return response.data;
+    const response = await api.get<any>(`/security/conversation/${conversationId}`);
+    const threat = response.data?.threat || response.data;
+    return {
+      threat_detected: threat.threat_detected,
+      threat_type: threat.threat_type,
+      risk_level: threat.risk_level || 'LOW',
+      social_engineering: threat.social_engineering_detected,
+      techniques: threat.techniques || [],
+      suspicious_urls: (threat.suspicious_urls || []).map((u: any) =>
+        typeof u === 'string' ? { url: u, domain: u, https: u.startsWith('https') } : u
+      ),
+      suspicious_emails: (threat.suspicious_emails || []).map((e: any) =>
+        typeof e === 'string' ? { sender: e, display_name: '', email_domain: '', expected_domain: '', domain_match: false, lookalike_domain: false, impersonation: false, risk: 'HIGH' } : e
+      ),
+      recommended_action: threat.recommended_action,
+    };
   } catch (err) {
     if (isNetworkOrOfflineError(err)) {
       return (

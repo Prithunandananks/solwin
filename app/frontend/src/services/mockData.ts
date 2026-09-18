@@ -75,19 +75,8 @@ export const mockConversations: Conversation[] = [
         id: 'msg_3',
         sender: 'customer',
         sender_name: 'Meera Nair',
-        content: 'The email sender was notification@solw1n-support.com. Attached is a screenshot of the login screen they redirected me to.',
+        content: 'The email sender was notification@solw1n-support.com. It redirected me to a fake login prompt asking for 2FA codes.',
         timestamp: '09:45 AM',
-        attachments: [
-          {
-            id: 'att_01',
-            name: 'fake_login_prompt.png',
-            size: 245000,
-            type: 'image/png',
-            url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&auto=format&fit=crop&q=80',
-            scan_status: 'suspicious',
-            ocr_extracted_text: 'SOLWIN Enterprise Portal — Urgent Session Confirmation Required. Please provide your Authenticator code.',
-          }
-        ]
       }
     ],
   },

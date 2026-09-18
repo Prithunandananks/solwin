@@ -26,18 +26,6 @@ export async function getCustomerAnalytics(): Promise<CustomerAnalytics> {
   }
 }
 
-export async function getCustomerInsights(): Promise<CustomerAnalytics> {
-  try {
-    const response = await api.get<CustomerAnalytics>('/insights/customer');
-    return response.data;
-  } catch (err) {
-    if (isNetworkOrOfflineError(err)) {
-      return mockCustomerAnalytics;
-    }
-    throw err;
-  }
-}
-
 export async function getSecurityAnalytics(): Promise<SecurityAnalytics> {
   try {
     const response = await api.get<SecurityAnalytics>('/analytics/security');
