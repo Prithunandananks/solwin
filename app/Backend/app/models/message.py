@@ -10,7 +10,6 @@ from app.core.database import Base
 from app.models.enums import SenderType
 
 if TYPE_CHECKING:
-    from app.models.attachment import Attachment
     from app.models.conversation import Conversation
 
 
@@ -52,9 +51,4 @@ class Message(Base):
         "Conversation",
         back_populates="messages",
     )
-    attachments: Mapped[list["Attachment"]] = relationship(
-        "Attachment",
-        back_populates="message",
-        cascade="all, delete-orphan",
-        order_by="Attachment.created_at.desc()",
-    )
+
