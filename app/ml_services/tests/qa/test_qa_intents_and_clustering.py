@@ -54,16 +54,17 @@ def test_metrics_file_has_per_class_stats() -> None:
     with metrics_path.open("r", encoding="utf-8") as f:
         metrics = json.load(f)
 
-    assert "accuracy" in metrics
-    assert "macro_f1" in metrics
-    assert "weighted_f1" in metrics
-    assert "per_class" in metrics
+    # Support either top-level or overall_metrics nested dictionary
+    overall = metrics.get("overall_metrics", metrics)
+    assert "accuracy" in overall or "accuracy" in metrics
+    assert "macro_f1" in overall or "macro_f1" in metrics
+    assert "weighted_f1" in overall or "weighted_f1" in metrics
 
-    per_class = metrics["per_class"]
-    # Check 11 categories represented
+    per_class = metrics.get("per_class_metrics", metrics.get("per_class", {}))
     assert len(per_class) >= 10
-    for cls_name, cls_metrics in per_class.items():
+    for _cls_name, cls_metrics in per_class.items():
         assert "precision" in cls_metrics
         assert "recall" in cls_metrics
-        assert "f1" in cls_metrics
+        assert "f1_score" in cls_metrics or "f1" in cls_metrics
         assert "support" in cls_metrics
+

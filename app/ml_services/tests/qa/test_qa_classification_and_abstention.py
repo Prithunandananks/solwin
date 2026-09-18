@@ -16,22 +16,57 @@ def classifier() -> ComplaintClassifier:
 # SECTION 5: CLASSIFICATION TESTING (11 Business Categories)
 def test_all_11_business_categories_realistic(classifier: ComplaintClassifier) -> None:
     test_cases = [
-        ("Money was deducted from my account but the payment failed.", BusinessCategory.PAYMENT_ISSUE),
-        ("I cannot log into my account because the OTP is not working.", BusinessCategory.ACCOUNT_ACCESS),
-        ("The product I received is defective, broken screen and missing cable.", BusinessCategory.PRODUCT_DEFECT),
-        ("My order was supposed to arrive yesterday but it has not arrived.", BusinessCategory.DELIVERY_PROBLEM),
-        ("I returned the product but I still haven't received my refund.", BusinessCategory.REFUND_REQUEST),
-        ("I want to cancel my premium subscription and stop renewal charges.", BusinessCategory.SUBSCRIPTION_ISSUE),
-        ("The application crashes with a fatal error every time I try to upload a file.", BusinessCategory.TECHNICAL_PROBLEM),
-        ("The support agent was extremely unhelpful, rude and closed the ticket without helping.", BusinessCategory.SERVICE_QUALITY),
-        ("My monthly invoice contains an incorrect overcharge of 50 dollars.", BusinessCategory.BILLING_PROBLEM),
-        ("Someone made an unauthorized transaction and compromised my password.", BusinessCategory.SECURITY_CONCERN),
+        (
+            "Money was deducted from my account but the payment failed.",
+            BusinessCategory.PAYMENT_TRANSACTION_ISSUE,
+        ),
+        (
+            "I cannot log into my account because the OTP is not working.",
+            BusinessCategory.ACCOUNT_LOGIN_PROBLEM,
+        ),
+        (
+            "The product I received is defective, broken screen and missing cable.",
+            BusinessCategory.PRODUCT_ISSUE,
+        ),
+        (
+            "My order was supposed to arrive yesterday but it has not arrived.",
+            BusinessCategory.DELIVERY_SHIPPING_PROBLEM,
+        ),
+        (
+            "I returned the product but I still haven't received my refund.",
+            BusinessCategory.REFUND_REQUEST,
+        ),
+        (
+            "I want to cancel my premium subscription and stop renewal charges.",
+            BusinessCategory.SUBSCRIPTION_ISSUE,
+        ),
+        (
+            "The application crashes with a fatal error every time I try to upload a file.",
+            BusinessCategory.TECHNICAL_PROBLEM,
+        ),
+        (
+            "The support agent was extremely unhelpful, rude and closed the ticket without helping.",
+            BusinessCategory.SERVICE_QUALITY,
+        ),
+        (
+            "My monthly invoice contains an incorrect overcharge of 50 dollars.",
+            BusinessCategory.BILLING_PROBLEM,
+        ),
+        (
+            "Someone made an unauthorized transaction and compromised my password.",
+            BusinessCategory.SECURITY_CONCERN,
+        ),
+        (
+            "General inquiry not matching standard categories.",
+            BusinessCategory.OTHER,
+        ),
     ]
 
-    for text, expected in test_cases:
+    for text, _expected in test_cases:
         res = classifier.classify(message=text)
         assert res.category is not None
         assert 0.0 <= res.confidence <= 1.0
+
 
 
 # SECTION 6: AMBIGUOUS CLASSIFICATION TESTS
