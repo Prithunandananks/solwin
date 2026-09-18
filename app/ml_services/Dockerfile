@@ -6,6 +6,7 @@ COPY pyproject.toml ./
 COPY src ./src
 RUN pip install --no-cache-dir .
 COPY config ./config
+COPY models ./models
 RUN mkdir -p /app/models && chown -R app:app /app
 USER app
 EXPOSE 8000

@@ -1,0 +1,39 @@
+{
+  "status": "FAIL",
+  "macro_f1": 0.0,
+  "weighted_f1": 0.0,
+  "accuracy": 0.0,
+  "minimum_macro_f1": 0.75,
+  "regression_tests_passed": true,
+  "critical_failures": 0,
+  "benchmarks": {
+    "startup_ms": 165.54,
+    "first_inference_latency_ms": 15.19,
+    "average_latency_ms": 3.64,
+    "p50_latency_ms": 3.6,
+    "p95_latency_ms": 3.98,
+    "p99_latency_ms": 4.14,
+    "memory_max_rss_mb": 580.39,
+    "concurrency": {
+      "10": {
+        "total_batch_time_ms": 33.0,
+        "p95_ms": 32.07,
+        "throughput_rps": 303.06
+      },
+      "50": {
+        "total_batch_time_ms": 215.13,
+        "p95_ms": 193.69,
+        "throughput_rps": 232.41
+      },
+      "100": {
+        "total_batch_time_ms": 369.66,
+        "p95_ms": 290.85,
+        "throughput_rps": 270.52
+      }
+    },
+    "clustering_metrics": {
+      "silhouette": 0.1985,
+      "davies_bouldin": 3.8842
+    }
+  }
+}

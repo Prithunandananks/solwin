@@ -15,6 +15,9 @@ from ml_service.core.logging import configure_logging, safe_log
 from ml_service.core.model_registry import ModelRegistry
 from ml_service.recommendation.engine import RecommendationEngine
 from ml_service.resolution.detector import ResolutionDetector
+from ml_service.security.email_analyzer import EmailAnalyzer
+from ml_service.security.url_analyzer import URLAnalyzer
+from ml_service.summarization.summarizer import ConversationSummarizer
 from ml_service.urgency.detector import UrgencyDetector
 
 logger = logging.getLogger(__name__)
@@ -46,6 +49,11 @@ def create_app() -> FastAPI:
     app.state.urgency_detector = UrgencyDetector()
     app.state.resolution_detector = ResolutionDetector()
     app.state.recommendation_engine = RecommendationEngine(Path("config/action_rules.yaml"))
+    app.state.url_analyzer = URLAnalyzer()
+    app.state.email_analyzer = EmailAnalyzer()
+    app.state.summarizer = ConversationSummarizer(
+        resolution_detector=app.state.resolution_detector
+    )
 
     @app.middleware("http")
     async def observability(

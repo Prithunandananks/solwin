@@ -1,0 +1,148 @@
+from fastapi.testclient import TestClient
+
+from ml_service.api.schemas import ActionType, BusinessCategory, SecurityRiskLevel
+from ml_service.main import create_app
+
+
+def test_unified_analyze_end_to_end_benign() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    payload = {
+        "complaint": {
+            "message": (
+                "I ordered a shirt last week with order #ORD-99881 and paid $45.00, "
+                "but the delivery is delayed. Please provide an update."
+            ),
+            "subject": "Delivery delay",
+        },
+        "complaint_id": "CMP-1001",
+        "include_cluster": True,
+        "include_urgency": True,
+        "include_resolution": True,
+        "include_recommendation": True,
+        "include_security": True,
+        "include_summary": True,
+        "prefer_llm": False,
+    }
+
+    response = client.post("/api/v1/analyze", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+
+    # Core identification & latency
+    assert data["complaint_id"] == "CMP-1001"
+    assert data["processing_time_ms"] > 0
+    assert data["warnings"] == []
+
+    # 1. Classification
+    assert "classification" in data
+    assert data["classification"]["category"] in [c.value for c in BusinessCategory]
+    assert 0.0 <= data["classification"]["confidence"] <= 1.0
+
+    # 2. Clustering
+    assert data["cluster"] is not None
+    assert "cluster_id" in data["cluster"]
+    assert "cluster_name" in data["cluster"]
+
+    # 3. Urgency
+    assert data["urgency"] is not None
+    assert "urgency" in data["urgency"]
+
+    # 4. Resolution
+    assert data["resolution"] is not None
+    assert "status" in data["resolution"]
+
+    # 5. Recommendation
+    assert data["recommendation"] is not None
+    assert "primary_action" in data["recommendation"]
+
+    # 6. Security
+    assert data["security"] is not None
+    assert data["security"]["aggregate_risk"] == SecurityRiskLevel.SAFE.value
+    assert data["security"]["requires_quarantine"] is False
+
+    # 7. Summary
+    assert data["summary"] is not None
+    assert "ORD-99881" in data["summary"]["entities_extracted"].get("order_ids", [])
+    assert data["summary"]["summary_mode"] == "extractive"
+
+
+def test_unified_analyze_phishing_quarantine() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    payload = {
+        "complaint": {
+            "message": (
+                "URGENT: Your account was suspended! Verify immediately at "
+                "http://192.168.1.50/login or email security@amaz0n-alerts.com"
+            ),
+            "subject": "Account Suspension Alert",
+        },
+    }
+
+    response = client.post("/api/v1/analyze", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+
+    sec = data["security"]
+    assert sec is not None
+    assert sec["aggregate_risk"] == SecurityRiskLevel.HIGH.value
+    assert sec["requires_quarantine"] is True
+    assert len(sec["urls"]) >= 1
+    assert len(sec["emails"]) >= 1
+
+    # Recommendation should trigger security escalation
+    rec = data["recommendation"]
+    assert rec is not None
+    assert rec["primary_action"] == ActionType.ESCALATE_TO_SECURITY_TEAM.value
+
+
+def test_unified_analyze_selective_flags() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    payload = {
+        "complaint": {
+            "message": "Where is my refund for the returned sneakers?",
+            "subject": "Refund inquiry",
+        },
+        "include_cluster": False,
+        "include_urgency": False,
+        "include_resolution": False,
+        "include_recommendation": False,
+        "include_security": False,
+        "include_summary": False,
+    }
+
+    response = client.post("/api/v1/analyze", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["classification"] is not None
+    assert data["cluster"] is None
+    assert data["urgency"] is None
+    assert data["resolution"] is None
+    assert data["recommendation"] is None
+    assert data["security"] is None
+    assert data["summary"] is None
+
+
+def test_unified_analyze_empty_complaint_fails() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.post("/api/v1/analyze", json={"complaint": {"message": "", "subject": ""}})
+    assert response.status_code == 422
+
+
+def test_capabilities_all_complete() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    res = client.get("/api/v1/capabilities")
+    assert res.status_code == 200
+    data = res.json()
+    assert "unified_analysis" in data["available"]
+    assert data["planned"] == []

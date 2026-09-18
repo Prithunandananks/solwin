@@ -155,4 +155,98 @@ class RecommendationRequest(BaseModel):
     security_risk: str | None = None
 
 
+class SecurityRiskLevel(StrEnum):
+    SAFE = "SAFE"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    UNKNOWN = "UNKNOWN"
 
+
+class URLAnalysis(BaseModel):
+    url: str
+    normalized_url: str
+    domain: str
+    risk_level: SecurityRiskLevel
+    risk_score: float = Field(ge=0.0, le=1.0)
+    signals: list[str]
+    provider: str
+    analyzed_at: datetime
+
+
+class URLAnalysisRequest(BaseModel):
+    url: str | None = None
+    text: str | None = None
+
+
+class URLAnalysisResponse(BaseModel):
+    results: list[URLAnalysis]
+    total_found: int
+
+
+class EmailAnalysis(BaseModel):
+    email: str
+    domain: str
+    risk_level: SecurityRiskLevel
+    risk_score: float = Field(ge=0.0, le=1.0)
+    reasons: list[str]
+    is_free_provider: bool
+    is_disposable: bool
+    analyzed_at: datetime
+
+
+class EmailAnalysisRequest(BaseModel):
+    email: str | None = None
+    text: str | None = None
+
+
+class EmailAnalysisResponse(BaseModel):
+    results: list[EmailAnalysis]
+    total_found: int
+
+class ConversationSummary(BaseModel):
+    customer_issue: str
+    actions_taken: list[str]
+    pending_actions: list[str]
+    resolution_status: ResolutionStatus
+    entities_extracted: dict[str, list[str]] = Field(default_factory=dict)
+    summary_mode: str  # "extractive" or "llm"
+    key_phrases: list[str] = Field(default_factory=list)
+
+
+class SummarizeRequest(BaseModel):
+    complaint: ComplaintInput
+    prefer_llm: bool = False
+
+
+class SecurityAnalysisSummary(BaseModel):
+    urls: list[URLAnalysis] = Field(default_factory=list)
+    emails: list[EmailAnalysis] = Field(default_factory=list)
+    aggregate_risk: SecurityRiskLevel = SecurityRiskLevel.SAFE
+    requires_quarantine: bool = False
+    risk_reasons: list[str] = Field(default_factory=list)
+
+
+class UnifiedAnalysisRequest(BaseModel):
+    complaint: ComplaintInput
+    complaint_id: str | None = None
+    include_cluster: bool = True
+    include_urgency: bool = True
+    include_resolution: bool = True
+    include_recommendation: bool = True
+    include_security: bool = True
+    include_summary: bool = True
+    prefer_llm: bool = False
+
+
+class UnifiedAnalysisResponse(BaseModel):
+    complaint_id: str | None = None
+    classification: ClassificationResult
+    cluster: ClusterAssignment | None = None
+    urgency: UrgencyResult | None = None
+    resolution: ResolutionResult | None = None
+    recommendation: ActionRecommendation | None = None
+    security: SecurityAnalysisSummary | None = None
+    summary: ConversationSummary | None = None
+    processing_time_ms: float
+    warnings: list[str] = Field(default_factory=list)
