@@ -12,25 +12,25 @@ rules:
     secondary_actions: ["RESET_ACCOUNT_ACCESS", "VERIFY_CUSTOMER_IDENTITY"]
     rationale: "High or critical security indicators require immediate escalation to the security operations team."
 
-  # 2. Critical Security or Account Takeover Escalation (regardless of external risk score)
-  - id: "RULE_CRITICAL_SECURITY_ESCALATION"
+  # 2. Account compromised / Takeover login problem
+  - id: "RULE_ACCOUNT_TAKEOVER"
     priority: 15
     conditions:
-      urgency: ["CRITICAL"]
-      category: ["SECURITY_CONCERN", "ACCOUNT_LOGIN_PROBLEM", "PAYMENT_TRANSACTION_ISSUE", "OTHER"]
-    primary_action: "ESCALATE_TO_SECURITY_TEAM"
-    secondary_actions: ["VERIFY_CUSTOMER_IDENTITY", "RESET_ACCOUNT_ACCESS"]
-    rationale: "Active security breach, financial theft, or critical account takeover demands immediate security team escalation."
-
-  # 3. Account compromised / Takeover
-  - id: "RULE_ACCOUNT_TAKEOVER"
-    priority: 20
-    conditions:
-      category: ["ACCOUNT_LOGIN_PROBLEM", "SECURITY_CONCERN"]
+      category: ["ACCOUNT_LOGIN_PROBLEM"]
       urgency: ["CRITICAL"]
     primary_action: "RESET_ACCOUNT_ACCESS"
     secondary_actions: ["VERIFY_CUSTOMER_IDENTITY", "ESCALATE_TO_SECURITY_TEAM"]
-    rationale: "Critical account login or security compromise requires immediate credential reset and identity verification."
+    rationale: "Critical account login compromise requires immediate credential reset and identity verification."
+
+  # 3. Critical Security Escalation (financial theft, active breach, fraud)
+  - id: "RULE_CRITICAL_SECURITY_ESCALATION"
+    priority: 16
+    conditions:
+      urgency: ["CRITICAL"]
+      category: ["SECURITY_CONCERN", "PAYMENT_TRANSACTION_ISSUE", "OTHER"]
+    primary_action: "ESCALATE_TO_SECURITY_TEAM"
+    secondary_actions: ["VERIFY_CUSTOMER_IDENTITY", "RESET_ACCOUNT_ACCESS"]
+    rationale: "Active security breach, financial theft, or critical fraud demands immediate security team escalation."
 
   # 4. Critical Payment / Fraudulent transaction
   - id: "RULE_PAYMENT_FRAUD_CRITICAL"

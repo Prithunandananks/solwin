@@ -43,6 +43,26 @@ def test_high_urgency_deadline_and_refund() -> None:
     assert result.urgency == UrgencyLevel.HIGH
 
 
+def test_high_urgency_adverbs_and_monetary_deductions() -> None:
+    detector = UrgencyDetector()
+
+    # Urgently adverb
+    res1 = detector.detect("I need this resolved urgently as my service is blocked.")
+    assert res1.urgency == UrgencyLevel.HIGH
+
+    # Money was deducted
+    res2 = detector.detect("Money was deducted from my checking balance.")
+    assert res2.urgency == UrgencyLevel.HIGH
+
+    # Amount was debited
+    res3 = detector.detect("The full amount was debited but no ticket was issued.")
+    assert res3.urgency == UrgencyLevel.HIGH
+
+    # Large amount deducted
+    res4 = detector.detect("A large amount deducted from card without confirmation.")
+    assert res4.urgency == UrgencyLevel.HIGH
+
+
 def test_low_urgency_routine_inquiry() -> None:
     detector = UrgencyDetector()
     result = detector.detect(

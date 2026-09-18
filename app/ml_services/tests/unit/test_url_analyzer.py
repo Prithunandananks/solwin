@@ -32,8 +32,28 @@ def test_punycode_homograph_domain() -> None:
 
 def test_url_shortener_risk() -> None:
     analyzer = URLAnalyzer()
-    res = analyzer.analyze_url("https://bit.ly/3xYqzP")
+    res_bitly = analyzer.analyze_url("https://bit.ly/3xYqzP")
+    assert "url_shortener" in res_bitly.signals
+    assert res_bitly.risk_level in {SecurityRiskLevel.MEDIUM, SecurityRiskLevel.HIGH}
+
+    res_tinyurl = analyzer.analyze_url("https://tinyurl.com/xyz123")
+    assert "url_shortener" in res_tinyurl.signals
+    assert res_tinyurl.risk_level in {SecurityRiskLevel.MEDIUM, SecurityRiskLevel.HIGH}
+
+
+def test_suspicious_shortened_url() -> None:
+    analyzer = URLAnalyzer()
+    # Shortened URL with suspicious login keyword in path/query
+    res = analyzer.analyze_url("https://bit.ly/login-verification")
     assert "url_shortener" in res.signals
+    assert any("suspicious_path_keywords" in s for s in res.signals)
+    assert res.risk_level == SecurityRiskLevel.HIGH
+
+
+def test_configurable_shortener_min_risk() -> None:
+    analyzer_low = URLAnalyzer(shortener_score_penalty=0.10, shortener_min_risk=SecurityRiskLevel.LOW)
+    res_low = analyzer_low.analyze_url("https://bit.ly/safe")
+    assert res_low.risk_level == SecurityRiskLevel.LOW
 
 
 def test_legitimate_https_url() -> None:

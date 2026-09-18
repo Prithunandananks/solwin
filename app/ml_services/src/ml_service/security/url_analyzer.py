@@ -169,8 +169,10 @@ class URLAnalyzer:
             risk_level = SecurityRiskLevel.SAFE
 
         # Enforce minimum risk level for concealed shorteners if applicable
-        if is_shortener and risk_level == SecurityRiskLevel.LOW:
-            risk_level = self.shortener_min_risk
+        if is_shortener:
+            order = [SecurityRiskLevel.SAFE, SecurityRiskLevel.LOW, SecurityRiskLevel.MEDIUM, SecurityRiskLevel.HIGH]
+            if order.index(risk_level) < order.index(self.shortener_min_risk):
+                risk_level = self.shortener_min_risk
 
 
         return URLAnalysis(

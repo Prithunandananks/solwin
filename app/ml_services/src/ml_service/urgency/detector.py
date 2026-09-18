@@ -22,8 +22,8 @@ HIGH_INDICATORS = [
     (r"\baccount locked\b|\bcannot login\b|\blockout\b|\bunable to login\b|\botp\b", "access_blockage"),
     (r"\boverdue\b|\bdelayed\s+(for\s+)?(\d+\s+)?days\b", "prolonged_service_delay"),
     (r"\bdid not receive.*refund\b|\bwhere is my refund\b|\bmissing refund\b", "pending_monetary_refund"),
-    (r"\b(money|amount|[₹$€£]\d+).*(deducted|debited).*(failed|incorrect|wrong|not\s+completed|error)\b", "monetary_deduction_error"),
-    (r"\b(deducted|debited)\s+incorrectly\b", "monetary_deduction_error"),
+    (r"\b(large\s+amount|money|amount|[₹$€£]\d+|funds).*(deducted|debited)\b", "monetary_deduction"),
+    (r"\b(deducted|debited)\s+(incorrectly|without|from)\b", "monetary_deduction"),
     (r"\bdouble charg(ed|e)\b|\bovercharg(ed|e)\b|\bcharged twice\b", "disputed_monetary_charge"),
     (r"\bescalat(e|ed|ing)\b", "customer_escalation_request"),
 ]
