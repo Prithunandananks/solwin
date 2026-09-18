@@ -21,8 +21,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
     if (!query.trim()) return;
     if (query.toUpperCase().startsWith('THR-')) {
       navigate(`/threats?search=${encodeURIComponent(query)}`);
-    } else if (query.toUpperCase().startsWith('CMP-')) {
-      navigate(`/campaigns`);
     } else {
       navigate(`/conversations?search=${encodeURIComponent(query)}`);
     }
@@ -149,20 +147,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                     <span className="text-[10px] text-rose-400 font-mono">2 min ago</span>
                   </div>
                   <p className="text-xs">Spear-phishing & 2FA harvesting on cloud-login.net</p>
-                </div>
-
-                <div
-                  onClick={() => {
-                    setShowAlertsPopover(false);
-                    navigate('/campaigns/CMP-041');
-                  }}
-                  className="p-2.5 rounded-xl bg-violet-500/10 border border-violet-500/25 hover:border-violet-500/45 cursor-pointer transition-all space-y-1"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-violet-500 font-bold text-[11px]">CMP-041</span>
-                    <span className="text-[10px] text-violet-400 font-mono">14 min ago</span>
-                  </div>
-                  <p className="text-xs">Coordinated wave targeting accounting personnel</p>
                 </div>
               </div>
               <button

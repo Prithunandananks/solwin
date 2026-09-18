@@ -9,7 +9,6 @@ import { SecurityIntelligence } from '../types/security';
 import { ConversationTimeline } from '../components/conversations/ConversationTimeline';
 import { AiInsightPanel } from '../components/conversations/AiInsightPanel';
 import { SecurityInsightPanel } from '../components/security/SecurityInsightPanel';
-import { AttachmentUploader } from '../components/conversations/AttachmentUploader';
 import { PriorityBadge } from '../components/common/PriorityBadge';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { StatusBadge } from '../components/common/StatusBadge';
@@ -146,10 +145,9 @@ export const ConversationDetails: React.FC = () => {
 
       {/* Two-Column Workspace Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Messages & Attachment Analysis (7 cols) */}
+        {/* Left Column: Messages (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           {conversation && <ConversationTimeline conversation={conversation} />}
-          <AttachmentUploader />
         </div>
 
         {/* Right Column: AI Customer Intelligence + Security Intelligence (5 cols) */}

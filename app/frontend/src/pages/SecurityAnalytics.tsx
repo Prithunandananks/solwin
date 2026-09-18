@@ -3,7 +3,7 @@ import { getSecurityAnalytics } from '../services/analyticsApi';
 import { SecurityAnalytics as SecAnalyticsType } from '../types/analytics';
 import { ChartSkeleton } from '../components/common/LoadingSkeleton';
 import { ErrorState } from '../components/common/ErrorState';
-import { ShieldAlert, LineChart, Radio, Globe, RefreshCw, AlertTriangle } from 'lucide-react';
+import { ShieldAlert, LineChart, Globe, RefreshCw, AlertTriangle } from 'lucide-react';
 import {
   AreaChart,
   Area,

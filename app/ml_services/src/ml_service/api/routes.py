@@ -512,7 +512,7 @@ def analyze_batch(
     start_time = time.perf_counter()
     results: list[UnifiedAnalysisResponse] = []
     for item in batch.items:
-        res = analyze(req=item, request=request)
+        res = analyze_complaint(req=item, request=request)
         results.append(res)
     total_time = round((time.perf_counter() - start_time) * 1000, 2)
     return BatchUnifiedAnalysisResponse(

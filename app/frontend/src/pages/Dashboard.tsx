@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   MessageSquare,
   ShieldAlert,
-  Radio,
   Clock,
   ArrowRight,
   ExternalLink,
@@ -138,13 +137,6 @@ export const Dashboard: React.FC = () => {
               <ShieldAlert size={15} />
               <span>THREAT RADAR</span>
             </button>
-            <button
-              onClick={() => navigate('/campaigns')}
-              className="px-3.5 py-2 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/35 text-xs font-mono font-semibold transition-all flex items-center gap-2 shadow-glow-indigo/20"
-            >
-              <Radio size={15} />
-              <span>CAMPAIGNS</span>
-            </button>
           </div>
         </div>
       </div>
@@ -220,7 +212,7 @@ export const Dashboard: React.FC = () => {
           label="Unresolved Queue"
           value={data.unresolved}
           icon={Clock}
-          trend={{ value: '24 critical cases', isPositive: false }}
+          trend={{ value: 'Priority queue', isPositive: false }}
           subtext="Awaiting response"
           variant="warning"
         />
@@ -233,11 +225,11 @@ export const Dashboard: React.FC = () => {
           variant="danger"
         />
         <KpiCard
-          label="Correlated Campaigns"
-          value={data.active_campaigns}
-          icon={Radio}
-          trend={{ value: 'Multi-ticket waves', isPositive: true }}
-          subtext="Adversary cluster engine"
+          label="Critical Escalations"
+          value={data.critical_cases || data.critical_threats}
+          icon={Flame}
+          trend={{ value: 'Requires immediate action', isPositive: false }}
+          subtext="High urgency triage"
           variant="info"
         />
       </div>
@@ -336,17 +328,17 @@ export const Dashboard: React.FC = () => {
             ))}
           </div>
 
-          {/* Quick link to campaign radar */}
+          {/* Quick link to threat directory */}
           <div className="pt-2 border-t border-surface-border">
             <button
-              onClick={() => navigate('/campaigns')}
-              className="w-full p-3 rounded-xl bg-gradient-to-r from-indigo-500/15 via-surface-elevated to-surface-elevated hover:from-indigo-500/25 border border-indigo-500/30 text-slate-200 text-xs font-semibold flex items-center justify-between transition-all group shadow-sm"
+              onClick={() => navigate('/threats')}
+              className="w-full p-3 rounded-xl bg-gradient-to-r from-rose-500/15 via-surface-elevated to-surface-elevated hover:from-rose-500/25 border border-rose-500/30 text-slate-200 text-xs font-semibold flex items-center justify-between transition-all group shadow-sm"
             >
               <div className="flex items-center gap-2">
-                <Radio size={15} className="text-indigo-400 animate-pulse" />
-                <span>Campaign Radar: Coordinated Waves Active</span>
+                <ShieldAlert size={15} className="text-rose-400 animate-pulse" />
+                <span>Threat Intelligence Directory: Active Vectors</span>
               </div>
-              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform text-indigo-400" />
+              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform text-rose-400" />
             </button>
           </div>
         </div>

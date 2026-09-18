@@ -10,12 +10,3 @@ export interface CustomerIntelligence {
   recommended_action?: string;
 }
 
-export interface MultimodalAnalysisResult {
-  attachment_id: string;
-  extracted_text?: string;
-  visual_threat_indicators?: string[];
-  detected_urls?: string[];
-  detected_brands?: string[];
-  phishing_likelihood?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  ocr_summary?: string;
-}

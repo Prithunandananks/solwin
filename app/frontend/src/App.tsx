@@ -12,8 +12,6 @@ import { Conversations } from './pages/Conversations';
 import { ConversationDetails } from './pages/ConversationDetails';
 import { Threats } from './pages/Threats';
 import { ThreatDetails } from './pages/ThreatDetails';
-import { CampaignRadar } from './pages/CampaignRadar';
-import { CampaignDetails } from './pages/CampaignDetails';
 import { CustomerInsights } from './pages/CustomerInsights';
 import { SecurityAnalytics } from './pages/SecurityAnalytics';
 import { Settings } from './pages/Settings';
@@ -41,8 +39,6 @@ export const App: React.FC = () => {
               <Route path="/conversations/:id" element={<ConversationDetails />} />
               <Route path="/threats" element={<Threats />} />
               <Route path="/threats/:id" element={<ThreatDetails />} />
-              <Route path="/campaigns" element={<CampaignRadar />} />
-              <Route path="/campaigns/:id" element={<CampaignDetails />} />
               <Route path="/insights/customer" element={<CustomerInsights />} />
               <Route path="/analytics/security" element={<SecurityAnalytics />} />
               <Route path="/settings" element={<Settings />} />

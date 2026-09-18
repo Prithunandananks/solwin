@@ -163,8 +163,8 @@ def test_unified_analyze_batch() -> None:
             },
             {
                 "complaint": {
-                    "message": "Urgent! Reset password at http://phish-login.example now!",
-                    "subject": "Security warning",
+                    "message": "URGENT: Verify your account immediately at http://192.168.1.50/login or email security@amaz0n-alerts.com",
+                    "subject": "Account Suspension Alert",
                 },
                 "complaint_id": "CMP-2",
             },
@@ -178,5 +178,6 @@ def test_unified_analyze_batch() -> None:
     assert len(data["results"]) == 2
     assert data["results"][0]["complaint_id"] == "CMP-1"
     assert data["results"][1]["complaint_id"] == "CMP-2"
-    assert data["results"][1]["security"]["aggregate_risk"] in ["SUSPICIOUS", "CRITICAL"]
+    assert data["results"][1]["security"]["aggregate_risk"] == SecurityRiskLevel.HIGH.value
+
 

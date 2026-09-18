@@ -41,7 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       title: 'Cyber Threat SOC',
       items: [
         { label: 'Threat Directory', to: '/threats', icon: ShieldAlert, badge: 'Active', badgeColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30' },
-        { label: 'Campaign Radar', to: '/campaigns', icon: Radio, badge: 'Live', badgeColor: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30' },
       ],
     },
     {

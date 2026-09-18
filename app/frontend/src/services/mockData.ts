@@ -2,7 +2,6 @@ import { User } from '../types/auth';
 import { Conversation } from '../types/conversation';
 import { CustomerIntelligence } from '../types/analysis';
 import { SecurityIntelligence, ThreatRecord } from '../types/security';
-import { ThreatCampaign } from '../types/campaign';
 import { DashboardOverview, CustomerAnalytics, SecurityAnalytics } from '../types/analytics';
 
 export const mockUser: User = {
@@ -326,80 +325,6 @@ export const mockThreats: ThreatRecord[] = [
     social_engineering: false,
     detected_at: '2026-09-18 07:11 UTC',
     status: 'Resolved',
-  }
-];
-
-export const mockCampaigns: ThreatCampaign[] = [
-  {
-    id: 'CMP-2026-03',
-    name: 'Operation CloudMimic — Lookalike Infrastructure Campaign',
-    affected_conversations_count: 14,
-    suspicious_domains_count: 6,
-    sender_patterns_count: 3,
-    techniques_count: 4,
-    common_urls: [
-      'https://auth-solwin-verify.cloud-login.net/confirm',
-      'https://login-solwin-portal.secureserver-update.cc',
-      'https://portal-solwin-billing.account-resolver.xyz'
-    ],
-    common_domains: [
-      'cloud-login.net',
-      'secureserver-update.cc',
-      'solw1n-support.com',
-      'account-resolver.xyz'
-    ],
-    common_senders: [
-      'notification@solw1n-support.com',
-      'security-alerts@solwin-verify.com',
-      'billing-update@cloud-login.net'
-    ],
-    common_techniques: [
-      'Artificial Urgency & Session Lockout Coercion',
-      'Subdomain Mimicry of Enterprise Identity Portals',
-      'Real-time Reverse Proxy OTP Harvesting',
-      'SPF / DKIM Header Forgery'
-    ],
-    risk_level: 'CRITICAL',
-    first_detected: '2026-09-16 04:12 UTC',
-    last_detected: '2026-09-18 09:42 UTC',
-    status: 'Active',
-    related_conversation_ids: ['conv_8912', 'conv_8913', 'conv_8914'],
-    timeline_events: [
-      { date: '2026-09-16 04:12', event: 'First probe: 2 SMS messages targeting executive phones', severity: 'Medium' },
-      { date: '2026-09-17 11:30', event: 'Domain registration: cloud-login.net spun up on bulletproof host ASN 49301', severity: 'High' },
-      { date: '2026-09-18 09:42', event: 'Mass email blast: 14 enterprise employees received phishing templates with OTP reverse proxy', severity: 'Critical' }
-    ]
-  },
-  {
-    id: 'CMP-2026-02',
-    name: 'FinWire Executive Impersonation Wave',
-    affected_conversations_count: 8,
-    suspicious_domains_count: 2,
-    sender_patterns_count: 2,
-    techniques_count: 3,
-    common_urls: [
-      'https://bank-remittance-gateway.live/auth'
-    ],
-    common_domains: [
-      'bank-remittance-gateway.live',
-      'wire-swift-desk.net'
-    ],
-    common_senders: [
-      'cfo-office@finance-swift.org'
-    ],
-    common_techniques: [
-      'Executive Impersonation (CEO/CFO spoofing)',
-      'Wire routing manipulation',
-      'High-pressure confidentiality clause'
-    ],
-    risk_level: 'HIGH',
-    first_detected: '2026-09-12 18:00 UTC',
-    last_detected: '2026-09-17 14:20 UTC',
-    status: 'Investigating',
-    related_conversation_ids: ['conv_8914'],
-    timeline_events: [
-      { date: '2026-09-12 18:00', event: 'Targeted spear phishing email sent to finance directors', severity: 'High' }
-    ]
   }
 ];
 
