@@ -339,3 +339,138 @@ class BatchUnifiedAnalysisResponse(BaseModel):
     total_processed: int
     processing_time_ms: float
 
+
+# ---------------------------------------------------------------------------
+# Canonical Customer Review Schema
+# ---------------------------------------------------------------------------
+
+
+class ReviewSource(BaseModel):
+    source_type: str = "KAGGLE"
+    source_record_id: str = ""
+    domain: str = "E-commerce/Retail"
+    channel: str = "Email"
+
+
+class ReviewContent(BaseModel):
+    subject: str = ""
+    message: str = ""
+
+
+class ReviewClassification(BaseModel):
+    category: str
+    fine_grained_intent: str | None = None
+    confidence: float = Field(ge=0.0, le=1.0)
+    needs_review: bool = False
+
+
+class ReviewSentiment(BaseModel):
+    label: str
+    score: float = Field(ge=0.0, le=1.0)
+
+
+class ReviewSummary(BaseModel):
+    text: str
+
+
+class ReviewClustering(BaseModel):
+    cluster_id: str
+    cluster_name: str
+    similarity_score: float = Field(ge=0.0, le=1.0)
+
+
+class ReviewUrgency(BaseModel):
+    level: str
+    score: float = Field(ge=0.0, le=1.0)
+    reasons: list[str] = Field(default_factory=list)
+
+
+class ReviewResolution(BaseModel):
+    status: str
+    confidence: float = Field(ge=0.0, le=1.0)
+    evidence: list[str] = Field(default_factory=list)
+
+
+class ReviewPhishing(BaseModel):
+    detected: bool = False
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+
+
+class ReviewSocialEngineering(BaseModel):
+    detected: bool = False
+    techniques: list[str] = Field(default_factory=list)
+
+
+class ReviewSecurity(BaseModel):
+    risk_level: str = "LOW"
+    risk_score: float = Field(default=0.0, ge=0.0, le=1.0)
+    phishing: ReviewPhishing = Field(default_factory=ReviewPhishing)
+    urls: list[dict[str, Any]] = Field(default_factory=list)
+    email_addresses: list[dict[str, Any]] = Field(default_factory=list)
+    social_engineering: ReviewSocialEngineering = Field(default_factory=ReviewSocialEngineering)
+    reasons: list[str] = Field(default_factory=list)
+
+
+class ReviewOverallRisk(BaseModel):
+    level: str
+    score: float = Field(ge=0.0, le=1.0)
+    factors: list[str] = Field(default_factory=list)
+
+
+class ReviewRecommendation(BaseModel):
+    primary_action: str
+    priority: str
+    secondary_actions: list[str] = Field(default_factory=list)
+    rationale: str
+
+
+class ReviewModelMetadata(BaseModel):
+    classifier: str = "complaint_classifier_v1"
+    intent_classifier: str = "intent_classifier_v1"
+    clusterer: str = "clusterer_v1"
+    sentiment_model: str = "gemini"
+    summarizer: str = "extractive_v1"
+
+
+class ReviewProcessing(BaseModel):
+    processed_at: str
+    processing_time_ms: float
+    warnings: list[str] = Field(default_factory=list)
+
+
+class CustomerReviewRequest(BaseModel):
+    review_id: str | None = None
+    source_type: str = "KAGGLE"
+    source_record_id: str = ""
+    domain: str = "E-commerce/Retail"
+    channel: str = "Email"
+    subject: str = ""
+    message: str
+    include_cluster: bool = True
+    include_urgency: bool = True
+    include_resolution: bool = True
+    include_recommendation: bool = True
+    include_security: bool = True
+    include_summary: bool = True
+    include_sentiment: bool = True
+    prefer_llm: bool = True
+
+
+class CustomerReviewOutput(BaseModel):
+    review_id: str
+    source: ReviewSource
+    content: ReviewContent
+    classification: ReviewClassification
+    sentiment: ReviewSentiment
+    keywords: list[str] = Field(default_factory=list)
+    summary: ReviewSummary
+    clustering: ReviewClustering
+    urgency: ReviewUrgency
+    resolution: ReviewResolution
+    security: ReviewSecurity
+    overall_risk: ReviewOverallRisk
+    recommendation: ReviewRecommendation
+    model_metadata: ReviewModelMetadata
+    processing: ReviewProcessing
+
+

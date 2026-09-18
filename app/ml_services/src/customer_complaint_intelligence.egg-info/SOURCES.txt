@@ -7,6 +7,12 @@ src/customer_complaint_intelligence.egg-info/requires.txt
 src/customer_complaint_intelligence.egg-info/top_level.txt
 src/ml_service/__init__.py
 src/ml_service/main.py
+src/ml_service/ai/__init__.py
+src/ml_service/ai/cache.py
+src/ml_service/ai/exceptions.py
+src/ml_service/ai/gemini_provider.py
+src/ml_service/ai/prompts.py
+src/ml_service/ai/provider.py
 src/ml_service/analytics/__init__.py
 src/ml_service/analytics/frequency.py
 src/ml_service/api/__init__.py
@@ -20,6 +26,8 @@ src/ml_service/core/__init__.py
 src/ml_service/core/config.py
 src/ml_service/core/logging.py
 src/ml_service/core/model_registry.py
+src/ml_service/orchestration/__init__.py
+src/ml_service/orchestration/pipeline.py
 src/ml_service/preprocessing/__init__.py
 src/ml_service/preprocessing/cleaner.py
 src/ml_service/preprocessing/dataset.py
@@ -30,6 +38,8 @@ src/ml_service/resolution/detector.py
 src/ml_service/security/__init__.py
 src/ml_service/security/email_analyzer.py
 src/ml_service/security/url_analyzer.py
+src/ml_service/sentiment/__init__.py
+src/ml_service/sentiment/analyzer.py
 src/ml_service/summarization/__init__.py
 src/ml_service/summarization/summarizer.py
 src/ml_service/urgency/__init__.py

@@ -181,3 +181,80 @@ def test_unified_analyze_batch() -> None:
     assert data["results"][1]["security"]["aggregate_risk"] == SecurityRiskLevel.HIGH.value
 
 
+def test_analyze_review_canonical_schema() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    payload = {
+        "review_id": "REV-000123",
+        "source_type": "KAGGLE",
+        "source_record_id": "12345",
+        "domain": "E-commerce/Retail",
+        "channel": "Email",
+        "subject": "Unauthorized charge on my card",
+        "message": "I noticed an unauthorized charge of $350 on my card. Please reverse it immediately.",
+        "include_cluster": True,
+        "include_urgency": True,
+        "include_resolution": True,
+        "include_recommendation": True,
+        "include_security": True,
+        "include_summary": True,
+        "include_sentiment": True,
+        "prefer_llm": False,
+    }
+
+    res = client.post("/api/v1/analyze/review", json=payload)
+    assert res.status_code == 200
+    data = res.json()
+
+    # Verify all top-level keys match canonical schema
+    expected_top_keys = {
+        "review_id",
+        "source",
+        "content",
+        "classification",
+        "sentiment",
+        "keywords",
+        "summary",
+        "clustering",
+        "urgency",
+        "resolution",
+        "security",
+        "overall_risk",
+        "recommendation",
+        "model_metadata",
+        "processing",
+    }
+    assert expected_top_keys.issubset(set(data.keys()))
+
+    assert data["review_id"] == "REV-000123"
+    assert data["source"]["source_type"] == "KAGGLE"
+    assert data["source"]["domain"] == "E-commerce/Retail"
+    assert data["content"]["subject"] == "Unauthorized charge on my card"
+
+    assert "category" in data["classification"]
+    assert "confidence" in data["classification"]
+    assert "label" in data["sentiment"]
+    assert "score" in data["sentiment"]
+    assert isinstance(data["keywords"], list)
+    assert "text" in data["summary"]
+    assert "cluster_id" in data["clustering"]
+    assert "cluster_name" in data["clustering"]
+    assert "level" in data["urgency"]
+    assert "score" in data["urgency"]
+    assert "status" in data["resolution"]
+    assert "risk_level" in data["security"]
+    assert "risk_score" in data["security"]
+    assert "phishing" in data["security"]
+    assert "urls" in data["security"]
+    assert "email_addresses" in data["security"]
+    assert "social_engineering" in data["security"]
+    assert "level" in data["overall_risk"]
+    assert "score" in data["overall_risk"]
+    assert "primary_action" in data["recommendation"]
+    assert "priority" in data["recommendation"]
+    assert "rationale" in data["recommendation"]
+    assert "processed_at" in data["processing"]
+    assert "processing_time_ms" in data["processing"]
+
+

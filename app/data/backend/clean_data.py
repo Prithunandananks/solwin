@@ -1,15 +1,51 @@
 import os
+import re
+import unicodedata
+from typing import Optional
 import pandas as pd
 
-def clean_csv_data(file_path: str = None) -> pd.DataFrame:
+
+def normalize_text(text: Optional[str]) -> str:
+    """Normalize whitespace, unicode characters (NFKC), and strip whitespace."""
+    if not text:
+        return ""
+    normalized = unicodedata.normalize("NFKC", str(text))
+    normalized = re.sub(r"[\r\n\t]+", " ", normalized)
+    normalized = re.sub(r"\s+", " ", normalized)
+    return normalized.strip()
+
+
+def build_complaint_text(
+    message: Optional[str],
+    subject: Optional[str] = None,
+    max_length: int = 10_000,
+) -> str:
+    """Safely combine subject and message without incorporating target issue."""
+    clean_subj = normalize_text(subject)
+    clean_msg = normalize_text(message)
+
+    if clean_subj and clean_msg:
+        combined = f"{clean_subj} {clean_msg}"
+    elif clean_subj:
+        combined = clean_subj
+    else:
+        combined = clean_msg
+
+    if len(combined) > max_length:
+        combined = combined[:max_length].rstrip()
+
+    return combined
+
+
+def clean_csv_data(file_path: Optional[str] = None) -> pd.DataFrame:
     """
     Cleans customer support & phishing dataset CSV.
-    - Fills missing values (NaN) with empty strings/defaults.
-    - Strips leading and trailing excessive whitespace.
+    - Preserves dataset columns: id, domain, channel, message, subject, intent, issue, technique, phishing, sender, label.
+    - Normalizes text and strips leading/trailing excessive whitespace.
+    - Fills missing values (NaN) with defaults.
     - Drops duplicate records.
     """
     if not file_path:
-        # Resolve path relative to project structure (app/data)
         data_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         possible_paths = [
             os.path.join(data_dir, "unified_customer_phishing_data (1).csv"),
@@ -28,29 +64,46 @@ def clean_csv_data(file_path: str = None) -> pd.DataFrame:
 
     df = pd.read_csv(file_path)
 
-    # Ensure required columns exist
-    required_cols = ["message", "subject", "intent", "issue"]
-    for col in required_cols:
+    # Standard expected columns
+    all_cols = [
+        "id", "domain", "channel", "message", "subject", "intent",
+        "issue", "technique", "phishing", "sender", "label"
+    ]
+    for col in all_cols:
         if col not in df.columns:
             df[col] = ""
 
-    # Select target columns
-    df = df[required_cols].copy()
+    # Keep all available columns or fallback to defined
+    cols_to_keep = [c for c in all_cols if c in df.columns]
+    df = df[cols_to_keep].copy()
 
-    # Fill NaN values with empty string
-    df = df.fillna("")
+    # Fill NaNs
+    df["message"] = df["message"].fillna("")
+    df["subject"] = df["subject"].fillna("")
+    df["intent"] = df["intent"].fillna("")
+    df["issue"] = df["issue"].fillna("")
+    if "domain" in df.columns:
+        df["domain"] = df["domain"].fillna("E-commerce/Retail")
+    if "channel" in df.columns:
+        df["channel"] = df["channel"].fillna("Email")
+    if "phishing" in df.columns:
+        df["phishing"] = df["phishing"].fillna(False)
 
-    # Convert all columns to string type and strip whitespace
-    for col in required_cols:
-        df[col] = df[col].astype(str).str.strip()
+    # Normalize string columns
+    str_cols = ["message", "subject", "intent", "issue", "domain", "channel", "sender", "label"]
+    for col in str_cols:
+        if col in df.columns:
+            df[col] = df[col].astype(str).map(normalize_text)
 
-    # Drop duplicate records based on all four fields
+    # Deduplicate
     initial_count = len(df)
-    df = df.drop_duplicates().reset_index(drop=True)
+    dedup_subset = [c for c in ["message", "subject", "intent", "issue"] if c in df.columns]
+    df = df.drop_duplicates(subset=dedup_subset).reset_index(drop=True)
     cleaned_count = len(df)
 
     print(f"Data Cleaning Completed: {initial_count} initial records -> {cleaned_count} unique records.")
     return df
+
 
 if __name__ == "__main__":
     df_cleaned = clean_csv_data()

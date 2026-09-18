@@ -1,4 +1,6 @@
+from datetime import datetime, timezone
 import time
+import uuid
 
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import JSONResponse
@@ -15,6 +17,8 @@ from ml_service.api.schemas import (
     ClusterMetadata,
     ComplaintInput,
     ConversationSummary,
+    CustomerReviewOutput,
+    CustomerReviewRequest,
     EmailAnalysis,
     EmailAnalysisRequest,
     EmailAnalysisResponse,
@@ -24,6 +28,21 @@ from ml_service.api.schemas import (
     ReadinessResponse,
     RecommendationRequest,
     ResolutionResult,
+    ReviewClassification,
+    ReviewClustering,
+    ReviewContent,
+    ReviewModelMetadata,
+    ReviewOverallRisk,
+    ReviewPhishing,
+    ReviewProcessing,
+    ReviewRecommendation,
+    ReviewResolution,
+    ReviewSecurity,
+    ReviewSentiment,
+    ReviewSocialEngineering,
+    ReviewSource,
+    ReviewSummary,
+    ReviewUrgency,
     SecurityAnalysisSummary,
     SecurityRiskLevel,
     SentimentResult,
@@ -519,6 +538,218 @@ def analyze_batch(
         results=results,
         total_processed=len(results),
         processing_time_ms=total_time,
+    )
+
+
+@router.post(
+    "/api/v1/analyze/review",
+    response_model=CustomerReviewOutput,
+    tags=["orchestration"],
+)
+def analyze_review(
+    req: CustomerReviewRequest,
+    request: Request,
+) -> CustomerReviewOutput:
+    """Analyze customer review and format output strictly adhering to CustomerReviewOutput schema."""
+    start_time = time.perf_counter()
+    review_id = req.review_id or f"REV-{uuid.uuid4().hex[:6].upper()}"
+
+    # Delegate to unified analysis pipeline
+    unified_req = UnifiedAnalysisRequest(
+        complaint=ComplaintInput(
+            message=req.message,
+            subject=req.subject,
+        ),
+        complaint_id=review_id,
+        include_cluster=req.include_cluster,
+        include_urgency=req.include_urgency,
+        include_resolution=req.include_resolution,
+        include_recommendation=req.include_recommendation,
+        include_security=req.include_security,
+        include_summary=req.include_summary,
+        include_sentiment=req.include_sentiment,
+        prefer_llm=req.prefer_llm,
+    )
+    unified_res = analyze_complaint(req=unified_req, request=request)
+
+    # 1. Source
+    source = ReviewSource(
+        source_type=req.source_type,
+        source_record_id=req.source_record_id,
+        domain=req.domain,
+        channel=req.channel,
+    )
+
+    # 2. Content
+    content = ReviewContent(
+        subject=req.subject,
+        message=req.message,
+    )
+
+    # 3. Classification
+    classification = ReviewClassification(
+        category=unified_res.classification.category.value,
+        fine_grained_intent=unified_res.classification.fine_grained_intent,
+        confidence=round(unified_res.classification.confidence, 4),
+        needs_review=unified_res.classification.needs_review,
+    )
+
+    # 4. Sentiment
+    sentiment_label = unified_res.sentiment.label.value if unified_res.sentiment else "NEUTRAL"
+    sentiment_score = unified_res.sentiment.score if unified_res.sentiment else 0.5
+    sentiment = ReviewSentiment(
+        label=sentiment_label,
+        score=round(sentiment_score, 4),
+    )
+
+    # 5. Keywords
+    keywords: list[str] = []
+    if unified_res.summary and unified_res.summary.key_phrases:
+        keywords = unified_res.summary.key_phrases
+    elif unified_res.resolution and unified_res.resolution.signals:
+        keywords = unified_res.resolution.signals[:5]
+
+    # 6. Summary
+    if unified_res.summary and unified_res.summary.customer_issue:
+        summary_text = unified_res.summary.customer_issue
+    else:
+        summary_text = req.subject or req.message[:120]
+    summary = ReviewSummary(text=summary_text)
+
+    # 7. Clustering
+    clustering = ReviewClustering(
+        cluster_id=str(unified_res.cluster.cluster_id) if unified_res.cluster else "cluster_unknown",
+        cluster_name=unified_res.cluster.cluster_name if unified_res.cluster else "General Inquiries",
+        similarity_score=round(unified_res.cluster.similarity_score if unified_res.cluster else 0.5, 4),
+    )
+
+    # 8. Urgency
+    urgency_level = unified_res.urgency.urgency.value if unified_res.urgency else "MEDIUM"
+    urgency_score = unified_res.urgency.confidence if unified_res.urgency else 0.5
+    urgency_reasons = (
+        unified_res.urgency.reasons or unified_res.urgency.signals
+        if unified_res.urgency
+        else []
+    )
+    urgency = ReviewUrgency(
+        level=urgency_level,
+        score=round(urgency_score, 4),
+        reasons=urgency_reasons,
+    )
+
+    # 9. Resolution
+    resolution_status = unified_res.resolution.status.value if unified_res.resolution else "UNRESOLVED"
+    resolution_conf = unified_res.resolution.confidence if unified_res.resolution else 0.5
+    resolution_ev = unified_res.resolution.signals if unified_res.resolution else []
+    resolution = ReviewResolution(
+        status=resolution_status,
+        confidence=round(resolution_conf, 4),
+        evidence=resolution_ev,
+    )
+
+    # 10. Security
+    urls_data = [u.model_dump() for u in unified_res.security.urls] if unified_res.security else []
+    emails_data = [e.model_dump() for e in unified_res.security.emails] if unified_res.security else []
+    sec_risk_level = (
+        unified_res.security.aggregate_risk.value
+        if unified_res.security and unified_res.security.aggregate_risk
+        else "SAFE"
+    )
+    # Numerical risk score mapped from risk level
+    risk_score_map = {"SAFE": 0.0, "LOW": 0.25, "MEDIUM": 0.65, "HIGH": 0.95}
+    sec_risk_score = risk_score_map.get(sec_risk_level.upper(), 0.1)
+
+    phishing_detected = any(u.get("risk_level") in ("HIGH", "MEDIUM") for u in urls_data)
+    phishing_conf = 0.9 if phishing_detected else 0.0
+
+    se_detected = bool(unified_res.social_engineering and unified_res.social_engineering.detected)
+    se_techniques = unified_res.social_engineering.techniques if unified_res.social_engineering else []
+
+    security = ReviewSecurity(
+        risk_level=sec_risk_level,
+        risk_score=sec_risk_score,
+        phishing=ReviewPhishing(detected=phishing_detected, confidence=phishing_conf),
+        urls=urls_data,
+        email_addresses=emails_data,
+        social_engineering=ReviewSocialEngineering(detected=se_detected, techniques=se_techniques),
+        reasons=unified_res.security.risk_reasons if unified_res.security else [],
+    )
+
+    # 11. Overall Risk
+    # Combine urgency score and security score
+    overall_score = round(max(urgency_score * 0.5 + sec_risk_score * 0.5, sec_risk_score), 4)
+    if overall_score >= 0.8:
+        overall_level = "CRITICAL" if sec_risk_score >= 0.9 or urgency_score >= 0.9 else "HIGH"
+    elif overall_score >= 0.5:
+        overall_level = "MEDIUM"
+    elif overall_score >= 0.25:
+        overall_level = "LOW"
+    else:
+        overall_level = "SAFE"
+
+    factors: list[str] = []
+    if urgency_reasons:
+        factors.extend([f"Urgency: {r}" for r in urgency_reasons[:2]])
+    if security.reasons:
+        factors.extend([f"Security: {r}" for r in security.reasons[:2]])
+    if not factors:
+        factors = ["Standard inquiry"]
+
+    overall_risk = ReviewOverallRisk(
+        level=overall_level,
+        score=overall_score,
+        factors=factors,
+    )
+
+    # 12. Recommendation
+    if unified_res.recommendation:
+        rec = ReviewRecommendation(
+            primary_action=unified_res.recommendation.action,
+            priority=unified_res.recommendation.priority,
+            secondary_actions=[s.action for s in unified_res.recommendation.routing_suggestions],
+            rationale=unified_res.recommendation.rationale,
+        )
+    else:
+        rec = ReviewRecommendation(
+            primary_action="Route to support agent",
+            priority="NORMAL",
+            secondary_actions=[],
+            rationale="Standard complaint triage",
+        )
+
+    # 13. Model Metadata
+    model_metadata = ReviewModelMetadata(
+        classifier=unified_res.model_versions.get("classification", "complaint_classifier_v1"),
+        intent_classifier="intent_classifier_v1",
+        clusterer="clusterer_v1",
+        sentiment_model=unified_res.model_versions.get("sentiment", "gemini"),
+        summarizer=unified_res.model_versions.get("summary", "extractive_v1"),
+    )
+
+    # 14. Processing
+    latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+    processing = ReviewProcessing(
+        processed_at=datetime.now(timezone.utc).isoformat(),
+        processing_time_ms=latency_ms,
+        warnings=unified_res.warnings,
+    )
+
+    return CustomerReviewOutput(
+        review_id=review_id,
+        source=source,
+        content=content,
+        classification=classification,
+        sentiment=sentiment,
+        keywords=keywords,
+        summary=summary,
+        clustering=clustering,
+        urgency=urgency,
+        resolution=resolution,
+        security=security,
+        overall_risk=overall_risk,
+        recommendation=rec,
+        model_metadata=model_metadata,
+        processing=processing,
     )
 
 
