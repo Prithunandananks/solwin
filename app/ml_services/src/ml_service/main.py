@@ -6,6 +6,8 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 
+from ml_service.ai.exceptions import ProviderConfigError, ProviderError
+from ml_service.ai.gemini_provider import GeminiProvider
 from ml_service.analytics.frequency import FrequencyTracker
 from ml_service.api.routes import router
 from ml_service.classification.classifier import ComplaintClassifier
@@ -13,6 +15,7 @@ from ml_service.clustering.clusterer import ComplaintClusterer
 from ml_service.core.config import get_settings
 from ml_service.core.logging import configure_logging, safe_log
 from ml_service.core.model_registry import ModelRegistry
+from ml_service.orchestration.pipeline import GeminiPipeline
 from ml_service.recommendation.engine import RecommendationEngine
 from ml_service.resolution.detector import ResolutionDetector
 from ml_service.security.email_analyzer import EmailAnalyzer
@@ -55,6 +58,34 @@ def create_app() -> FastAPI:
         resolution_detector=app.state.resolution_detector
     )
 
+    # --- Gemini AI provider (optional — app starts even if unavailable) ---
+    ai_provider: GeminiProvider | None = None
+    if settings.gemini_enabled:
+        try:
+            ai_provider = GeminiProvider(settings)
+            logger.info("Gemini AI provider initialized: model=%s", settings.gemini_model)
+        except (ProviderConfigError, ProviderError) as exc:
+            logger.warning(
+                "Gemini AI provider could not be initialized (%s). "
+                "Local fallbacks will be used.",
+                exc,
+            )
+        except Exception as exc:
+            logger.error(
+                "Unexpected error initializing Gemini provider (%s). "
+                "Local fallbacks will be used.",
+                type(exc).__name__,
+            )
+    else:
+        logger.info("Gemini AI provider disabled (GEMINI_ENABLED=false). Using local models.")
+
+    app.state.ai_provider = ai_provider
+    app.state.gemini_pipeline = GeminiPipeline(
+        ai_provider=ai_provider,
+        local_classifier=app.state.classifier,
+        settings=settings,
+    )
+
     @app.middleware("http")
     async def observability(
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
@@ -73,3 +104,4 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+

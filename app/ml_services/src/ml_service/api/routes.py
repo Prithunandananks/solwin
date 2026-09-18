@@ -17,12 +17,15 @@ from ml_service.api.schemas import (
     EmailAnalysisRequest,
     EmailAnalysisResponse,
     FrequencyReport,
+    GeminiAnalysisOutput,
     HealthResponse,
     ReadinessResponse,
     RecommendationRequest,
     ResolutionResult,
     SecurityAnalysisSummary,
     SecurityRiskLevel,
+    SentimentResult,
+    SocialEngineeringResult,
     SummarizeRequest,
     UnifiedAnalysisRequest,
     UnifiedAnalysisResponse,
@@ -34,6 +37,7 @@ from ml_service.api.schemas import (
 from ml_service.classification.classifier import ComplaintClassifier
 from ml_service.clustering.clusterer import ComplaintClusterer
 from ml_service.core.model_registry import ModelRegistry
+from ml_service.orchestration.pipeline import GeminiPipeline
 from ml_service.preprocessing.cleaner import build_complaint_text
 from ml_service.recommendation.engine import RecommendationEngine
 from ml_service.resolution.detector import ResolutionDetector
@@ -83,6 +87,10 @@ def email_analyzer(request: Request) -> EmailAnalyzer:
 
 def summarizer(request: Request) -> ConversationSummarizer:
     return request.app.state.summarizer  # type: ignore[no-any-return]
+
+
+def gemini_pipeline(request: Request) -> GeminiPipeline:
+    return request.app.state.gemini_pipeline  # type: ignore[no-any-return]
 
 
 @router.get("/health", response_model=HealthResponse, tags=["operations"])
@@ -321,56 +329,8 @@ def analyze_complaint(
             detail="Complaint must include at least one non-empty 'message' or 'subject' field.",
         )
 
-    # 1. Classification
-    cls_engine = classifier(request)
-    if not cls_engine.is_loaded:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Classifier model is not loaded.",
-        )
-    classification_result = cls_engine.classify(msg, subj)
-
-    # 2. Clustering
-    cluster_res: ClusterAssignment | None = None
-    if req.include_cluster:
-        try:
-            cl_engine = clusterer(request)
-            if cl_engine.is_loaded:
-                cluster_res = cl_engine.assign(msg, subj)
-            else:
-                warnings.append("Clusterer model is not loaded.")
-        except Exception as e:
-            warnings.append(f"Clustering failed: {e}")
-
-    # 3. Frequency tracking
-    try:
-        freq_tracker = frequency_tracker(request)
-        freq_tracker.record_event(
-            category=classification_result.category.value,
-            cluster_id=cluster_res.cluster_id if cluster_res else None,
-        )
-    except Exception as e:
-        warnings.append(f"Frequency tracking failed: {e}")
-
-    # 4. Urgency Detection
-    urgency_res: UrgencyResult | None = None
-    if req.include_urgency:
-        try:
-            urg_engine = urgency_detector(request)
-            urgency_res = urg_engine.detect(msg, subj)
-        except Exception as e:
-            warnings.append(f"Urgency detection failed: {e}")
-
-    # 5. Resolution Status Detection
-    resolution_res: ResolutionResult | None = None
-    if req.include_resolution:
-        try:
-            res_engine = resolution_detector(request)
-            resolution_res = res_engine.detect(msg, subj)
-        except Exception as e:
-            warnings.append(f"Resolution detection failed: {e}")
-
-    # 6. Security Analysis
+    # 0. Local security analysis runs FIRST — before any Gemini call
+    #    (URL/email analyzers must never be bypassed by hosted AI)
     security_summary: SecurityAnalysisSummary | None = None
     if req.include_security:
         try:
@@ -407,7 +367,64 @@ def analyze_complaint(
         except Exception as e:
             warnings.append(f"Security analysis failed: {e}")
 
-    # 7. Action Recommendation
+    # 1. Gemini pipeline (classification + sentiment + social engineering + summary)
+    #    One API call covers all four tasks.  Local fallbacks handle all error cases.
+    pipeline = gemini_pipeline(request)
+    pipeline_result = pipeline.run(subj, msg)
+    warnings.extend(pipeline_result.warnings)
+
+    classification_result = pipeline_result.classification
+    gemini_output: GeminiAnalysisOutput | None = None  # used to pass Gemini summary to summarizer
+
+    # Track model provenance for response
+    model_versions: dict[str, str] = {
+        "classification": pipeline_result.model_name,
+        "sentiment": pipeline_result.model_name if pipeline_result.sentiment.available else "unavailable",
+        "social_engineering": pipeline_result.social_engineering.provider,
+        "summary": "pending",
+    }
+
+    # 2. Clustering
+    cluster_res: ClusterAssignment | None = None
+    if req.include_cluster:
+        try:
+            cl_engine = clusterer(request)
+            if cl_engine.is_loaded:
+                cluster_res = cl_engine.assign(msg, subj)
+            else:
+                warnings.append("Clusterer model is not loaded.")
+        except Exception as e:
+            warnings.append(f"Clustering failed: {e}")
+
+    # 3. Frequency tracking
+    try:
+        freq_tracker = frequency_tracker(request)
+        freq_tracker.record_event(
+            category=classification_result.category.value,
+            cluster_id=cluster_res.cluster_id if cluster_res else None,
+        )
+    except Exception as e:
+        warnings.append(f"Frequency tracking failed: {e}")
+
+    # 4. Urgency Detection (always local)
+    urgency_res: UrgencyResult | None = None
+    if req.include_urgency:
+        try:
+            urg_engine = urgency_detector(request)
+            urgency_res = urg_engine.detect(msg, subj)
+        except Exception as e:
+            warnings.append(f"Urgency detection failed: {e}")
+
+    # 5. Resolution Status Detection (always local)
+    resolution_res: ResolutionResult | None = None
+    if req.include_resolution:
+        try:
+            res_engine = resolution_detector(request)
+            resolution_res = res_engine.detect(msg, subj)
+        except Exception as e:
+            warnings.append(f"Resolution detection failed: {e}")
+
+    # 6. Action Recommendation (always local deterministic rules)
     recommendation_res: ActionRecommendation | None = None
     if req.include_recommendation:
         try:
@@ -423,18 +440,44 @@ def analyze_complaint(
         except Exception as e:
             warnings.append(f"Recommendation failed: {e}")
 
-    # 8. Conversation Summary
+    # 7. Conversation Summary (Gemini text if available, else extractive)
     summary_res: ConversationSummary | None = None
     if req.include_summary:
         try:
             sum_engine = summarizer(request)
-            summary_res = sum_engine.summarize(
-                message=msg,
-                subject=subj,
-                prefer_llm=req.prefer_llm,
-            )
+            # Pass Gemini output so summarizer can use pre-computed summary_text
+            # without making a second API call.
+            if pipeline_result.summary_text:
+                gemini_output_for_summary = type(
+                    "_G", (), {"summary_text": pipeline_result.summary_text}
+                )()
+                summary_res = sum_engine.summarize(
+                    message=msg,
+                    subject=subj,
+                    prefer_llm=True,
+                    gemini_output=gemini_output_for_summary,
+                )
+                model_versions["summary"] = pipeline_result.model_name
+            else:
+                summary_res = sum_engine.summarize(
+                    message=msg,
+                    subject=subj,
+                    prefer_llm=req.prefer_llm,
+                )
+                model_versions["summary"] = "extractive"
         except Exception as e:
             warnings.append(f"Summarization failed: {e}")
+            model_versions["summary"] = "failed"
+
+    # 8. Sentiment (from pipeline result)
+    sentiment_res: SentimentResult | None = None
+    if req.include_sentiment:
+        sentiment_res = pipeline_result.sentiment
+
+    # 9. Social engineering (from pipeline result)
+    se_res: SocialEngineeringResult | None = None
+    if req.include_security:
+        se_res = pipeline_result.social_engineering
 
     latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
 
@@ -447,6 +490,9 @@ def analyze_complaint(
         recommendation=recommendation_res,
         security=security_summary,
         summary=summary_res,
+        sentiment=sentiment_res,
+        social_engineering=se_res,
+        model_versions=model_versions,
         processing_time_ms=latency_ms,
         warnings=warnings,
     )

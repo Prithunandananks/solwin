@@ -112,6 +112,7 @@ class ConversationSummarizer:
         message: str | None,
         subject: str | None = None,
         prefer_llm: bool = False,
+        gemini_output: object | None = None,
     ) -> ConversationSummary:
         combined = build_complaint_text(message, subject)
         cleaned_combined = normalize_text(combined)
@@ -152,14 +153,16 @@ class ConversationSummarizer:
         customer_issue = self._extract_issue_summary(subject, message)
         key_phrases = self._extract_key_phrases(cleaned_combined)
 
-        # LLM fallback path if prefer_llm is requested
-        if prefer_llm:
-            llm_summary = self._try_llm_summarize(cleaned_combined, customer_issue)
+        # LLM path: Gemini output (already computed) or prefer_llm flag
+        if prefer_llm or gemini_output is not None:
+            llm_summary = self._try_llm_summarize(
+                cleaned_combined, customer_issue, gemini_output=gemini_output
+            )
             if llm_summary:
                 return ConversationSummary(
-                    customer_issue=llm_summary.get("customer_issue", customer_issue),
-                    actions_taken=llm_summary.get("actions_taken", actions_taken),
-                    pending_actions=llm_summary.get("pending_actions", pending_actions),
+                    customer_issue=str(llm_summary.get("customer_issue", customer_issue)),
+                    actions_taken=list(llm_summary.get("actions_taken", actions_taken)),  # type: ignore[arg-type]
+                    pending_actions=list(llm_summary.get("pending_actions", pending_actions)),  # type: ignore[arg-type]
                     resolution_status=res_result.status,
                     entities_extracted=entities,
                     summary_mode="llm",
@@ -175,6 +178,7 @@ class ConversationSummarizer:
             summary_mode="extractive",
             key_phrases=key_phrases,
         )
+
 
     def _extract_issue_summary(self, subject: str | None, message: str | None) -> str:
         clean_subj = normalize_text(subject or "")
@@ -216,10 +220,23 @@ class ConversationSummarizer:
         return phrases
 
     def _try_llm_summarize(
-        self, text: str, fallback_issue: str
-    ) -> dict[str, Any] | None:
-        """Pluggable hook for external LLM generation when provider is configured."""
-        logger.info(
-            "External LLM provider not configured or unavailable, using extractive summary"
-        )
+        self, text: str, fallback_issue: str, gemini_output: object | None = None
+    ) -> dict[str, object] | None:
+        """Use Gemini summary if already computed by the pipeline, otherwise return None.
+
+        The ``gemini_output`` is a ``GeminiAnalysisOutput`` injected by the route
+        handler when Gemini was called.  This avoids a second API call.
+        """
+        if gemini_output is not None:
+            summary_text = getattr(gemini_output, "summary_text", "")
+            if summary_text and summary_text.strip():
+                logger.info("ConversationSummarizer: using Gemini summary_text")
+                return {
+                    "customer_issue": summary_text.strip(),
+                    "actions_taken": [],
+                    "pending_actions": [],
+                }
+
+        logger.info("ConversationSummarizer: LLM provider not available, using extractive summary")
         return None
+

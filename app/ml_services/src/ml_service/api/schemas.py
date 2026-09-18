@@ -6,6 +6,79 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
+# ---------------------------------------------------------------------------
+# Gemini / AI provider schemas  (new — additive)
+# ---------------------------------------------------------------------------
+
+
+class SentimentLabel(StrEnum):
+    POSITIVE = "POSITIVE"
+    NEUTRAL = "NEUTRAL"
+    NEGATIVE = "NEGATIVE"
+
+
+class SentimentResult(BaseModel):
+    """Sentiment analysis result from an AI provider."""
+
+    label: SentimentLabel
+    score: float = Field(ge=0.0, le=1.0)
+    reason: str = ""
+    provider: str = "local"  # "gemini" | "local" | "fallback"
+    available: bool = True  # False when provider could not produce a result
+
+
+class SocialEngineeringTechnique(StrEnum):
+    URGENCY = "URGENCY"
+    CREDENTIAL_HARVESTING = "CREDENTIAL_HARVESTING"
+    OTP_REQUEST = "OTP_REQUEST"
+    PASSWORD_REQUEST = "PASSWORD_REQUEST"
+    IMPERSONATION = "IMPERSONATION"
+    THREAT_COERCION = "THREAT_COERCION"
+    PAYMENT_MANIPULATION = "PAYMENT_MANIPULATION"
+
+
+class SocialEngineeringResult(BaseModel):
+    """Semantic social engineering detection result."""
+
+    detected: bool
+    techniques: list[SocialEngineeringTechnique] = Field(default_factory=list)
+    reason: str = ""
+    provider: str = "local"  # "gemini" | "local" | "fallback"
+
+
+class GeminiAnalysisOutput(BaseModel):
+    """Schema for the single structured Gemini response used as response_schema.
+
+    This is the contract the Gemini model must conform to.  It is validated
+    by the provider before being returned to the caller.
+    """
+
+    # Classification
+    category: str  # validated as BusinessCategory enum after parsing
+    confidence: float = Field(ge=0.0, le=1.0)
+    reason: str = ""
+    needs_review: bool = False
+
+    # Sentiment
+    sentiment_label: str  # validated as SentimentLabel after parsing
+    sentiment_score: float = Field(ge=0.0, le=1.0)
+    sentiment_reason: str = ""
+
+    # Social engineering
+    social_engineering_detected: bool = False
+    social_engineering_techniques: list[str] = Field(default_factory=list)
+    social_engineering_reason: str = ""
+
+    # Summary
+    summary_text: str = ""
+
+
+# ---------------------------------------------------------------------------
+# Existing schemas continue below (UNCHANGED)
+# ---------------------------------------------------------------------------
+
+
+
 class BusinessCategory(StrEnum):
     PAYMENT_TRANSACTION_ISSUE = "PAYMENT_TRANSACTION_ISSUE"
     ACCOUNT_LOGIN_PROBLEM = "ACCOUNT_LOGIN_PROBLEM"
@@ -236,6 +309,7 @@ class UnifiedAnalysisRequest(BaseModel):
     include_recommendation: bool = True
     include_security: bool = True
     include_summary: bool = True
+    include_sentiment: bool = True  # NEW — Gemini sentiment analysis
     prefer_llm: bool = False
 
 
@@ -248,5 +322,9 @@ class UnifiedAnalysisResponse(BaseModel):
     recommendation: ActionRecommendation | None = None
     security: SecurityAnalysisSummary | None = None
     summary: ConversationSummary | None = None
+    # NEW optional fields — additive, backward-compatible
+    sentiment: SentimentResult | None = None
+    social_engineering: SocialEngineeringResult | None = None
+    model_versions: dict[str, str] = Field(default_factory=dict)
     processing_time_ms: float
     warnings: list[str] = Field(default_factory=list)

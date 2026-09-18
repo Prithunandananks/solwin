@@ -4,6 +4,7 @@ Version: 0.1.0
 Summary: Customer complaint intelligence ML service
 Requires-Python: <3.14,>=3.11
 Requires-Dist: fastapi==0.115.12
+Requires-Dist: google-genai>=1.5.0
 Requires-Dist: numpy<3.0.0,>=1.26.0
 Requires-Dist: pandas<4.0.0,>=2.2.0
 Requires-Dist: pydantic==2.10.6
