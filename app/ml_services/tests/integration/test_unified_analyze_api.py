@@ -146,3 +146,37 @@ def test_capabilities_all_complete() -> None:
     data = res.json()
     assert "unified_analysis" in data["available"]
     assert data["planned"] == []
+
+
+def test_unified_analyze_batch() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    batch_payload = {
+        "items": [
+            {
+                "complaint": {
+                    "message": "Payment failed on invoice #INV-12345.",
+                    "subject": "Billing issue",
+                },
+                "complaint_id": "CMP-1",
+            },
+            {
+                "complaint": {
+                    "message": "Urgent! Reset password at http://phish-login.example now!",
+                    "subject": "Security warning",
+                },
+                "complaint_id": "CMP-2",
+            },
+        ]
+    }
+
+    res = client.post("/api/v1/analyze/batch", json=batch_payload)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["total_processed"] == 2
+    assert len(data["results"]) == 2
+    assert data["results"][0]["complaint_id"] == "CMP-1"
+    assert data["results"][1]["complaint_id"] == "CMP-2"
+    assert data["results"][1]["security"]["aggregate_risk"] in ["SUSPICIOUS", "CRITICAL"]
+
