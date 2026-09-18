@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Bell, LogOut, Menu, UserCircle, Activity, Sparkles, Terminal, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Shield, Bell, LogOut, Menu, UserCircle, Activity, Sparkles, Terminal, AlertTriangle, CheckCircle2, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { SearchBar } from '../common/SearchBar';
 
 interface NavbarProps {
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [defconLevel, setDefconLevel] = useState<'NORMAL' | 'ELEVATED' | 'CRITICAL'>('NORMAL');
@@ -33,12 +35,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   };
 
   return (
-    <header className="h-16 border-b border-surface-border bg-surface-card/90 backdrop-blur-xl sticky top-0 z-30 px-4 lg:px-6 flex items-center justify-between shadow-card">
+    <header className="h-16 border-b border-surface-border bg-surface-card/90 backdrop-blur-xl sticky top-0 z-30 px-4 lg:px-6 flex items-center justify-between shadow-card transition-colors duration-200">
       {/* Brand & SOC Indicator */}
       <div className="flex items-center gap-3.5">
         <button
           onClick={onToggleSidebar}
-          className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-surface-elevated lg:hidden transition-colors border border-transparent hover:border-surface-border"
+          className="p-2 text-slate-400 hover:text-slate-200 rounded-xl hover:bg-surface-elevated lg:hidden transition-colors border border-transparent hover:border-surface-border"
           aria-label="Toggle navigation"
         >
           <Menu size={18} />
@@ -53,8 +55,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-bold tracking-tight text-sm text-slate-100 font-sans">SOLWIN</span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold tracking-wider">
+              <span className="font-bold tracking-tight text-sm font-sans">SOLWIN</span>
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-500 border border-cyan-500/30 font-semibold tracking-wider">
                 SOC-AI
               </span>
             </div>
@@ -77,16 +79,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
       </div>
 
       {/* Right controls & Telemetry status */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
         {/* Interactive Defcon Trigger for Hackathon Demo */}
         <button
           onClick={cycleDefcon}
           className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-mono transition-all shadow-sm ${
             defconLevel === 'NORMAL'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20'
               : defconLevel === 'ELEVATED'
-              ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 hover:bg-amber-500/25 shadow-glow-amber'
-              : 'bg-rose-500/20 border-rose-500/50 text-rose-300 hover:bg-rose-500/30 shadow-glow-rose animate-pulse'
+              ? 'bg-amber-500/15 border-amber-500/40 text-amber-500 hover:bg-amber-500/25 shadow-glow-amber'
+              : 'bg-rose-500/20 border-rose-500/50 text-rose-500 hover:bg-rose-500/30 shadow-glow-rose animate-pulse'
           }`}
           title="Click to toggle simulated SOC Defcon level"
         >
@@ -101,21 +103,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
           <span className="text-[11px] font-bold">DEFCON: {defconLevel}</span>
         </button>
 
+        {/* Theme Switcher Button (Dark / Light) */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl border border-surface-border bg-surface-elevated/70 hover:bg-surface-elevated text-slate-400 hover:text-slate-100 transition-all shadow-sm flex items-center justify-center group"
+          title={`Switch to ${theme === 'dark' ? 'Light (Minimalist)' : 'Dark (Obsidian SOC)'} Mode`}
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <Sun size={17} className="text-amber-400 group-hover:rotate-45 transition-transform" />
+          ) : (
+            <Moon size={17} className="text-indigo-600 group-hover:-rotate-12 transition-transform" />
+          )}
+        </button>
+
         {/* Security Alerts Bell with Popover */}
         <div className="relative">
           <button
             onClick={() => setShowAlertsPopover(!showAlertsPopover)}
-            className="relative p-2 text-slate-400 hover:text-slate-100 rounded-xl hover:bg-surface-elevated border border-surface-border transition-all"
+            className="relative p-2 text-slate-400 hover:text-slate-200 rounded-xl hover:bg-surface-elevated border border-surface-border transition-all"
             title="Active security threats"
           >
             <Bell size={17} />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-[#0b0f17] shadow-glow-rose" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-surface-card shadow-glow-rose" />
           </button>
 
           {showAlertsPopover && (
             <div className="absolute right-0 mt-2 w-80 bg-surface-card border border-surface-border rounded-2xl shadow-dropdown p-3.5 z-50 animate-in fade-in space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-surface-border">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
                   <AlertTriangle size={13} /> High Priority Alerts
                 </span>
                 <span className="text-[10px] font-mono text-slate-500">Live feed</span>
@@ -129,10 +145,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                   className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 hover:border-rose-500/45 cursor-pointer transition-all space-y-1"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-rose-300 font-bold text-[11px]">THR-9021</span>
+                    <span className="font-mono text-rose-500 font-bold text-[11px]">THR-9021</span>
                     <span className="text-[10px] text-rose-400 font-mono">2 min ago</span>
                   </div>
-                  <p className="text-slate-200 text-xs">Spear-phishing & 2FA harvesting on cloud-login.net</p>
+                  <p className="text-xs">Spear-phishing & 2FA harvesting on cloud-login.net</p>
                 </div>
 
                 <div
@@ -143,10 +159,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                   className="p-2.5 rounded-xl bg-violet-500/10 border border-violet-500/25 hover:border-violet-500/45 cursor-pointer transition-all space-y-1"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-violet-300 font-bold text-[11px]">CMP-041</span>
+                    <span className="font-mono text-violet-500 font-bold text-[11px]">CMP-041</span>
                     <span className="text-[10px] text-violet-400 font-mono">14 min ago</span>
                   </div>
-                  <p className="text-slate-200 text-xs">Coordinated wave targeting accounting personnel</p>
+                  <p className="text-xs">Coordinated wave targeting accounting personnel</p>
                 </div>
               </div>
               <button
@@ -154,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                   setShowAlertsPopover(false);
                   navigate('/threats');
                 }}
-                className="w-full py-1.5 rounded-lg bg-surface-elevated hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-mono text-center block transition-colors border border-surface-border"
+                className="w-full py-1.5 rounded-lg bg-surface-elevated hover:bg-slate-800 text-xs font-mono text-center block transition-colors border border-surface-border"
               >
                 View all active threats →
               </button>
@@ -175,12 +191,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                 className="w-7 h-7 rounded-lg object-cover border border-surface-border"
               />
             ) : (
-              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/30 font-mono font-bold text-xs">
+              <div className="w-7 h-7 rounded-lg bg-cyan-500/10 flex items-center justify-center text-brand-cyan border border-cyan-500/30 font-mono font-bold text-xs">
                 {user?.name ? user.name[0].toUpperCase() : 'A'}
               </div>
             )}
             <div className="hidden lg:block text-left text-xs pr-1">
-              <div className="font-semibold text-slate-200 leading-tight">{user?.name || 'Lead Analyst'}</div>
+              <div className="font-semibold leading-tight">{user?.name || 'Lead Analyst'}</div>
               <div className="text-[10px] text-slate-500 font-mono capitalize">
                 {user?.role ? user.role.replace('_', ' ') : 'SecOps Tier-3'}
               </div>
@@ -190,7 +206,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
           {showUserMenu && (
             <div className="absolute right-0 mt-2 w-56 bg-surface-card border border-surface-border rounded-2xl shadow-dropdown py-2 z-50 animate-in fade-in">
               <div className="px-3.5 py-2 border-b border-surface-border">
-                <p className="text-xs font-semibold text-slate-100">{user?.name}</p>
+                <p className="text-xs font-semibold">{user?.name}</p>
                 <p className="text-[11px] text-slate-500 truncate font-mono mt-0.5">{user?.email}</p>
               </div>
               <button
@@ -198,7 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                   setShowUserMenu(false);
                   navigate('/settings');
                 }}
-                className="w-full text-left px-3.5 py-2 text-xs text-slate-300 hover:text-white hover:bg-surface-elevated transition-colors flex items-center justify-between"
+                className="w-full text-left px-3.5 py-2 text-xs hover:bg-surface-elevated transition-colors flex items-center justify-between"
               >
                 <span>Platform Settings</span>
                 <span className="text-[10px] font-mono text-slate-500">API config</span>
@@ -209,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                   logout();
                   navigate('/login');
                 }}
-                className="w-full text-left px-3.5 py-2 text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-2 transition-colors border-t border-surface-border mt-1"
+                className="w-full text-left px-3.5 py-2 text-xs text-rose-500 hover:bg-rose-500/10 flex items-center gap-2 transition-colors border-t border-surface-border mt-1"
               >
                 <LogOut size={13} />
                 <span>Terminate Session</span>

@@ -8,15 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0b0f17',
+        background: 'var(--color-bg)',
         surface: {
-          DEFAULT: '#111827',
-          card: '#111827',
-          elevated: '#182234',
-          lighter: '#1e293b',
-          border: 'rgba(255, 255, 255, 0.08)',
-          'border-active': 'rgba(6, 182, 212, 0.35)',
-          glow: 'rgba(6, 182, 212, 0.12)',
+          DEFAULT: 'var(--color-surface)',
+          card: 'var(--color-surface-card)',
+          elevated: 'var(--color-surface-elevated)',
+          lighter: 'var(--color-surface-lighter)',
+          border: 'var(--color-surface-border)',
+          'border-active': 'var(--color-surface-border-active)',
+          glow: 'var(--color-surface-glow)',
         },
         risk: {
           low: '#10b981',
@@ -39,9 +39,9 @@ export default {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
-        'card': '0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3)',
-        'elevated': '0 10px 30px -4px rgba(0, 0, 0, 0.7), 0 4px 12px -2px rgba(0, 0, 0, 0.5)',
-        'dropdown': '0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 10px 10px -5px rgba(0, 0, 0, 0.4)',
+        'card': 'var(--shadow-card)',
+        'elevated': 'var(--shadow-elevated)',
+        'dropdown': 'var(--shadow-dropdown)',
         'glow-cyan': '0 0 25px -5px rgba(6, 182, 212, 0.35)',
         'glow-rose': '0 0 25px -5px rgba(244, 63, 94, 0.4)',
         'glow-indigo': '0 0 25px -5px rgba(99, 102, 241, 0.35)',

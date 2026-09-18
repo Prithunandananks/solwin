@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { API_BASE_URL } from '../services/api';
-import { Settings as SettingsIcon, Server, Shield, Check, RefreshCw, Key, Lock, Cpu } from 'lucide-react';
+import { Settings as SettingsIcon, Server, Shield, Check, RefreshCw, Key, Lock, Cpu, Sun, Moon, Palette } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [apiUrl, setApiUrl] = useState(API_BASE_URL);
   const [saved, setSaved] = useState(false);
 
@@ -28,8 +30,70 @@ export const Settings: React.FC = () => {
           <span>Platform Configuration & Gateway Settings</span>
         </h1>
         <p className="text-xs text-slate-400 mt-1">
-          Manage REST API integration endpoints, analyst session authentication, and diagnostic telemetry
+          Manage REST API integration endpoints, display themes, analyst session authentication, and diagnostic telemetry
         </p>
+      </div>
+
+      {/* Theme Selection Card */}
+      <div className="p-6 rounded-2xl bg-surface-card border border-surface-border shadow-card space-y-4">
+        <div className="flex items-center gap-2 text-white">
+          <Palette size={18} className="text-brand-cyan" />
+          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-100">
+            Interface Theme & Visual Style
+          </h2>
+        </div>
+
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Select between our high-density defense-grade <strong>Dark Mode</strong> (Obsidian SOC theme) or clean <strong>Light Mode</strong> (Minimalist Enterprise theme).
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl pt-1">
+          <button
+            type="button"
+            onClick={() => setTheme('dark')}
+            className={`p-4 rounded-xl border text-left transition-all flex items-start gap-3.5 ${
+              theme === 'dark'
+                ? 'bg-slate-900 border-brand-cyan shadow-glow-cyan/20 text-white'
+                : 'bg-surface-elevated/70 border-surface-border hover:border-slate-600 text-slate-400'
+            }`}
+          >
+            <div className="p-2 rounded-lg bg-surface-card border border-surface-border text-brand-cyan">
+              <Moon size={18} />
+            </div>
+            <div>
+              <div className="font-semibold text-xs text-slate-100">Dark (Obsidian SOC)</div>
+              <p className="text-[11px] text-slate-400 mt-0.5">High-contrast tactical dark command center for SOC analysts</p>
+              {theme === 'dark' && (
+                <span className="text-[10px] font-mono text-brand-cyan mt-2 inline-block font-semibold">
+                  ✓ ACTIVE THEME
+                </span>
+              )}
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTheme('light')}
+            className={`p-4 rounded-xl border text-left transition-all flex items-start gap-3.5 ${
+              theme === 'light'
+                ? 'bg-white border-brand-blue shadow-md text-slate-900'
+                : 'bg-surface-elevated/70 border-surface-border hover:border-slate-600 text-slate-400'
+            }`}
+          >
+            <div className="p-2 rounded-lg bg-slate-100 border border-slate-200 text-amber-500">
+              <Sun size={18} />
+            </div>
+            <div>
+              <div className="font-semibold text-xs text-slate-900">Light (Minimalist Enterprise)</div>
+              <p className="text-[11px] text-slate-500 mt-0.5">Clean, airy, and distraction-free daytime workspace</p>
+              {theme === 'light' && (
+                <span className="text-[10px] font-mono text-blue-600 mt-2 inline-block font-semibold">
+                  ✓ ACTIVE THEME
+                </span>
+              )}
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Backend API Configuration */}

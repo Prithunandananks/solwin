@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { MainLayout } from './components/layout/MainLayout';
 
@@ -19,38 +20,40 @@ import { Settings } from './pages/Settings';
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Login */}
-          <Route path="/login" element={<Login />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Login */}
+            <Route path="/login" element={<Login />} />
 
-          {/* Protected Application Routes */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <MainLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/conversations" element={<Conversations />} />
-            <Route path="/conversations/:id" element={<ConversationDetails />} />
-            <Route path="/threats" element={<Threats />} />
-            <Route path="/threats/:id" element={<ThreatDetails />} />
-            <Route path="/campaigns" element={<CampaignRadar />} />
-            <Route path="/campaigns/:id" element={<CampaignDetails />} />
-            <Route path="/insights/customer" element={<CustomerInsights />} />
-            <Route path="/analytics/security" element={<SecurityAnalytics />} />
-            <Route path="/settings" element={<Settings />} />
-          </Route>
+            {/* Protected Application Routes */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <MainLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/conversations" element={<Conversations />} />
+              <Route path="/conversations/:id" element={<ConversationDetails />} />
+              <Route path="/threats" element={<Threats />} />
+              <Route path="/threats/:id" element={<ThreatDetails />} />
+              <Route path="/campaigns" element={<CampaignRadar />} />
+              <Route path="/campaigns/:id" element={<CampaignDetails />} />
+              <Route path="/insights/customer" element={<CustomerInsights />} />
+              <Route path="/analytics/security" element={<SecurityAnalytics />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
 
-          {/* Catch-all fallback */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            {/* Catch-all fallback */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 
