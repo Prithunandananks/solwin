@@ -79,25 +79,37 @@ class EmailAnalyzer:
             reasons.append("punycode_homograph_domain")
             risk_score += 0.50
 
+        # Extract registrable domain and label
+        domain_parts = domain.split(".")
+        domain_label = domain_parts[0] if domain_parts else domain
+
         # Check lookalike typosquatting against major brands
-        domain_without_tld = domain.split(".")[0] if "." in domain else domain
         for brand, lookalikes in TARGET_BRANDS:
-            # Check exact lookalike match
+            # 1. Authentic brand domain check: If exact domain label is the authentic brand, do not flag as typosquat
+            if domain_label == brand:
+                continue
+
+            # 2. Check known lookalike variants matching domain label or containing specific typosquat tokens
             for la in lookalikes:
-                if la in domain_without_tld:
+                if la == domain_label or (len(la) >= 5 and la in domain_label):
                     reasons.append(f"typosquatting_lookalike_of_{brand}")
                     risk_score += 0.70
                     break
-            # Check brand followed by suspicious suffix like amazon-security, paypal-support
-            if f"{brand}-" in domain or f"{brand}support" in domain or f"{brand}security" in domain:
-                if domain not in {f"{brand}.com", f"{brand}.org"}:
-                    reasons.append(f"unauthorized_brand_impersonation_{brand}")
-                    risk_score += 0.65
 
-        # Check numeric character substitution in domain
-        if re.search(r"[0-9]", domain_without_tld) and not is_free:
+            # 3. Check brand followed by suspicious suffix like amazon-security, paypal-support
+            if (f"{brand}-" in domain or f"{brand}support" in domain or f"{brand}security" in domain) and domain not in {
+                f"{brand}.com",
+                f"{brand}.org",
+                f"{brand}.net",
+            }:
+                reasons.append(f"unauthorized_brand_impersonation_{brand}")
+                risk_score += 0.65
+
+        # Check numeric character substitution in domain (e.g., paypa1, amaz0n)
+        if re.search(r"[0-9]", domain_label) and not is_free and not is_disposable:
             reasons.append("numeric_character_in_domain_name")
             risk_score += 0.15
+
 
         # Check multiple hyphenation
         if domain.count("-") >= 2:

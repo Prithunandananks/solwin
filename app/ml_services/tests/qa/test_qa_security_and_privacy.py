@@ -107,7 +107,44 @@ def test_pii_log_redaction() -> None:
     safe_log(logger, "test_event", customer_input=sensitive_text)
     captured_output = log_capture.getvalue()
 
-    # Verify credit card and email are redacted
+    # Verify credit card, token, and email are redacted
     assert "4111-2222-3333-4444" not in captured_output
     assert "secret@company.com" not in captured_output
-    assert "[REDACTED]" in captured_output
+    assert "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" not in captured_output
+    assert "[REDACTED" in captured_output
+
+
+def test_pii_log_nested_and_arbitrary_structures() -> None:
+    log_capture = io.StringIO()
+    handler = logging.StreamHandler(log_capture)
+    logger = logging.getLogger("pii_nested_logger")
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+    nested_payload = {
+        "user_profile": {
+            "contact_email": "vip_client@partner.org",
+            "payment_methods": [
+                {"card": "4111 2222 3333 4444", "cvv": "123"},
+                {"details": "Secondary card 5555-4444-3333-2222"},
+            ],
+            "auth": {
+                "header": "Bearer eyJhbGciOiJIUzI1Ni.payload.signature",
+                "api_key": "prod_live_secret_key_999",
+            },
+        },
+        "query": "Please charge 4111222233334444 and email receipt to billing@store.com",
+    }
+
+    safe_log(logger, "nested_audit_event", payload=nested_payload)
+    logs = log_capture.getvalue()
+
+    assert "vip_client@partner.org" not in logs
+    assert "billing@store.com" not in logs
+    assert "4111 2222 3333 4444" not in logs
+    assert "5555-4444-3333-2222" not in logs
+    assert "4111222233334444" not in logs
+    assert "eyJhbGciOiJIUzI1Ni.payload.signature" not in logs
+    assert "prod_live_secret_key_999" not in logs
+    assert "123" not in logs  # cvv key blocked
+
