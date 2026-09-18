@@ -7,7 +7,7 @@ export const MainLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-slate-900 flex flex-col selection:bg-brand-blue/10 relative overflow-x-hidden">
+    <div className="min-h-screen bg-background text-slate-100 flex flex-col selection:bg-brand-cyan/20 selection:text-brand-cyan relative overflow-x-hidden soc-grid-bg">
       <Navbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       
       <div className="flex flex-1 w-full">
@@ -20,4 +20,3 @@ export const MainLayout: React.FC = () => {
     </div>
   );
 };
-

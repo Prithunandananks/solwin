@@ -11,6 +11,8 @@ import {
   X,
   LucideIcon,
   Zap,
+  Activity,
+  Cpu,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -32,39 +34,40 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       title: 'Operations',
       items: [
         { label: 'Overview', to: '/dashboard', icon: LayoutDashboard },
-        { label: 'Conversations', to: '/conversations', icon: MessageSquare, badge: '5 new', badgeColor: 'bg-brand-blue/15 text-brand-cyan border border-brand-blue/30' },
+        { label: 'Conversations', to: '/conversations', icon: MessageSquare, badge: '5 new', badgeColor: 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30' },
       ],
     },
     {
       title: 'Cyber Threat SOC',
       items: [
-        { label: 'Threat directory', to: '/threats', icon: ShieldAlert, badge: 'Active', badgeColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30' },
-        { label: 'Campaign radar', to: '/campaigns', icon: Radio, badge: 'Live', badgeColor: 'bg-violet-500/15 text-violet-300 border border-violet-500/30' },
+        { label: 'Threat Directory', to: '/threats', icon: ShieldAlert, badge: 'Active', badgeColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30' },
+        { label: 'Campaign Radar', to: '/campaigns', icon: Radio, badge: 'Live', badgeColor: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30' },
       ],
     },
     {
       title: 'Intelligence & Analytics',
       items: [
-        { label: 'Customer insights', to: '/insights/customer', icon: Users },
-        { label: 'Security metrics', to: '/analytics/security', icon: LineChart },
+        { label: 'Customer Insights', to: '/insights/customer', icon: Users },
+        { label: 'Security Metrics', to: '/analytics/security', icon: LineChart },
       ],
     },
     {
       title: 'Platform System',
       items: [
-        { label: 'System Configuration', to: '/settings', icon: Settings },
+        { label: 'Configuration & Keys', to: '/settings', icon: Settings },
       ],
     },
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white border-r border-slate-200 select-none">
+    <div className="flex flex-col h-full bg-surface-card border-r border-surface-border select-none">
       {/* Mobile Drawer Header */}
-      <div className="p-4 flex items-center justify-between border-b border-slate-200 lg:hidden">
-        <span className="font-semibold text-xs text-slate-700 font-mono">SOC NAVIGATION</span>
+      <div className="p-4 flex items-center justify-between border-b border-surface-border lg:hidden">
+        <span className="font-semibold text-xs text-slate-300 font-mono">SOC NAVIGATION</span>
         <button
           onClick={onClose}
-          className="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100"
+          className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-surface-elevated"
+          aria-label="Close sidebar"
         >
           <X size={18} />
         </button>
@@ -75,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {sections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             {section.title && (
-              <p className="px-3 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              <p className="px-3 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-500 mb-2">
                 {section.title}
               </p>
             )}
@@ -88,31 +91,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     to={item.to}
                     onClick={onClose}
                     className={({ isActive }) =>
-                      `relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group ${
+                      `relative flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all group ${
                         isActive
-                          ? 'bg-slate-100 text-slate-900 font-semibold border border-slate-200/80 shadow-sm'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
+                          ? 'bg-gradient-to-r from-cyan-500/15 to-transparent text-cyan-300 font-semibold border border-cyan-500/30 shadow-glow-cyan/20'
+                          : 'text-slate-400 hover:text-slate-100 hover:bg-surface-elevated/70 border border-transparent'
                       }`
                     }
                   >
                     {({ isActive }) => (
                       <>
                         {isActive && (
-                          <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-slate-900" />
+                          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-brand-cyan shadow-glow-cyan" />
                         )}
                         <div className="flex items-center gap-2.5">
                           <Icon
                             size={16}
                             className={`shrink-0 transition-colors ${
-                              isActive ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-700'
+                              isActive ? 'text-brand-cyan' : 'text-slate-500 group-hover:text-slate-300'
                             }`}
                           />
                           <span>{item.label}</span>
                         </div>
                         {item.badge && (
                           <span
-                            className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-medium ${
-                              item.badgeColor || 'bg-slate-100 text-slate-700'
+                            className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-medium ${
+                              item.badgeColor || 'bg-slate-800 text-slate-400'
                             }`}
                           >
                             {item.badge}
@@ -129,23 +132,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       </nav>
 
       {/* Footer System Diagnostics Card */}
-      <div className="p-3 border-t border-slate-200">
-        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+      <div className="p-3 border-t border-surface-border">
+        <div className="p-3.5 rounded-2xl bg-surface-elevated/80 border border-surface-border space-y-2.5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
-              <Zap size={13} className="text-amber-500" />
+            <span className="flex items-center gap-1.5 text-xs text-slate-200 font-medium">
+              <Cpu size={14} className="text-brand-cyan" />
               <span>SOC Agent AI</span>
             </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
-              OPERATIONAL
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/30">
+              NOMINAL
             </span>
           </div>
-          <div className="w-full bg-slate-200 rounded-full h-1 overflow-hidden">
-            <div className="bg-slate-900 h-full w-[94%]" />
+          <div className="w-full bg-slate-800 rounded-full h-1 overflow-hidden">
+            <div className="bg-gradient-to-r from-brand-cyan to-indigo-500 h-full w-[94%]" />
           </div>
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
-            <span>Model Latency</span>
-            <span>128ms avg</span>
+            <span>Inference Latency</span>
+            <span className="text-slate-300">128ms avg</span>
           </div>
         </div>
       </div>
@@ -172,4 +175,3 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     </>
   );
 };
-

@@ -43,7 +43,7 @@ export const CustomerInsights: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-7xl mx-auto">
         <div className="h-6 w-48 bg-slate-800 rounded animate-pulse" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ChartSkeleton />
@@ -58,109 +58,117 @@ export const CustomerInsights: React.FC = () => {
   }
 
   const PRIORITY_COLORS: Record<string, string> = {
-    Low: '#94a3b8',
+    Low: '#64748b',
     Medium: '#f59e0b',
     High: '#f97316',
-    Critical: '#ef4444',
+    Critical: '#f43f5e',
   };
 
   const RESOLUTION_COLORS: Record<string, string> = {
     Resolved: '#10b981',
     Pending: '#f59e0b',
     Escalated: '#8b5cf6',
-    Unresolved: '#ef4444',
+    Unresolved: '#f43f5e',
+  };
+
+  const CustomDarkTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-surface-elevated/95 border border-surface-border rounded-xl p-3 shadow-dropdown text-xs backdrop-blur-md">
+          <p className="font-mono text-slate-400 mb-1">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={`item-${index}`} className="font-mono text-xs flex items-center justify-between gap-4" style={{ color: entry.color }}>
+              <span>{entry.name}:</span>
+              <span className="font-bold text-white">{entry.value}</span>
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-4 border-b border-surface-border">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-cyan opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-cyan"></span>
             </span>
-            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-brand-blue">
+            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-brand-cyan">
               NLP SENTIMENT TELEMETRY
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-sans">
-            <Users size={22} className="text-brand-blue" />
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 font-sans">
+            <Users size={22} className="text-brand-cyan" />
             <span>Customer Support Intelligence</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
             Real-time sentiment velocity, multi-channel problem cluster distribution, and AI triage efficacy metrics.
           </p>
         </div>
 
         <button
           onClick={loadData}
-          className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-all self-start sm:self-auto shadow-sm"
+          className="p-2.5 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-slate-100 transition-all self-start sm:self-auto shadow-sm"
           title="Refresh analytics"
         >
           <RefreshCw size={15} />
         </button>
       </div>
 
-      {/* Row 1: Sentiment Trends & Top Issues */}
+      {/* Row 1: Sentiment Trends & Top Problem Categories */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Sentiment Trends Chart */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        {/* Sentiment Trends Over Time */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-                Customer Sentiment Velocity (7-Day)
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Sentiment Velocity (7-Day Trend)
               </h3>
-              <p className="text-xs text-slate-500">Classified by Solwin Sentiment NLP Model</p>
+              <p className="text-xs text-slate-400 mt-0.5">Positive vs Neutral vs Distressed ticket volume</p>
             </div>
-            <span className="text-[10px] font-mono font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-              ACTIVE TRIAGE
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+              NLP CONFIDENCE 94%
             </span>
           </div>
 
-          <div className="h-64 w-full pt-2">
+          <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.sentiment_trends}>
                 <defs>
-                  <linearGradient id="colorPositive" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
+                  <linearGradient id="colorPos" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="colorNegative" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  <linearGradient id="colorNeg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
+                <XAxis dataKey="date" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <Tooltip content={<CustomDarkTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="positive"
-                  name="Positive %"
+                  name="Positive"
                   stroke="#10b981"
                   strokeWidth={2}
                   fillOpacity={1}
-                  fill="url(#colorPositive)"
+                  fill="url(#colorPos)"
                 />
                 <Area
                   type="monotone"
                   dataKey="negative"
-                  name="Negative %"
-                  stroke="#ef4444"
+                  name="Distressed / Negative"
+                  stroke="#f43f5e"
                   strokeWidth={2}
                   fillOpacity={1}
-                  fill="url(#colorNegative)"
+                  fill="url(#colorNeg)"
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -168,68 +176,54 @@ export const CustomerInsights: React.FC = () => {
         </div>
 
         {/* Top Problem Categories */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-                Top Customer Problem Categories
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Issue Category Distribution
               </h3>
-              <p className="text-xs text-slate-500">Total volume and share of customer inquiries</p>
+              <p className="text-xs text-slate-400 mt-0.5">Top inquiries classified by NLP Intent Engine</p>
             </div>
+            <span className="text-[10px] font-mono text-slate-500">Total Volume</span>
           </div>
 
-          <div className="h-64 w-full pt-2">
+          <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.top_issues} layout="vertical">
-                <XAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis
-                  dataKey="category"
-                  type="category"
-                  stroke="#64748b"
-                  fontSize={11}
-                  tickLine={false}
-                  width={110}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
-                <Bar dataKey="count" name="Cases" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+              <BarChart data={data.top_issues} layout="vertical" margin={{ left: 20 }}>
+                <XAxis type="number" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <YAxis dataKey="category" type="category" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} width={130} />
+                <Tooltip content={<CustomDarkTooltip />} />
+                <Bar dataKey="count" fill="#06b6d4" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Row 2: Priority & Resolution Distributions */}
+      {/* Row 2: Priority Distribution & Workflow Resolution Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Priority Distribution */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="pb-2 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-              Ticket Priority Stratification
-            </h3>
-            <p className="text-xs text-slate-500">Critical, High, Medium, Low urgency distribution</p>
+        {/* Priority Stratification */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Triage Priority Stratification
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">Automated urgency weighting distribution</p>
+            </div>
           </div>
 
-          <div className="h-56 w-full">
+          <div className="h-64 w-full pt-2 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data.priority_distribution}
-                  dataKey="count"
-                  nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={3}
+                  innerRadius={60}
+                  outerRadius={85}
+                  paddingAngle={4}
+                  dataKey="count"
                 >
                   {data.priority_distribution.map((entry, index) => (
                     <Cell
@@ -238,59 +232,50 @@ export const CustomerInsights: React.FC = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
+                <Tooltip content={<CustomDarkTooltip />} />
                 <Legend
-                  verticalAlign="bottom"
-                  height={36}
-                  formatter={(val) => <span className="text-xs text-slate-700 font-mono">{val}</span>}
+                  formatter={(value) => <span className="text-xs font-mono text-slate-300">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Resolution Distribution */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="pb-2 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-              Resolution Pipeline Status
-            </h3>
-            <p className="text-xs text-slate-500">Resolved vs Pending vs Escalated vs Unresolved</p>
+        {/* Resolution Status Distribution */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Workflow Resolution Status
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">Tickets resolved vs escalated to Tier-2</p>
+            </div>
           </div>
 
-          <div className="h-56 w-full">
+          <div className="h-64 w-full pt-2 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.resolution_distribution}>
-                <XAxis dataKey="status" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
-                <Bar dataKey="count" name="Tickets" radius={[4, 4, 0, 0]}>
+              <PieChart>
+                <Pie
+                  data={data.resolution_distribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={85}
+                  paddingAngle={4}
+                  dataKey="count"
+                >
                   {data.resolution_distribution.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={RESOLUTION_COLORS[entry.status] || '#3b82f6'}
+                      fill={RESOLUTION_COLORS[entry.status] || '#10b981'}
                     />
                   ))}
-                </Bar>
-              </BarChart>
+                </Pie>
+                <Tooltip content={<CustomDarkTooltip />} />
+                <Legend
+                  formatter={(value) => <span className="text-xs font-mono text-slate-300">{value}</span>}
+                />
+              </PieChart>
             </ResponsiveContainer>
           </div>
         </div>

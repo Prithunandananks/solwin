@@ -43,7 +43,7 @@ export const SecurityAnalytics: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-7xl mx-auto">
         <div className="h-6 w-48 bg-slate-800 rounded animate-pulse" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ChartSkeleton />
@@ -61,35 +61,52 @@ export const SecurityAnalytics: React.FC = () => {
     LOW: '#10b981',
     MEDIUM: '#f59e0b',
     HIGH: '#f97316',
-    CRITICAL: '#ef4444',
+    CRITICAL: '#f43f5e',
+  };
+
+  const CustomDarkTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-surface-elevated/95 border border-surface-border rounded-xl p-3 shadow-dropdown text-xs backdrop-blur-md">
+          <p className="font-mono text-slate-400 mb-1">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={`item-${index}`} className="font-mono text-xs flex items-center justify-between gap-4" style={{ color: entry.color }}>
+              <span>{entry.name}:</span>
+              <span className="font-bold text-white">{entry.value}</span>
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-4 border-b border-surface-border">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
             </span>
-            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-rose-600">
-              SIEM & THREAT ANALYTICS
+            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-rose-400">
+              SIEM & THREAT METRICS ENGINE
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-sans">
-            <LineChart size={22} className="text-rose-600" />
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 font-sans">
+            <LineChart size={22} className="text-rose-400" />
             <span>Security Operations & Threat Analytics</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
             Forensic analysis of adversary velocity, social engineering attack vectors, IOC domain telemetry, and risk stratification.
           </p>
         </div>
 
         <button
           onClick={loadData}
-          className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-all self-start sm:self-auto shadow-sm"
+          className="p-2.5 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-slate-100 transition-all self-start sm:self-auto shadow-sm"
           title="Refresh metrics"
         >
           <RefreshCw size={15} />
@@ -99,110 +116,94 @@ export const SecurityAnalytics: React.FC = () => {
       {/* Row 1: Threats Over Time & Risk Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Threats Over Time */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
                 Threat Velocity Over Time (7-Day Incident Trend)
               </h3>
-              <p className="text-xs text-slate-500">Phishing vs Credential Theft vs Social Engineering</p>
+              <p className="text-xs text-slate-400 mt-0.5">Phishing vs Credential Theft vs Social Engineering</p>
             </div>
-            <span className="text-[10px] font-mono font-semibold text-rose-800 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-              SIEM STREAM
+            <span className="text-[10px] font-mono font-semibold text-rose-300 bg-rose-500/15 px-2 py-0.5 rounded border border-rose-500/30">
+              INCIDENTS
             </span>
           </div>
 
-          <div className="h-64 w-full pt-2">
+          <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.threats_over_time}>
                 <defs>
-                  <linearGradient id="phishGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  <linearGradient id="colorPhish" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="credGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                  <linearGradient id="colorCred" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
+                <XAxis dataKey="date" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <Tooltip content={<CustomDarkTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="phishing"
-                  name="Phishing"
-                  stroke="#ef4444"
+                  name="Phishing Lures"
+                  stroke="#f43f5e"
                   strokeWidth={2}
                   fillOpacity={1}
-                  fill="url(#phishGrad)"
+                  fill="url(#colorPhish)"
                 />
                 <Area
                   type="monotone"
                   dataKey="credential_theft"
-                  name="Cred Theft"
-                  stroke="#f97316"
+                  name="Credential Theft"
+                  stroke="#f59e0b"
                   strokeWidth={2}
                   fillOpacity={1}
-                  fill="url(#credGrad)"
+                  fill="url(#colorCred)"
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Risk Distribution Pie */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="pb-2 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-              Threat Severity Breakdown
-            </h3>
-            <p className="text-xs text-slate-500">Classified by Solwin Risk Engine</p>
+        {/* Risk Level Stratification */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Active Risk Level Stratification
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">Critical vs High vs Medium vs Low Distribution</p>
+            </div>
+            <span className="text-[10px] font-mono font-semibold text-brand-cyan bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
+              SECTOR SCAN
+            </span>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-72 w-full pt-2 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data.risk_distribution}
-                  dataKey="value"
-                  nameKey="name"
                   cx="50%"
                   cy="50%"
-                  innerRadius={55}
-                  outerRadius={85}
-                  paddingAngle={3}
+                  innerRadius={65}
+                  outerRadius={95}
+                  paddingAngle={4}
+                  dataKey="value"
                 >
                   {data.risk_distribution.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={RISK_COLORS[entry.name] || '#ef4444'}
+                      fill={RISK_COLORS[entry.name.toUpperCase()] || '#6366f1'}
                     />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
+                <Tooltip content={<CustomDarkTooltip />} />
                 <Legend
-                  verticalAlign="bottom"
-                  height={36}
-                  formatter={(val) => <span className="text-xs text-slate-700 font-mono">{val}</span>}
+                  formatter={(value) => <span className="text-xs font-mono text-slate-300">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -210,122 +211,65 @@ export const SecurityAnalytics: React.FC = () => {
         </div>
       </div>
 
-      {/* Row 2: Threat Types & Social Engineering Tactics */}
+      {/* Row 2: Attack Classification & MITRE Tactics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Threat Types Bar Chart */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="pb-2 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-              Top Threat Vectors
-            </h3>
-            <p className="text-xs text-slate-500">Total detected incidents grouped by adversary category</p>
+        {/* Threat Types Breakdown */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Threat Classification Breakdown
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">Frequency by specific vector category</p>
+            </div>
+            <span className="text-[10px] font-mono text-slate-500">SIEM Aggregate</span>
           </div>
 
-          <div className="h-60 w-full pt-1">
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.threat_types} layout="vertical">
-                <XAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  stroke="#64748b"
-                  fontSize={11}
-                  tickLine={false}
-                  width={120}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
-                <Bar dataKey="count" name="Incidents" fill="#ef4444" radius={[0, 4, 4, 0]} />
+              <BarChart data={data.threat_types} layout="vertical" margin={{ left: 20 }}>
+                <XAxis type="number" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} />
+                <YAxis dataKey="name" type="category" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 11 }} width={120} />
+                <Tooltip content={<CustomDarkTooltip />} />
+                <Bar dataKey="count" fill="#3b82f6" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Social Engineering Tactics */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-          <div className="pb-2 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
-              Social Engineering Manipulation Techniques
-            </h3>
-            <p className="text-xs text-slate-500">Natural language deception patterns parsed by NLP</p>
+        {/* Suspicious Lookalike Domains List */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-surface-border">
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+                Identified Malicious Domains & IOCs
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">Rogue domains flagged across incoming messages</p>
+            </div>
+            <span className="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/25">
+              AUTO-QUARANTINE
+            </span>
           </div>
 
-          <div className="h-60 w-full pt-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.social_engineering_techniques} layout="vertical">
-                <XAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis
-                  dataKey="technique"
-                  type="category"
-                  stroke="#64748b"
-                  fontSize={11}
-                  tickLine={false}
-                  width={130}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    borderColor: '#e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    color: '#0f172a',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  }}
-                />
-                <Bar dataKey="count" name="Observed" fill="#f59e0b" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="space-y-2.5 pt-1 overflow-y-auto max-h-64">
+            {data.suspicious_domains.map((dom, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between p-3 rounded-xl bg-surface-elevated/70 border border-surface-border text-xs"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <Globe size={14} className="text-rose-400 shrink-0" />
+                  <span className="font-mono text-slate-200 truncate">{dom.domain}</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[11px] font-mono text-slate-400">{dom.detections} detections</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold">
+                    {dom.risk_level}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      </div>
-
-      {/* Row 3: Suspicious Domains List */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <Globe size={18} className="text-rose-600" />
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-              Suspicious Domain Infrastructure Watchlist
-            </h3>
-          </div>
-          <span className="text-xs font-mono text-slate-500">Automated DNS & Whois Enrichment</span>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-500 font-mono text-[11px] uppercase bg-slate-50/50">
-                <th className="py-2.5 px-3 font-semibold">Suspicious Domain</th>
-                <th className="py-2.5 px-3 font-semibold">Detection Count</th>
-                <th className="py-2.5 px-3 font-semibold">Risk Assessment</th>
-                <th className="py-2.5 px-3 font-semibold">Recommended Mitigation</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-mono text-xs">
-              {data.suspicious_domains.map((dom, i) => (
-                <tr key={i} className="hover:bg-slate-50/75 transition-colors">
-                  <td className="py-3 px-3 text-rose-600 font-semibold">{dom.domain}</td>
-                  <td className="py-3 px-3 text-slate-700">{dom.detections} inquiries</td>
-                  <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded text-[11px] bg-rose-50 text-rose-700 border border-rose-200 font-semibold">
-                      {dom.risk_level}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3 text-slate-600 font-sans">
-                    Block domain at DNS firewall and quarantine incoming mail matching domain.
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

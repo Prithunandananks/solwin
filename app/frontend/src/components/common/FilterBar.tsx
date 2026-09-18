@@ -24,9 +24,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange, onReset
 
   return (
     <div className="flex flex-wrap items-center gap-2.5 py-2">
-      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium mr-1">
-        <Filter size={14} className="text-slate-700" />
-        <span>Filters:</span>
+      <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium mr-1 font-mono">
+        <Filter size={13} className="text-brand-cyan" />
+        <span>SECTOR FILTERS:</span>
       </div>
 
       {filters.map((filter) => (
@@ -34,11 +34,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange, onReset
           <select
             value={filter.value}
             onChange={(e) => onChange(filter.id, e.target.value)}
-            className="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors cursor-pointer shadow-sm"
+            className="bg-surface-card border border-surface-border hover:border-slate-600 text-slate-300 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-cyan/50 transition-colors cursor-pointer shadow-sm font-sans"
           >
-            <option value="">{filter.label} (All)</option>
+            <option value="" className="bg-surface-elevated text-slate-300">{filter.label} (All)</option>
             {filter.options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <option key={opt.value} value={opt.value} className="bg-surface-elevated text-slate-200">
                 {opt.label}
               </option>
             ))}
@@ -49,7 +49,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange, onReset
       {hasActiveFilters && onReset && (
         <button
           onClick={onReset}
-          className="text-xs text-slate-700 hover:text-slate-900 px-2 py-1 rounded transition-colors font-medium underline underline-offset-2"
+          className="text-xs text-brand-cyan hover:text-cyan-300 px-2 py-1 rounded transition-colors font-mono font-medium underline underline-offset-4"
         >
           Reset Filters
         </button>

@@ -8,21 +8,21 @@ interface StatusBadgeProps {
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   const norm = (status || 'Unresolved').toLowerCase();
 
-  let styles = 'bg-slate-100 text-slate-700 border-slate-200';
-  let dotColor = 'bg-slate-500';
+  let styles = 'bg-slate-800/80 text-slate-300 border-slate-700/80';
+  let dotColor = 'bg-slate-400';
 
   if (norm === 'resolved') {
-    styles = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-    dotColor = 'bg-emerald-600';
+    styles = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
+    dotColor = 'bg-emerald-400';
   } else if (norm === 'escalated') {
-    styles = 'bg-purple-50 text-purple-800 border-purple-200';
-    dotColor = 'bg-purple-600';
+    styles = 'bg-violet-500/15 text-violet-300 border-violet-500/35';
+    dotColor = 'bg-violet-400';
   } else if (norm === 'pending') {
-    styles = 'bg-amber-50 text-amber-800 border-amber-200';
-    dotColor = 'bg-amber-600';
+    styles = 'bg-amber-500/15 text-amber-300 border-amber-500/35';
+    dotColor = 'bg-amber-400';
   } else if (norm === 'unresolved') {
-    styles = 'bg-rose-50 text-rose-800 border-rose-200';
-    dotColor = 'bg-rose-600';
+    styles = 'bg-rose-500/15 text-rose-300 border-rose-500/35';
+    dotColor = 'bg-rose-400';
   }
 
   return (
@@ -32,4 +32,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
     </span>
   );
 };
-

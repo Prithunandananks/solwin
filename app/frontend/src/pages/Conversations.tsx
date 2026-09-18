@@ -23,6 +23,7 @@ import {
   Sparkles,
   X,
   Filter,
+  RefreshCw,
 } from 'lucide-react';
 
 export const Conversations: React.FC = () => {
@@ -79,7 +80,7 @@ export const Conversations: React.FC = () => {
   const channelIcon = (ch: string) => {
     switch (ch) {
       case 'email':
-        return <Mail size={13} className="text-blue-400" />;
+        return <Mail size={13} className="text-cyan-400" />;
       case 'chat':
         return <MessageSquare size={13} className="text-emerald-400" />;
       case 'sms':
@@ -87,7 +88,7 @@ export const Conversations: React.FC = () => {
       case 'phone':
         return <Phone size={13} className="text-amber-400" />;
       case 'social':
-        return <Share2 size={13} className="text-cyan-400" />;
+        return <Share2 size={13} className="text-pink-400" />;
       default:
         return <FileText size={13} className="text-slate-400" />;
     }
@@ -109,246 +110,281 @@ export const Conversations: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-4 border-b border-surface-border">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-900"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-cyan"></span>
             </span>
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-slate-500">
-              Omnichannel Ingestion Grid
+            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-brand-cyan">
+              OMNICHANNEL INGESTION GRID
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-sans">
-            <span>Conversations & Tickets</span>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 font-sans">
+            <span>Conversations & Support Triage</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
-            Omnichannel customer inquiries parsed for NLP emotion sentiment, operational priority, and embedded cybersecurity threats.
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            Multi-channel ticket stream triaged with automated sentiment detection, emotion classification, and zero-trust security threat scanning.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-700 bg-white border border-slate-200 shadow-sm px-3 py-1.5 rounded-lg">
-            Total Records: <strong className="text-slate-900">{total}</strong>
-          </span>
-        </div>
+        <button
+          onClick={loadConversations}
+          className="p-2.5 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-slate-100 transition-all self-start sm:self-auto shadow-sm"
+          title="Refresh ticket queue"
+        >
+          <RefreshCw size={15} />
+        </button>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3.5 shadow-card">
-        <SearchBar
-          placeholder="Filter by customer name, ticket ID, keywords, or issue description..."
-          value={search}
-          onChange={(q) => {
-            setSearch(q);
-            setPage(1);
-          }}
-          className="w-full"
-        />
+      {/* Filter and Search Bar */}
+      <div className="p-4 rounded-2xl bg-surface-card border border-surface-border space-y-3 shadow-card">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+          <div className="flex-1 max-w-md">
+            <SearchBar
+              placeholder="Search by customer name, ticket ID, or issue..."
+              value={search}
+              onChange={(val) => {
+                setSearch(val);
+                setPage(1);
+              }}
+            />
+          </div>
 
-        {/* Filter Selects */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <select
-            value={securityRisk}
-            onChange={(e) => {
-              setSecurityRisk(e.target.value);
-              setPage(1);
-            }}
-            className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs cursor-pointer shadow-sm"
-          >
-            <option value="">All security risks</option>
-            <option value="CRITICAL">Critical risk</option>
-            <option value="HIGH">High risk</option>
-            <option value="MEDIUM">Medium risk</option>
-            <option value="LOW">Low risk</option>
-          </select>
-
-          <select
-            value={priority}
-            onChange={(e) => {
-              setPriority(e.target.value);
-              setPage(1);
-            }}
-            className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs cursor-pointer shadow-sm"
-          >
-            <option value="">All priorities</option>
-            <option value="Critical">Critical priority</option>
-            <option value="High">High priority</option>
-            <option value="Medium">Medium priority</option>
-            <option value="Low">Low priority</option>
-          </select>
-
-          <select
-            value={channel}
-            onChange={(e) => {
-              setChannel(e.target.value);
-              setPage(1);
-            }}
-            className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs cursor-pointer shadow-sm"
-          >
-            <option value="">All channels</option>
-            <option value="email">Email</option>
-            <option value="chat">Chat</option>
-            <option value="sms">SMS</option>
-            <option value="phone">Phone transcript</option>
-            <option value="social">Social</option>
-          </select>
-
-          <select
-            value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-              setPage(1);
-            }}
-            className="bg-white border border-slate-200 hover:border-slate-300 text-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-900 text-xs cursor-pointer shadow-sm"
-          >
-            <option value="">All categories</option>
-            <option value="Account Security">Account Security</option>
-            <option value="Billing">Billing</option>
-            <option value="Fraud & Wire">Fraud & Wire</option>
-            <option value="Technical Problems">Technical Problems</option>
-          </select>
-
-          {hasActiveFilters && (
-            <button
-              onClick={resetFilters}
-              className="text-xs text-slate-700 hover:text-slate-900 px-2 py-1 font-medium transition-colors underline underline-offset-2"
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={securityRisk}
+              onChange={(e) => {
+                setSecurityRisk(e.target.value);
+                setPage(1);
+              }}
+              className="bg-surface-elevated border border-surface-border hover:border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-cyan/50 cursor-pointer font-sans"
             >
-              Reset filters
-            </button>
-          )}
+              <option value="">Security Risk (All)</option>
+              <option value="CRITICAL">Critical Risk</option>
+              <option value="HIGH">High Risk</option>
+              <option value="MEDIUM">Medium Risk</option>
+              <option value="LOW">Low Risk</option>
+            </select>
+
+            <select
+              value={channel}
+              onChange={(e) => {
+                setChannel(e.target.value);
+                setPage(1);
+              }}
+              className="bg-surface-elevated border border-surface-border hover:border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-cyan/50 cursor-pointer font-sans"
+            >
+              <option value="">Channel (All)</option>
+              <option value="email">Email</option>
+              <option value="chat">Chat</option>
+              <option value="sms">SMS</option>
+              <option value="phone">Phone</option>
+              <option value="social">Social</option>
+            </select>
+
+            <select
+              value={sentiment}
+              onChange={(e) => {
+                setSentiment(e.target.value);
+                setPage(1);
+              }}
+              className="bg-surface-elevated border border-surface-border hover:border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-brand-cyan/50 cursor-pointer font-sans"
+            >
+              <option value="">Sentiment (All)</option>
+              <option value="Positive">Positive</option>
+              <option value="Neutral">Neutral</option>
+              <option value="Negative">Negative</option>
+            </select>
+
+            {hasActiveFilters && (
+              <button
+                onClick={resetFilters}
+                className="px-3 py-2 rounded-xl text-xs font-mono text-brand-cyan hover:text-cyan-300 transition-colors flex items-center gap-1"
+              >
+                <X size={13} />
+                <span>Reset</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Split Workspace Layout */}
+      {/* Two Column Layout: Conversation List (Left) + Selected Preview (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Conversations Table (8 cols) */}
-        <div className="lg:col-span-8 rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-card">
+        {/* Left Ticket Feed (7 Cols) */}
+        <div className="lg:col-span-7 rounded-2xl border border-surface-border bg-surface-card p-5 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+            <span className="font-mono text-xs font-semibold uppercase text-slate-400">
+              Active Queue ({total} Inquiries)
+            </span>
+            <span className="text-[11px] font-mono text-slate-500">Page {page} of {totalPages || 1}</span>
+          </div>
+
           {isLoading ? (
-            <div className="p-4">
-              <TableSkeleton rows={6} />
-            </div>
+            <TableSkeleton rows={5} />
           ) : conversations.length === 0 ? (
-            <div className="p-8">
-              <EmptyState
-                title="No conversations found"
-                description="Try adjusting your filter options or search terms."
-              />
-            </div>
+            <EmptyState
+              title="No tickets match active filters"
+              description="Try adjusting your search criteria or resetting filters to view inbound inquiries."
+              action={{ label: 'Clear Filters', onClick: resetFilters }}
+            />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-600 font-mono text-[11px] uppercase tracking-wider font-semibold">
-                    <th className="py-3.5 px-4">Customer</th>
-                    <th className="py-3.5 px-4">Channel</th>
-                    <th className="py-3.5 px-4">Issue synopsis</th>
-                    <th className="py-3.5 px-4">Security risk</th>
-                    <th className="py-3.5 px-4">Priority</th>
-                    <th className="py-3.5 px-4 text-right">Updated</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {conversations.map((item) => {
-                    const isSelected = selectedConv?.id === item.id;
-                    return (
-                      <tr
-                        key={item.id}
-                        onClick={() => setSelectedConv(item)}
-                        className={`cursor-pointer transition-colors ${
-                          isSelected
-                            ? 'bg-slate-100 border-l-2 border-slate-900'
-                            : 'hover:bg-slate-50/80'
-                        }`}
-                      >
-                        <td className="py-3 px-4">
-                          <div className="font-medium text-slate-900">{item.customer_name}</div>
-                          <div className="text-[11px] font-mono text-slate-400">{item.id}</div>
-                        </td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-1.5 text-slate-700 capitalize">
-                            {channelIcon(item.channel)}
-                            <span>{item.channel}</span>
+            <div className="divide-y divide-surface-border">
+              {conversations.map((conv) => {
+                const isSelected = selectedConv?.id === conv.id;
+                return (
+                  <div
+                    key={conv.id}
+                    onClick={() => setSelectedConv(conv)}
+                    className={`py-3.5 px-3 rounded-xl cursor-pointer transition-all ${
+                      isSelected
+                        ? 'bg-surface-elevated border-l-2 border-l-brand-cyan shadow-sm'
+                        : 'hover:bg-surface-elevated/60'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1.5 min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
+                            {channelIcon(conv.channel)}
+                            <span className="font-bold text-xs text-slate-200">
+                              {conv.customer_name}
+                            </span>
                           </div>
-                        </td>
-                        <td className="py-3 px-4 max-w-xs">
-                          <div className="truncate text-slate-800" title={item.issue}>
-                            {item.issue}
-                          </div>
-                          <div className="text-[11px] text-slate-500">{item.category}</div>
-                        </td>
-                        <td className="py-3 px-4">
-                          <RiskBadge level={item.security_risk} size="sm" />
-                        </td>
-                        <td className="py-3 px-4">
-                          <PriorityBadge priority={item.priority} />
-                        </td>
-                        <td className="py-3 px-4 text-right text-slate-500 font-mono text-[11px]">
-                          {item.updated_at}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          <span className="text-[10px] font-mono text-slate-500">• {conv.id}</span>
+                          <span className="text-[10px] font-mono text-slate-500">• {conv.updated_at}</span>
+                        </div>
+
+                        <p className="text-xs text-slate-300 font-medium truncate">{conv.issue}</p>
+
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                          <PriorityBadge priority={conv.priority} />
+                          <SentimentBadge sentiment={conv.sentiment} />
+                          <StatusBadge status={conv.status} />
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 pt-0.5">
+                        <RiskBadge level={conv.security_risk} size="sm" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="pt-3 border-t border-surface-border flex items-center justify-between text-xs text-slate-400">
+              <span className="font-mono text-[11px]">
+                Showing {conversations.length} of {total}
+              </span>
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="px-3 py-1.5 rounded-lg border border-surface-border bg-surface-elevated text-slate-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-surface-border bg-surface-elevated text-slate-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Quick Triage Inspector Panel (4 cols) */}
-        <div className="lg:col-span-4 rounded-2xl border border-slate-200 bg-white p-5 space-y-4 sticky top-20 shadow-card">
+        {/* Right Preview Drawer (5 Cols) */}
+        <div className="lg:col-span-5 rounded-2xl border border-surface-border bg-surface-card p-5 sm:p-6 space-y-5 shadow-card sticky top-24">
           {selectedConv ? (
-            <div className="space-y-4">
-              <div className="flex items-start justify-between gap-2 pb-3 border-b border-slate-100">
+            <>
+              <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-surface-border">
                 <div>
-                  <span className="text-[11px] font-mono text-slate-500 font-bold">{selectedConv.id}</span>
-                  <h2 className="text-sm font-bold text-slate-900 mt-0.5 font-sans">{selectedConv.customer_name}</h2>
-                  <p className="text-xs text-slate-500 font-mono">{selectedConv.customer_email || selectedConv.channel}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs text-brand-cyan font-bold bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
+                      {selectedConv.id}
+                    </span>
+                    <RiskBadge level={selectedConv.security_risk} size="sm" />
+                  </div>
+                  <h2 className="text-base font-bold text-white mt-1.5 font-sans">
+                    {selectedConv.customer_name}
+                  </h2>
+                  <span className="text-xs font-mono text-slate-400">{selectedConv.customer_email}</span>
                 </div>
-                <RiskBadge level={selectedConv.security_risk} size="sm" />
+
+                <button
+                  onClick={() => navigate(`/conversations/${selectedConv.id}`)}
+                  className="px-3 py-1.5 rounded-xl bg-brand-cyan hover:bg-cyan-400 text-slate-950 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-glow-cyan/30"
+                >
+                  <span>Open Ticket</span>
+                  <ExternalLink size={12} />
+                </button>
               </div>
 
-              <div className="space-y-2 text-xs">
-                <span className="text-slate-500 font-medium font-mono text-[11px] block">ISSUE SYNOPSIS:</span>
-                <p className="text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
-                  {selectedConv.issue}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                  <span className="text-slate-500 block text-[10px] font-mono uppercase mb-1">Workflow Status</span>
-                  <StatusBadge status={selectedConv.status} />
+              {/* Synopsis & Key Attributes */}
+              <div className="space-y-3 text-xs">
+                <div className="p-3.5 rounded-xl bg-surface-elevated/80 border border-surface-border space-y-1.5">
+                  <span className="text-[10px] font-mono uppercase text-slate-500 font-semibold block">
+                    Issue Synopsis
+                  </span>
+                  <p className="text-slate-200 leading-relaxed">{selectedConv.issue}</p>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
-                  <span className="text-slate-500 block text-[10px] font-mono uppercase mb-1">Sentiment</span>
-                  <SentimentBadge sentiment={selectedConv.sentiment} />
-                </div>
-              </div>
 
-              {selectedConv.messages && selectedConv.messages.length > 0 && (
-                <div className="space-y-1.5 text-xs">
-                  <span className="text-slate-500 font-medium font-mono text-[11px] block">LATEST INBOUND PAYLOAD:</span>
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-xs leading-relaxed max-h-36 overflow-y-auto font-mono text-[11px]">
-                    {selectedConv.messages[0].content}
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="p-3 rounded-xl bg-surface-elevated/60 border border-surface-border">
+                    <span className="text-[10px] font-mono text-slate-500 block mb-1">Category</span>
+                    <span className="font-semibold text-slate-200">{selectedConv.category}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-elevated/60 border border-surface-border">
+                    <span className="text-[10px] font-mono text-slate-500 block mb-1">Vector Channel</span>
+                    <span className="font-mono uppercase text-slate-200">{selectedConv.channel}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-elevated/60 border border-surface-border">
+                    <span className="text-[10px] font-mono text-slate-500 block mb-1">Urgency Priority</span>
+                    <PriorityBadge priority={selectedConv.priority} />
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-elevated/60 border border-surface-border">
+                    <span className="text-[10px] font-mono text-slate-500 block mb-1">NLP Sentiment</span>
+                    <SentimentBadge sentiment={selectedConv.sentiment} />
                   </div>
                 </div>
-              )}
+
+                {/* Threat Banner in preview if flagged */}
+                {selectedConv.security_risk === 'CRITICAL' && (
+                  <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs space-y-1 shadow-glow-rose/20">
+                    <div className="flex items-center gap-1.5 text-rose-300 font-bold font-mono">
+                      <ShieldAlert size={14} />
+                      <span>FLAGGED BY ZERO-TRUST ENGINE</span>
+                    </div>
+                    <p className="text-slate-300 text-xs leading-relaxed">
+                      Suspicious credential harvesting and phishing patterns detected in payload. Immediate SOC review required.
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <div className="pt-2">
                 <button
                   onClick={() => navigate(`/conversations/${selectedConv.id}`)}
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold font-mono tracking-wider uppercase transition-all shadow-sm flex items-center justify-center gap-2 group"
+                  className="w-full py-2.5 rounded-xl bg-surface-elevated hover:bg-slate-800 border border-surface-border text-slate-200 hover:text-white text-xs font-mono font-semibold flex items-center justify-center gap-2 transition-all shadow-sm"
                 >
-                  <span>Open Full Investigation</span>
-                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                  <MessageSquare size={14} className="text-brand-cyan" />
+                  <span>Inspect Full Communication Timeline</span>
+                  <ArrowRight size={13} />
                 </button>
               </div>
-            </div>
+            </>
           ) : (
-            <div className="py-16 text-center text-xs font-mono text-slate-400">
-              Select a ticket row to inspect automated intelligence telemetry.
+            <div className="text-center py-12 text-slate-500 text-xs font-mono">
+              Select a conversation to preview telemetry and AI insights
             </div>
           )}
         </div>

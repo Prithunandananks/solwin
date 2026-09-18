@@ -14,6 +14,7 @@ import {
   ArrowRight,
   ExternalLink,
   MessageSquare,
+  Network,
 } from 'lucide-react';
 
 export const CampaignDetails: React.FC = () => {
@@ -52,25 +53,27 @@ export const CampaignDetails: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-surface-border">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/campaigns')}
-            className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors shadow-sm"
+            className="p-2 rounded-xl border border-surface-border bg-surface-card text-slate-400 hover:text-white hover:bg-surface-elevated transition-colors shadow-sm"
           >
             <ChevronLeft size={18} />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-sm font-bold text-brand-blue">{campaign?.id}</span>
+              <span className="font-mono text-xs font-bold text-brand-cyan bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
+                {campaign?.id}
+              </span>
               {campaign && <RiskBadge level={campaign.risk_level} />}
-              <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-surface-elevated text-slate-300 border border-surface-border">
                 {campaign?.status}
               </span>
             </div>
-            <h1 className="text-base font-semibold text-slate-900 mt-0.5">{campaign?.name}</h1>
+            <h1 className="text-lg font-bold text-white mt-1 font-sans">{campaign?.name}</h1>
           </div>
         </div>
 
@@ -82,31 +85,31 @@ export const CampaignDetails: React.FC = () => {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-card text-center">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="p-5 rounded-2xl bg-surface-card border border-surface-border shadow-card text-center">
           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">Affected Tickets</span>
-          <span className="font-mono text-2xl font-bold text-slate-900">
+          <span className="font-mono text-3xl font-bold text-white">
             {campaign?.affected_conversations_count}
           </span>
         </div>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-card text-center">
+        <div className="p-5 rounded-2xl bg-surface-card border border-surface-border shadow-card text-center">
           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">Shared Domains</span>
-          <span className="font-mono text-2xl font-bold text-purple-600">
+          <span className="font-mono text-3xl font-bold text-brand-cyan">
             {campaign?.suspicious_domains_count}
           </span>
         </div>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-card text-center">
+        <div className="p-5 rounded-2xl bg-surface-card border border-surface-border shadow-card text-center">
           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">Sender Patterns</span>
-          <span className="font-mono text-2xl font-bold text-amber-600">
+          <span className="font-mono text-3xl font-bold text-amber-400">
             {campaign?.sender_patterns_count}
           </span>
         </div>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-card text-center">
+        <div className="p-5 rounded-2xl bg-surface-card border border-surface-border shadow-card text-center">
           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">Observed Tactics</span>
-          <span className="font-mono text-2xl font-bold text-rose-600">
+          <span className="font-mono text-3xl font-bold text-rose-400">
             {campaign?.techniques_count}
           </span>
         </div>
@@ -115,22 +118,22 @@ export const CampaignDetails: React.FC = () => {
       {/* Indicators Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Common Domains & URLs */}
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-card space-y-4">
-          <div className="flex items-center gap-2 text-brand-blue">
+        <div className="p-6 rounded-2xl bg-surface-card border border-surface-border shadow-card space-y-4">
+          <div className="flex items-center gap-2 text-brand-cyan">
             <Globe size={16} />
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
               Shared Adversary Infrastructure
             </h3>
           </div>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs">
             <div>
-              <span className="text-[11px] font-mono text-slate-500 block mb-1.5">Common Domains</span>
+              <span className="text-[11px] font-mono text-slate-500 block mb-2">Common Domains:</span>
               <div className="flex flex-wrap gap-2">
                 {campaign?.common_domains.map((dom, i) => (
                   <span
                     key={i}
-                    className="px-2.5 py-1 rounded bg-rose-50 text-rose-700 border border-rose-200 font-mono text-xs"
+                    className="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/25 font-mono text-xs font-semibold"
                   >
                     {dom}
                   </span>
@@ -139,12 +142,12 @@ export const CampaignDetails: React.FC = () => {
             </div>
 
             <div>
-              <span className="text-[11px] font-mono text-slate-500 block mb-1.5">Full Attack URLs</span>
-              <div className="space-y-1.5">
+              <span className="text-[11px] font-mono text-slate-500 block mb-2">Full Attack URLs:</span>
+              <div className="space-y-2">
                 {campaign?.common_urls.map((url, i) => (
                   <div
                     key={i}
-                    className="p-2 rounded bg-slate-50 border border-slate-200 font-mono text-xs text-brand-blue truncate"
+                    className="p-2.5 rounded-xl bg-surface-elevated border border-surface-border font-mono text-xs text-brand-cyan truncate"
                   >
                     {url}
                   </div>
@@ -155,22 +158,22 @@ export const CampaignDetails: React.FC = () => {
         </div>
 
         {/* Common Senders & Techniques */}
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-card space-y-4">
-          <div className="flex items-center gap-2 text-amber-600">
+        <div className="p-6 rounded-2xl bg-surface-card border border-surface-border shadow-card space-y-4">
+          <div className="flex items-center gap-2 text-amber-400">
             <Mail size={16} />
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
-              Sender Signatures & TTPs
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
+              Sender Signatures & MITRE Tactics
             </h3>
           </div>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs">
             <div>
-              <span className="text-[11px] font-mono text-slate-500 block mb-1.5">Spoofed Senders</span>
-              <div className="space-y-1.5">
+              <span className="text-[11px] font-mono text-slate-500 block mb-2">Spoofed Ingress Senders:</span>
+              <div className="space-y-2">
                 {campaign?.common_senders.map((snd, i) => (
                   <div
                     key={i}
-                    className="p-2 rounded bg-slate-50 border border-slate-200 font-mono text-xs text-amber-800 truncate"
+                    className="p-2.5 rounded-xl bg-surface-elevated border border-surface-border font-mono text-xs text-amber-300 truncate"
                   >
                     {snd}
                   </div>
@@ -179,12 +182,12 @@ export const CampaignDetails: React.FC = () => {
             </div>
 
             <div>
-              <span className="text-[11px] font-mono text-slate-500 block mb-1.5">Adversary Tactics (MITRE ATT&CK)</span>
-              <div className="flex flex-wrap gap-1.5">
+              <span className="text-[11px] font-mono text-slate-500 block mb-2">Adversary Tactics (MITRE ATT&CK):</span>
+              <div className="flex flex-wrap gap-2">
                 {campaign?.common_techniques.map((tech, i) => (
                   <span
                     key={i}
-                    className="px-2.5 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 text-xs font-medium"
+                    className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/25 text-xs font-medium"
                   >
                     • {tech}
                   </span>
@@ -197,24 +200,24 @@ export const CampaignDetails: React.FC = () => {
 
       {/* Campaign Detection Timeline */}
       {campaign?.timeline_events && campaign.timeline_events.length > 0 && (
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-card space-y-3">
-          <div className="flex items-center gap-2 text-slate-700">
-            <Clock size={16} />
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+        <div className="p-6 rounded-2xl bg-surface-card border border-surface-border shadow-card space-y-4">
+          <div className="flex items-center gap-2 text-slate-300">
+            <Clock size={16} className="text-brand-cyan" />
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
               Correlation Timeline Progression
             </h3>
           </div>
 
-          <div className="space-y-2.5 pt-2">
+          <div className="space-y-2.5 pt-1">
             {campaign.timeline_events.map((evt, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs"
+                className="flex items-start gap-3 p-3.5 rounded-xl bg-surface-elevated/70 border border-surface-border text-xs"
               >
-                <span className="font-mono text-slate-500 shrink-0">{evt.date}</span>
-                <span className="text-slate-800 flex-1">{evt.event}</span>
+                <span className="font-mono text-brand-cyan shrink-0 font-semibold">{evt.date}</span>
+                <span className="text-slate-300 flex-1">{evt.event}</span>
                 {evt.severity && (
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200">
+                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">
                     {evt.severity}
                   </span>
                 )}
@@ -226,20 +229,20 @@ export const CampaignDetails: React.FC = () => {
 
       {/* Related Conversations Links */}
       {campaign?.related_conversation_ids && campaign.related_conversation_ids.length > 0 && (
-        <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-card space-y-3">
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+        <div className="p-6 rounded-2xl bg-surface-card border border-surface-border shadow-card space-y-4">
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
             Linked Incident Tickets ({campaign.related_conversation_ids.length})
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             {campaign.related_conversation_ids.map((convId) => (
               <button
                 key={convId}
                 onClick={() => navigate(`/conversations/${convId}`)}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700 hover:text-slate-900 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-elevated hover:bg-slate-800 border border-surface-border text-xs font-mono text-slate-300 hover:text-white transition-colors shadow-sm"
               >
-                <MessageSquare size={13} className="text-brand-blue" />
+                <MessageSquare size={13} className="text-brand-cyan" />
                 <span>Ticket {convId}</span>
-                <ExternalLink size={11} className="text-slate-400" />
+                <ExternalLink size={11} className="text-slate-500" />
               </button>
             ))}
           </div>

@@ -23,35 +23,35 @@ export const KpiCard: React.FC<KpiCardProps> = ({
 }) => {
   const variantStyles = {
     default: {
-      border: 'border-white/[0.08] hover:border-brand-blue/30',
-      iconBg: 'text-brand-cyan bg-brand-blue/10 border-brand-blue/20',
-      accentGlow: 'from-brand-blue/5 to-transparent',
+      border: 'border-surface-border hover:border-brand-cyan/40',
+      iconBg: 'text-brand-cyan bg-brand-cyan/10 border-brand-cyan/20',
+      accentGlow: 'from-brand-cyan/20 via-transparent to-transparent',
     },
     danger: {
-      border: 'border-rose-500/25 bg-rose-500/[0.02] hover:border-rose-500/40',
-      iconBg: 'text-rose-400 bg-rose-500/10 border-rose-500/25',
-      accentGlow: 'from-rose-500/10 to-transparent',
+      border: 'border-rose-500/25 bg-rose-500/[0.02] hover:border-rose-500/50 shadow-glow-rose/20',
+      iconBg: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
+      accentGlow: 'from-rose-500/30 via-transparent to-transparent',
     },
     warning: {
-      border: 'border-amber-500/25 bg-amber-500/[0.02] hover:border-amber-500/40',
-      iconBg: 'text-amber-400 bg-amber-500/10 border-amber-500/25',
-      accentGlow: 'from-amber-500/10 to-transparent',
+      border: 'border-amber-500/25 bg-amber-500/[0.02] hover:border-amber-500/50',
+      iconBg: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+      accentGlow: 'from-amber-500/25 via-transparent to-transparent',
     },
     info: {
-      border: 'border-indigo-500/25 hover:border-indigo-500/40',
-      iconBg: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/25',
-      accentGlow: 'from-indigo-500/10 to-transparent',
+      border: 'border-indigo-500/25 hover:border-indigo-500/50 shadow-glow-indigo/20',
+      iconBg: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30',
+      accentGlow: 'from-indigo-500/25 via-transparent to-transparent',
     },
     success: {
-      border: 'border-emerald-500/25 hover:border-emerald-500/40',
-      iconBg: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
-      accentGlow: 'from-emerald-500/10 to-transparent',
+      border: 'border-emerald-500/25 hover:border-emerald-500/50 shadow-glow-emerald/20',
+      iconBg: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+      accentGlow: 'from-emerald-500/25 via-transparent to-transparent',
     },
   }[variant];
 
   return (
     <div
-      className={`relative overflow-hidden bg-surface-card/85 backdrop-blur-md border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 group hover:shadow-lg ${variantStyles.border}`}
+      className={`relative overflow-hidden bg-surface-card/90 backdrop-blur-md border rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 group hover:shadow-card hover:-translate-y-0.5 ${variantStyles.border}`}
     >
       {/* Top subtle ambient gradient wash */}
       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${variantStyles.accentGlow}`} />
@@ -60,7 +60,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
         <span className="text-xs font-mono font-medium uppercase tracking-wider text-slate-400 group-hover:text-slate-200 transition-colors">
           {label}
         </span>
-        <div className={`p-2 rounded-xl border ${variantStyles.iconBg} transition-transform group-hover:scale-105`}>
+        <div className={`p-2 rounded-xl border ${variantStyles.iconBg} transition-transform group-hover:scale-110`}>
           <Icon size={17} />
         </div>
       </div>
@@ -90,4 +90,3 @@ export const KpiCard: React.FC<KpiCardProps> = ({
     </div>
   );
 };
-

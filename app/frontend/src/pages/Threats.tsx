@@ -4,9 +4,8 @@ import { getThreats } from '../services/securityApi';
 import { ThreatRecord, ThreatFilterParams } from '../types/security';
 import { DataTable, Column } from '../components/common/DataTable';
 import { RiskBadge } from '../components/common/RiskBadge';
-import { FilterBar, FilterField } from '../components/common/FilterBar';
 import { SearchBar } from '../components/common/SearchBar';
-import { ShieldAlert, ShieldCheck, ArrowRight, AlertOctagon, Terminal } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, ArrowRight, AlertOctagon, Terminal, RefreshCw, Lock } from 'lucide-react';
 
 export const Threats: React.FC = () => {
   const navigate = useNavigate();
@@ -84,7 +83,7 @@ export const Threats: React.FC = () => {
       header: 'Target / Customer',
       render: (item) => (
         <div>
-          <span className="font-medium text-slate-300">{item.customer_name}</span>
+          <span className="font-medium text-slate-200">{item.customer_name}</span>
           {item.conversation_id && (
             <span className="text-[10px] font-mono text-slate-500 block">{item.conversation_id}</span>
           )}
@@ -95,185 +94,158 @@ export const Threats: React.FC = () => {
       key: 'channel',
       header: 'Vector Channel',
       render: (item) => (
-        <span className="text-xs font-mono uppercase text-slate-500">{item.channel}</span>
+        <span className="text-xs font-mono uppercase text-slate-400">{item.channel}</span>
       ),
     },
     {
       key: 'risk_level',
-      header: 'Risk Level',
+      header: 'Assessed Risk',
       render: (item) => <RiskBadge level={item.risk_level} size="sm" />,
-    },
-    {
-      key: 'threat_detected',
-      header: 'Detection Flag',
-      render: (item) =>
-        item.threat_detected ? (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-rose-700">
-            <ShieldAlert size={12} /> POSITIVE
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-700 font-semibold">
-            <ShieldCheck size={12} /> NEGATIVE
-          </span>
-        ),
     },
     {
       key: 'social_engineering',
       header: 'Social Eng.',
       render: (item) => (
         <span
-          className={`text-xs font-medium ${
-            item.social_engineering ? 'text-amber-700' : 'text-slate-400'
+          className={`text-xs font-mono ${
+            item.social_engineering ? 'text-amber-300 font-semibold' : 'text-slate-500'
           }`}
         >
-          {item.social_engineering ? 'Yes (Urgency / Impersonation)' : 'No'}
+          {item.social_engineering ? 'Confirmed' : 'None'}
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      header: 'IOC Status',
+      render: (item) => (
+        <span
+          className={`text-[11px] font-mono px-2 py-0.5 rounded ${
+            item.status === 'Active'
+              ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold'
+              : item.status === 'Investigating'
+              ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+              : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+          }`}
+        >
+          {item.status}
         </span>
       ),
     },
     {
       key: 'detected_at',
-      header: 'Detection Time',
+      header: 'Timestamp',
+      render: (item) => <span className="text-[11px] font-mono text-slate-500">{item.detected_at}</span>,
+    },
+    {
+      key: 'actions',
+      header: 'Forensics',
       render: (item) => (
-        <span className="font-mono text-[11px] text-slate-500">{item.detected_at}</span>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/threats/${item.id}`);
+          }}
+          className="p-1.5 rounded-lg bg-surface-elevated hover:bg-slate-800 text-slate-300 hover:text-white border border-surface-border transition-colors"
+          title="Inspect threat"
+        >
+          <ArrowRight size={13} />
+        </button>
       ),
     },
-    {
-      key: 'status',
-      header: 'Incident Status',
-      render: (item) => {
-        let col = 'bg-slate-100 text-slate-700 border-slate-200';
-        let dot = 'bg-slate-500';
-        if (item.status === 'Active') {
-          col = 'bg-rose-50 text-rose-800 border-rose-200 shadow-sm';
-          dot = 'bg-rose-600 animate-ping';
-        } else if (item.status === 'Investigating') {
-          col = 'bg-amber-50 text-amber-800 border-amber-200';
-          dot = 'bg-amber-600';
-        } else if (item.status === 'Mitigated') {
-          col = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-          dot = 'bg-emerald-600';
-        }
-        return (
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-mono border font-medium ${col}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
-            <span className="uppercase tracking-wider">{item.status}</span>
-          </span>
-        );
-      },
-    },
   ];
-
-  const filterFields: FilterField[] = [
-    {
-      id: 'risk',
-      label: 'Risk Level',
-      value: riskLevel,
-      options: [
-        { label: 'Critical', value: 'CRITICAL' },
-        { label: 'High', value: 'HIGH' },
-        { label: 'Medium', value: 'MEDIUM' },
-        { label: 'Low', value: 'LOW' },
-      ],
-    },
-    {
-      id: 'threat_type',
-      label: 'Threat Type',
-      value: threatType,
-      options: [
-        { label: 'Spear Phishing', value: 'Spear Phishing' },
-        { label: 'Credential Harvesting', value: 'Credential Harvesting' },
-        { label: 'Wire Impersonation', value: 'Wire Impersonation' },
-        { label: 'Account Takeover', value: 'Account Takeover' },
-        { label: 'Suspicious Link', value: 'Suspicious Link' },
-      ],
-    },
-    {
-      id: 'status',
-      label: 'Status',
-      value: status,
-      options: [
-        { label: 'Active', value: 'Active' },
-        { label: 'Investigating', value: 'Investigating' },
-        { label: 'Mitigated', value: 'Mitigated' },
-      ],
-    },
-    {
-      id: 'channel',
-      label: 'Channel',
-      value: channel,
-      options: [
-        { label: 'Email', value: 'email' },
-        { label: 'Chat', value: 'chat' },
-        { label: 'SMS', value: 'sms' },
-        { label: 'Social', value: 'social' },
-      ],
-    },
-  ];
-
-  const handleFilterChange = (id: string, val: string) => {
-    setPage(1);
-    if (id === 'risk') setRiskLevel(val);
-    if (id === 'threat_type') setThreatType(val);
-    if (id === 'status') setStatus(val);
-    if (id === 'channel') setChannel(val);
-  };
-
-  const handleResetFilters = () => {
-    setRiskLevel('');
-    setThreatType('');
-    setStatus('');
-    setChannel('');
-    setSearch('');
-    setPage(1);
-  };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-4 border-b border-slate-200">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-4 border-b border-surface-border">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
             </span>
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-rose-700">
-              Zero-Trust Security Radar
+            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-rose-400">
+              ZERO-TRUST EDR TELEMETRY
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-sans">
-            <span>Threat Intelligence & Quarantine Directory</span>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 font-sans">
+            <ShieldAlert size={22} className="text-rose-400" />
+            <span>Cyber Threat Directory</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Real-time multi-vector detection logs covering phishing, credential harvesting, lookalike domains, and prompt injections.
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            Forensic index of active credential phishing lures, brand impersonation attacks, lookalike domains, and rogue ingress channels.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-700 bg-white border border-slate-200 shadow-sm px-3 py-1.5 rounded-lg">
-            Total Threats: <strong className="text-slate-900">{total}</strong>
-          </span>
-        </div>
+        <button
+          onClick={loadThreats}
+          className="p-2.5 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-slate-100 transition-all self-start sm:self-auto shadow-sm"
+          title="Refresh threat directory"
+        >
+          <RefreshCw size={15} />
+        </button>
       </div>
 
-      {/* Toolbar */}
-      {/* Toolbar */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-card">
-        <SearchBar
-          placeholder="Filter by Threat ID (e.g. THR-2026-*), threat type, IOC, or target customer..."
-          value={search}
-          onChange={(q) => {
-            setSearch(q);
-            setPage(1);
-          }}
-          className="w-full"
-        />
+      {/* Filter and Search Bar */}
+      <div className="p-4 rounded-2xl bg-surface-card border border-surface-border space-y-3 shadow-card">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+          <div className="flex-1 max-w-md">
+            <SearchBar
+              placeholder="Search by threat ID, vector name, or target..."
+              value={search}
+              onChange={(val) => {
+                setSearch(val);
+                setPage(1);
+              }}
+            />
+          </div>
 
-        <FilterBar
-          filters={filterFields}
-          onChange={handleFilterChange}
-          onReset={handleResetFilters}
-        />
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={riskLevel}
+              onChange={(e) => {
+                setRiskLevel(e.target.value);
+                setPage(1);
+              }}
+              className="bg-surface-elevated border border-surface-border hover:border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-rose-500/50 cursor-pointer font-sans"
+            >
+              <option value="">Risk Level (All)</option>
+              <option value="CRITICAL">Critical Risk</option>
+              <option value="HIGH">High Risk</option>
+              <option value="MEDIUM">Medium Risk</option>
+              <option value="LOW">Low Risk</option>
+            </select>
+
+            <select
+              value={status}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setPage(1);
+              }}
+              className="bg-surface-elevated border border-surface-border hover:border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-rose-500/50 cursor-pointer font-sans"
+            >
+              <option value="">Status (All)</option>
+              <option value="Active">Active</option>
+              <option value="Investigating">Investigating</option>
+              <option value="Mitigated">Mitigated</option>
+            </select>
+
+            <select
+              value={channel}
+              onChange={(e) => {
+                setChannel(e.target.value);
+                setPage(1);
+              }}
+              className="bg-surface-elevated border border-surface-border hover:border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-rose-500/50 cursor-pointer font-sans"
+            >
+              <option value="">Vector (All)</option>
+              <option value="email">Email</option>
+              <option value="chat">Chat</option>
+              <option value="sms">SMS</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Threats Table */}
@@ -281,11 +253,11 @@ export const Threats: React.FC = () => {
         columns={columns}
         data={threats}
         isLoading={isLoading}
-        emptyTitle="No threats detected"
-        emptyDescription="No security threats match the selected filter criteria."
+        emptyTitle="No active threats in current scope"
+        emptyDescription="All scanned support channels and attachments are clean in this sector."
         currentPage={page}
         totalPages={totalPages}
-        onPageChange={setPage}
+        onPageChange={(p) => setPage(p)}
         onRowClick={(item) => navigate(`/threats/${item.id}`)}
       />
     </div>

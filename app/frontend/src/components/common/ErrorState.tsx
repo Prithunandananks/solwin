@@ -15,24 +15,24 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   onRetry,
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-white border border-rose-200 rounded-xl text-center my-6 shadow-card">
-      <div className="w-12 h-12 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 mb-4">
-        <AlertCircle size={24} />
+    <div className="flex flex-col items-center justify-center p-8 bg-surface-card border border-rose-500/20 bg-rose-500/[0.03] rounded-2xl text-center my-6 shadow-card">
+      <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-4 shadow-sm">
+        <AlertCircle size={22} />
       </div>
       {statusCode && (
-        <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 mb-2">
+        <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 mb-2">
           HTTP {statusCode}
         </span>
       )}
-      <h3 className="text-lg font-semibold text-slate-900 mb-1">{title}</h3>
-      <p className="text-sm text-slate-500 max-w-md mb-6">{message}</p>
+      <h3 className="text-base font-semibold text-slate-100 mb-1 font-sans">{title}</h3>
+      <p className="text-xs text-slate-400 max-w-md mb-6 leading-relaxed">{message}</p>
       {onRetry && (
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-mono uppercase tracking-wider font-semibold transition-all shadow-sm"
         >
-          <RefreshCw size={14} />
-          Retry Request
+          <RefreshCw size={13} />
+          Retry Telemetry
         </button>
       )}
     </div>
