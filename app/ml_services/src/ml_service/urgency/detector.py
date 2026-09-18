@@ -18,16 +18,20 @@ CRITICAL_INDICATORS = [
 ]
 
 HIGH_INDICATORS = [
-    (r"\bdeadline\b|\burgent\b|\basap\b|\bimmediately\b", "time_critical_deadline"),
-    (r"\baccount locked\b|\bcannot login\b|\blockout\b", "access_blockage"),
+    (r"\bdeadline\b|\burgent(ly)?\b|\basap\b|\bimmediately\b|need.*resolved\s+urgently", "time_critical_deadline"),
+    (r"\baccount locked\b|\bcannot login\b|\blockout\b|\bunable to login\b|\botp\b", "access_blockage"),
     (r"\boverdue\b|\bdelayed\s+(for\s+)?(\d+\s+)?days\b", "prolonged_service_delay"),
-    (r"\bdid not receive.*refund\b|\bwhere is my refund\b", "pending_monetary_refund"),
-    (r"\bdouble charg(ed|e)\b|\bovercharg(ed|e)\b", "disputed_monetary_charge"),
+    (r"\bdid not receive.*refund\b|\bwhere is my refund\b|\bmissing refund\b", "pending_monetary_refund"),
+    (r"\b(money|amount|[₹$€£]\d+).*(deducted|debited).*(failed|incorrect|wrong|not\s+completed|error)\b", "monetary_deduction_error"),
+    (r"\b(deducted|debited)\s+incorrectly\b", "monetary_deduction_error"),
+    (r"\bdouble charg(ed|e)\b|\bovercharg(ed|e)\b|\bcharged twice\b", "disputed_monetary_charge"),
     (r"\bescalat(e|ed|ing)\b", "customer_escalation_request"),
 ]
 
+
 MEDIUM_INDICATORS = [
     (r"\bdelayed\b|\blate\b", "service_delay"),
+    (r"\bpending\b", "pending_transaction_delay"),
     (r"\btracking\b|\bwhere is my (order|package|parcel)\b", "order_status_query"),
     (r"\bwrong (item|product|order)\b", "incorrect_item_received"),
     (r"\bdamaged\b|\bbroken\b|\bdefective\b", "product_defect"),
@@ -36,6 +40,7 @@ MEDIUM_INDICATORS = [
         "return_exchange_request",
     ),
 ]
+
 
 
 class UrgencyDetector:

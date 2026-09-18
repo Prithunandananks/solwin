@@ -59,11 +59,19 @@ SUSPICIOUS_PATH_KEYWORDS = [
 class URLAnalyzer:
     """Extracts and analyzes URLs with deterministic parsing and threat scoring."""
 
-    def __init__(self, provider_name: str = "internal-heuristic-engine") -> None:
+    def __init__(
+        self,
+        provider_name: str = "internal-heuristic-engine",
+        shortener_score_penalty: float = 0.40,
+        shortener_min_risk: SecurityRiskLevel = SecurityRiskLevel.MEDIUM,
+    ) -> None:
         self.provider_name = provider_name
+        self.shortener_score_penalty = shortener_score_penalty
+        self.shortener_min_risk = shortener_min_risk
         self.suspicious_path_patterns = [
             re.compile(p, re.IGNORECASE) for p in SUSPICIOUS_PATH_KEYWORDS
         ]
+
 
     def extract_urls(self, text: str | None) -> list[str]:
         if not text:
@@ -111,9 +119,10 @@ class URLAnalyzer:
             risk_score += 0.40
 
         # Check URL shortener
-        if domain in KNOWN_SHORTENERS:
+        is_shortener = domain in KNOWN_SHORTENERS
+        if is_shortener:
             signals.append("url_shortener")
-            risk_score += 0.25
+            risk_score += self.shortener_score_penalty
 
         # Check suspicious TLD
         tld = domain.split(".")[-1] if "." in domain else ""
@@ -158,6 +167,11 @@ class URLAnalyzer:
             risk_level = SecurityRiskLevel.LOW
         else:
             risk_level = SecurityRiskLevel.SAFE
+
+        # Enforce minimum risk level for concealed shorteners if applicable
+        if is_shortener and risk_level == SecurityRiskLevel.LOW:
+            risk_level = self.shortener_min_risk
+
 
         return URLAnalysis(
             url=raw_url,

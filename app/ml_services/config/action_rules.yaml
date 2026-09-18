@@ -12,7 +12,17 @@ rules:
     secondary_actions: ["RESET_ACCOUNT_ACCESS", "VERIFY_CUSTOMER_IDENTITY"]
     rationale: "High or critical security indicators require immediate escalation to the security operations team."
 
-  # 2. Account compromised / Takeover
+  # 2. Critical Security or Account Takeover Escalation (regardless of external risk score)
+  - id: "RULE_CRITICAL_SECURITY_ESCALATION"
+    priority: 15
+    conditions:
+      urgency: ["CRITICAL"]
+      category: ["SECURITY_CONCERN", "ACCOUNT_LOGIN_PROBLEM", "PAYMENT_TRANSACTION_ISSUE", "OTHER"]
+    primary_action: "ESCALATE_TO_SECURITY_TEAM"
+    secondary_actions: ["VERIFY_CUSTOMER_IDENTITY", "RESET_ACCOUNT_ACCESS"]
+    rationale: "Active security breach, financial theft, or critical account takeover demands immediate security team escalation."
+
+  # 3. Account compromised / Takeover
   - id: "RULE_ACCOUNT_TAKEOVER"
     priority: 20
     conditions:
@@ -22,7 +32,7 @@ rules:
     secondary_actions: ["VERIFY_CUSTOMER_IDENTITY", "ESCALATE_TO_SECURITY_TEAM"]
     rationale: "Critical account login or security compromise requires immediate credential reset and identity verification."
 
-  # 3. Critical Payment / Fraudulent transaction
+  # 4. Critical Payment / Fraudulent transaction
   - id: "RULE_PAYMENT_FRAUD_CRITICAL"
     priority: 30
     conditions:
@@ -31,6 +41,7 @@ rules:
     primary_action: "ESCALATE_TO_PAYMENT_TEAM"
     secondary_actions: ["INITIATE_REFUND_REVIEW", "VERIFY_CUSTOMER_IDENTITY"]
     rationale: "Unauthorized transactions, double-charges, or payment failures require prompt payment team investigation."
+
 
   # 4. Outages / Critical technical disruptions
   - id: "RULE_TECHNICAL_OUTAGE"
@@ -88,10 +99,20 @@ rules:
     secondary_actions: ["MONITOR"]
     rationale: "Issue is confirmed resolved by customer; send standard closure / satisfaction message."
 
-  # 10. Default fallback
+  # 10. Critical urgency catch-all (never allow CRITICAL to fall through to standard support)
+  - id: "RULE_CRITICAL_URGENCY_FALLBACK"
+    priority: 950
+    conditions:
+      urgency: ["CRITICAL"]
+    primary_action: "HUMAN_REVIEW"
+    secondary_actions: ["ESCALATE_TO_SECURITY_TEAM"]
+    rationale: "Unmatched critical complaints must be escalated for human review, never automated canned responses."
+
+  # 11. Default fallback
   - id: "RULE_DEFAULT_FALLBACK"
     priority: 999
     conditions: {}
     primary_action: "STANDARD_SUPPORT_RESPONSE"
     secondary_actions: ["REQUEST_MORE_INFORMATION"]
     rationale: "Standard support triage for general customer queries."
+

@@ -136,47 +136,65 @@ def create_reproducible_splits(
     random_state: int = 42,
     stratify_col: str = "category",
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Create reproducible stratified train, val, and test splits.
+    """Create reproducible stratified train, val, and test splits with strict group isolation.
 
-    Guarantees strict isolation and handles single-item rare classes safely.
-    Excludes the leaked 'issue' column from modeling features.
+    Guarantees that identical complaint texts belong to exactly one split (train ∩ val = ∅,
+    train ∩ test = ∅, val ∩ test = ∅), preventing cross-split data leakage while preserving
+    all valid repeated records within their assigned split.
     """
     if stratify_col not in df.columns:
         raise KeyError(f"Column '{stratify_col}' not found in dataframe")
 
-    # Clean out completely empty complaint text rows (e.g. 3 empty rows)
-    clean_df = df[df["complaint_text"].str.len() > 0].copy().reset_index(drop=True)
+    # Clean out completely empty complaint text rows
+    clean_df = df[df["complaint_text"].str.strip().str.len() > 0].copy().reset_index(drop=True)
 
-    # Identify classes with < 2 instances that cannot be stratified
-    class_counts = clean_df[stratify_col].value_counts()
+    # Deterministic normalized text key for grouping
+    clean_df["_norm_text"] = clean_df["complaint_text"].str.strip().str.lower()
+
+    # Create unique text groups with dominant category for stratified grouping
+    text_groups = (
+        clean_df.groupby("_norm_text")[stratify_col]
+        .agg(lambda s: s.value_counts().index[0])
+        .reset_index()
+    )
+
+    class_counts = text_groups[stratify_col].value_counts()
     rare_classes = class_counts[class_counts < 2].index.tolist()
 
-    stratified_subset = clean_df[~clean_df[stratify_col].isin(rare_classes)]
-    rare_subset = clean_df[clean_df[stratify_col].isin(rare_classes)]
+    stratified_groups = text_groups[~text_groups[stratify_col].isin(rare_classes)]
+    rare_groups = text_groups[text_groups[stratify_col].isin(rare_classes)]
 
-    # First split off test set
-    train_val_df, test_df = train_test_split(
-        stratified_subset,
+    # Split unique text groups
+    train_val_groups, test_groups = train_test_split(
+        stratified_groups,
         test_size=test_size,
         random_state=random_state,
-        stratify=stratified_subset[stratify_col],
+        stratify=stratified_groups[stratify_col],
     )
 
-    # Next split train and val
     relative_val_size = val_size / (1.0 - test_size)
-    train_df, val_df = train_test_split(
-        train_val_df,
+    train_groups, val_groups = train_test_split(
+        train_val_groups,
         test_size=relative_val_size,
         random_state=random_state,
-        stratify=train_val_df[stratify_col],
+        stratify=train_val_groups[stratify_col],
     )
 
-    # Put rare classes into training set so model has observed them
-    if not rare_subset.empty:
-        train_df = pd.concat([train_df, rare_subset], ignore_index=True)  # type: ignore[list-item]
+    if not rare_groups.empty:
+        train_groups = pd.concat([train_groups, rare_groups], ignore_index=True)
+
+    train_set = set(train_groups["_norm_text"])
+    val_set = set(val_groups["_norm_text"])
+    test_set = set(test_groups["_norm_text"])
+
+    # Map all records of each text group into their designated split
+    train_df = clean_df[clean_df["_norm_text"].isin(train_set)].drop(columns=["_norm_text"])
+    val_df = clean_df[clean_df["_norm_text"].isin(val_set)].drop(columns=["_norm_text"])
+    test_df = clean_df[clean_df["_norm_text"].isin(test_set)].drop(columns=["_norm_text"])
 
     return (
         train_df.reset_index(drop=True),
         val_df.reset_index(drop=True),
         test_df.reset_index(drop=True),
     )
+

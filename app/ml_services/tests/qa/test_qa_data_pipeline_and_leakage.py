@@ -101,18 +101,15 @@ def test_dataset_splits_leakage_and_isolation() -> None:
     val_texts = set(df_val["complaint_text"].dropna().str.strip().str.lower())
     test_texts = set(df_test["complaint_text"].dropna().str.strip().str.lower())
 
-    # Ensure clean split isolation
+    # Ensure strictly clean split isolation (zero duplicate text contamination)
     val_in_train = val_texts.intersection(train_texts)
     test_in_train = test_texts.intersection(train_texts)
     test_in_val = test_texts.intersection(val_texts)
 
-    # Calculate exact overlap percentage
-    val_overlap_rate = len(val_in_train) / max(len(val_texts), 1)
-    test_overlap_rate = len(test_in_train) / max(len(test_texts), 1)
+    assert len(val_in_train) == 0, f"Found {len(val_in_train)} overlapping texts between train and val"
+    assert len(test_in_train) == 0, f"Found {len(test_in_train)} overlapping texts between train and test"
+    assert len(test_in_val) == 0, f"Found {len(test_in_val)} overlapping texts between val and test"
 
-    # Overlap should be minimal or strictly disjoint for raw data
-    assert val_overlap_rate < 0.05, f"High val overlap with train: {val_overlap_rate:.2%}"
-    assert test_overlap_rate < 0.05, f"High test overlap with train: {test_overlap_rate:.2%}"
 
 
 def test_issue_column_leakage_in_cleaner() -> None:

@@ -5,8 +5,8 @@ models:
   training_date: '2026-09-18'
   framework: scikit-learn LogisticRegression
   metrics:
-    val_macro_f1: 0.1055
-    val_weighted_f1: 0.2157
+    val_macro_f1: 0.1038
+    val_weighted_f1: 0.2063
   parameters:
     vectorizer: TfidfVectorizer(1,2)
     algorithm: tfidf-logistic-regression

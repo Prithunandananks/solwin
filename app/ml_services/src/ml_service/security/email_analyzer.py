@@ -31,14 +31,15 @@ DISPOSABLE_DOMAINS = {
 
 # Major brands commonly targeted by lookalike typosquatting
 TARGET_BRANDS = [
-    ("amazon", ["amaz0n", "arnazon", "amzon", "amazone"]),
-    ("google", ["g00gle", "googel", "g0ogle", "googl"]),
-    ("paypal", ["paypa1", "paypai", "pay-pal", "paypall"]),
-    ("microsoft", ["micros0ft", "m1crosoft", "micro-soft"]),
+    ("amazon", ["amaz0n", "arnazon", "amzon", "amazone", "amazn"]),
+    ("google", ["g00gle", "goog1e", "googel", "g0ogle", "g0og1e", "g00gl"]),
+    ("paypal", ["paypa1", "paypai", "pay-pal", "paypall", "paypa-l"]),
+    ("microsoft", ["micros0ft", "m1crosoft", "micro-soft", "m1cr0soft"]),
     ("shopzilla", ["shopzi11a", "shopzila", "shop-zilla", "sh0pzilla"]),
     ("apple", ["app1e", "app-le", "appl-e"]),
-    ("netflix", ["netf1ix", "net-flix", "netfllx"]),
+    ("netflix", ["netf1ix", "net-flix", "netfllx", "netflx"]),
 ]
+
 
 
 class EmailAnalyzer:

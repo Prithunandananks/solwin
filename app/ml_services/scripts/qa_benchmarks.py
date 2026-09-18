@@ -106,11 +106,13 @@ def run_benchmarks() -> dict[str, object]:
     cls_metrics_path = Path("models/classification_metrics.json")
     acc, macro_f1, weighted_f1 = 0.0, 0.0, 0.0
     if cls_metrics_path.exists():
-        with cls_metrics_path.open("r") as f:
+        with cls_metrics_path.open("r", encoding="utf-8") as f:
             m = json.load(f)
-            acc = m.get("accuracy", 0.0)
-            macro_f1 = m.get("macro_f1", 0.0)
-            weighted_f1 = m.get("weighted_f1", 0.0)
+            overall = m.get("overall_metrics", m)
+            acc = float(overall.get("accuracy", m.get("accuracy", 0.0)))
+            macro_f1 = float(overall.get("macro_f1", m.get("macro_f1", 0.0)))
+            weighted_f1 = float(overall.get("weighted_f1", m.get("weighted_f1", 0.0)))
+
 
     quality_gate = {
         "status": "PASS" if macro_f1 >= 0.75 and acc >= 0.75 else "FAIL",

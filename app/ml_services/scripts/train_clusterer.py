@@ -18,11 +18,47 @@ import numpy as np
 import pandas as pd
 import yaml
 from sklearn.cluster import MiniBatchKMeans
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS, TfidfVectorizer
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.pipeline import Pipeline
 
 from ml_service.api.schemas import BusinessCategory
+
+CONVERSATIONAL_STOP_WORDS = {
+
+    "thanks",
+    "thank",
+    "thanku",
+    "thankyou",
+    "good",
+    "nice",
+    "great",
+    "okay",
+    "ok",
+    "yes",
+    "no",
+    "sir",
+    "maam",
+    "mam",
+    "please",
+    "plz",
+    "hello",
+    "hi",
+    "happy",
+    "bakvas",
+    "shopzilla",
+    "care",
+    "customer",
+    "executive",
+    "service",
+    "support",
+    "experience",
+    "conversation",
+    "response",
+    "helpful",
+}
+
+ALL_STOP_WORDS = list(ENGLISH_STOP_WORDS.union(CONVERSATIONAL_STOP_WORDS))
 
 
 def extract_cluster_metadata(
@@ -62,17 +98,17 @@ def extract_cluster_metadata(
 
         # Top keywords from centroid coordinates
         centroid = centroids[c_id]
-        top_keyword_indices = centroid.argsort()[::-1][:8]
+        top_keyword_indices = centroid.argsort()[::-1][:12]
         top_keywords = [
             feature_names[idx] for idx in top_keyword_indices if centroid[idx] > 0.01
         ][:5]
         if not top_keywords:
-            top_keywords = ["general", "feedback"]
+            top_keywords = ["general", "complaint"]
 
         # Find representative examples (closest to centroid)
         c_vectors = vectorizer.transform(c_df["complaint_text"])
         dists = euclidean_distances(c_vectors, centroid.reshape(1, -1)).flatten()
-        closest_indices = dists.argsort()[:3]
+        closest_indices = dists.argsort()[:5]
         rep_examples = c_df.iloc[closest_indices]["complaint_text"].tolist()
         # Deduplicate representative examples
         seen = set()
@@ -114,19 +150,23 @@ def train_clusterer(
     print(f"Loading training data for clustering: {train_csv}")
     df = pd.read_csv(train_csv).fillna("")
 
+    # Filter out empty or pure whitespace texts
+    valid_mask = df["complaint_text"].str.strip().str.len() > 0
+    df = df[valid_mask].reset_index(drop=True)
     X_texts = df["complaint_text"].tolist()
 
-    print(f"Fitting MiniBatchKMeans (n_clusters={n_clusters}) on {len(X_texts)} samples...")
+    print(f"Fitting MiniBatchKMeans (n_clusters={n_clusters}) on {len(X_texts)} samples with custom domain stopwords...")
     pipeline = Pipeline(
         [
             (
                 "tfidf",
                 TfidfVectorizer(
                     ngram_range=(1, 2),
-                    max_features=15000,
+                    max_features=20000,
                     sublinear_tf=True,
-                    stop_words="english",
+                    stop_words=ALL_STOP_WORDS,
                     strip_accents="unicode",
+                    min_df=2,
                 ),
             ),
             (
@@ -135,13 +175,14 @@ def train_clusterer(
                     n_clusters=n_clusters,
                     random_state=42,
                     batch_size=1024,
-                    n_init=3,
+                    n_init=10,
                 ),
             ),
         ]
     )
 
     labels = pipeline.fit_predict(X_texts)
+
 
     print("Extracting cluster topics, keywords, and representative examples...")
     clusters_meta = extract_cluster_metadata(df, labels, pipeline, n_clusters)
