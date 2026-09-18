@@ -23,12 +23,6 @@ class ConversationStatus(str, enum.Enum):
     CLOSED = "CLOSED"
 
 
-class CampaignStatus(str, enum.Enum):
-    ACTIVE = "ACTIVE"
-    MONITORED = "MONITORED"
-    RESOLVED = "RESOLVED"
-
-
 class SenderType(str, enum.Enum):
     CUSTOMER = "CUSTOMER"
     AGENT = "AGENT"
