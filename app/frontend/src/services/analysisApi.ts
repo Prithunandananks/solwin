@@ -4,8 +4,9 @@ import { mockCustomerIntelligence } from './mockData';
 
 export async function getConversationAnalysis(id: string): Promise<CustomerIntelligence> {
   try {
-    const response = await api.get<CustomerIntelligence>(`/analysis/conversation/${id}`);
-    return response.data;
+    const response = await api.get<{ analysis: CustomerIntelligence } | CustomerIntelligence>(`/analyze/conversation/${id}`);
+    const data = response.data as any;
+    return data.analysis || data;
   } catch (err) {
     if (isNetworkOrOfflineError(err)) {
       return (
@@ -27,8 +28,11 @@ export async function getConversationAnalysis(id: string): Promise<CustomerIntel
 }
 
 export async function analyzeConversation(id: string): Promise<CustomerIntelligence> {
-  const response = await api.post<CustomerIntelligence>(`/analysis/conversation/${id}`);
-  return response.data;
+  const response = await api.post<{ analysis: CustomerIntelligence } | CustomerIntelligence>('/analyze', {
+    conversation_id: id,
+  });
+  const data = response.data as any;
+  return data.analysis || data;
 }
 
 export async function uploadAttachment(file: File): Promise<{ attachment_id: string; url: string; name: string }> {
