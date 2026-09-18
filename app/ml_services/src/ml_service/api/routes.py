@@ -8,6 +8,8 @@ from ml_service.api.schemas import (
     ActionRecommendation,
     BatchClusterRequest,
     BatchClusterResponse,
+    BatchUnifiedAnalysisRequest,
+    BatchUnifiedAnalysisResponse,
     ClassificationResult,
     ClusterAssignment,
     ClusterMetadata,
@@ -495,6 +497,28 @@ def analyze_complaint(
         model_versions=model_versions,
         processing_time_ms=latency_ms,
         warnings=warnings,
+    )
+
+
+@router.post(
+    "/api/v1/analyze/batch",
+    response_model=BatchUnifiedAnalysisResponse,
+    tags=["orchestration"],
+)
+def analyze_batch(
+    batch: BatchUnifiedAnalysisRequest,
+    request: Request,
+) -> BatchUnifiedAnalysisResponse:
+    start_time = time.perf_counter()
+    results: list[UnifiedAnalysisResponse] = []
+    for item in batch.items:
+        res = analyze(req=item, request=request)
+        results.append(res)
+    total_time = round((time.perf_counter() - start_time) * 1000, 2)
+    return BatchUnifiedAnalysisResponse(
+        results=results,
+        total_processed=len(results),
+        processing_time_ms=total_time,
     )
 
 

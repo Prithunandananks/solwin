@@ -42,8 +42,9 @@ def test_models_registered_in_metadata():
     assert "messages" in tables
     assert "analyses" in tables
     assert "threats" in tables
-    assert "attachments" in tables
-    assert "campaigns" in tables
+    assert "attachments" not in tables
+    assert "campaigns" not in tables
+
 
 
 # ==========================================

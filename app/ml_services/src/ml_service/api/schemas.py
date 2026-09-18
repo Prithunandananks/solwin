@@ -328,3 +328,14 @@ class UnifiedAnalysisResponse(BaseModel):
     model_versions: dict[str, str] = Field(default_factory=dict)
     processing_time_ms: float
     warnings: list[str] = Field(default_factory=list)
+
+
+class BatchUnifiedAnalysisRequest(BaseModel):
+    items: list[UnifiedAnalysisRequest]
+
+
+class BatchUnifiedAnalysisResponse(BaseModel):
+    results: list[UnifiedAnalysisResponse]
+    total_processed: int
+    processing_time_ms: float
+
