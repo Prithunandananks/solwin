@@ -12,8 +12,8 @@ def clean_csv_data(file_path: str = None) -> pd.DataFrame:
         # Resolve path relative to project structure
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         possible_paths = [
-            os.path.join(base_dir, "unified_customer_phishing_data_subset.csv"),
-            os.path.join(base_dir, "unified_customer_phishing_data_subset (1).csv"),
+            os.path.join(base_dir, "app/data/unified_customer_phishing_data.csv"),
+            os.path.join(base_dir, "app/data/unified_customer_phishing_data.csv"),
             os.path.join(base_dir, "data", "unified_customer_phishing_data_subset.csv"),
             os.path.join(base_dir, "data", "unified_customer_phishing_data_subset (1).csv"),
         ]
