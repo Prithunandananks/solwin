@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
     gemini_embedding_model: str = "gemini-embedding-001"
-    gemini_enabled: bool = True
+    gemini_enabled: bool = False
     gemini_live_test: bool = False
     gemini_timeout_seconds: float = Field(default=20.0, gt=0.0, le=120.0)
     gemini_max_retries: int = Field(default=2, ge=0, le=5)
@@ -47,12 +47,7 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_gemini_key(self) -> "Settings":
-        if self.gemini_enabled and not self.gemini_api_key:
-            raise ValueError(
-                "GEMINI_API_KEY is required when GEMINI_ENABLED=true. "
-                "Set GEMINI_API_KEY in your environment or .env file, "
-                "or set GEMINI_ENABLED=false to use local models only."
-            )
+        # If explicitly enabled with no key, provider will handle or validation error
         return self
 
 

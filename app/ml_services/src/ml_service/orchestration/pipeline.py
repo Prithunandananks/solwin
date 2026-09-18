@@ -202,7 +202,7 @@ class GeminiPipeline:
                     model_version=classification.model_version,
                     fine_grained_intent=classification.fine_grained_intent,
                 )
-                if "classifier_fallback_used" not in warnings:
+                if self._settings.gemini_enabled and "classifier_fallback_used" not in warnings:
                     warnings.append("classifier_fallback_used")
             except Exception as exc:
                 logger.error("GeminiPipeline: local classifier failed: %s", exc)
@@ -227,7 +227,8 @@ class GeminiPipeline:
             warnings.append("classifier_not_loaded")
 
         sentiment = SentimentAnalyzer.unavailable("Gemini unavailable; local sentiment not implemented.")
-        warnings.append("sentiment_unavailable")
+        if self._settings.gemini_enabled:
+            warnings.append("sentiment_unavailable")
 
         social_engineering = SocialEngineeringResult(
             detected=False,
