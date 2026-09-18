@@ -617,10 +617,15 @@ def analyze_review(
     summary = ReviewSummary(text=summary_text)
 
     # 7. Clustering
+    sim_score = (
+        round(max(0.0, min(1.0, 1.0 - unified_res.cluster.distance)), 4)
+        if unified_res.cluster
+        else 0.5
+    )
     clustering = ReviewClustering(
         cluster_id=str(unified_res.cluster.cluster_id) if unified_res.cluster else "cluster_unknown",
         cluster_name=unified_res.cluster.cluster_name if unified_res.cluster else "General Inquiries",
-        similarity_score=round(unified_res.cluster.similarity_score if unified_res.cluster else 0.5, 4),
+        similarity_score=sim_score,
     )
 
     # 8. Urgency
@@ -704,14 +709,14 @@ def analyze_review(
     # 12. Recommendation
     if unified_res.recommendation:
         rec = ReviewRecommendation(
-            primary_action=unified_res.recommendation.action,
-            priority=unified_res.recommendation.priority,
-            secondary_actions=[s.action for s in unified_res.recommendation.routing_suggestions],
+            primary_action=unified_res.recommendation.primary_action.value,
+            priority="HIGH" if urgency_level in ("CRITICAL", "HIGH") else "NORMAL",
+            secondary_actions=[s.value for s in unified_res.recommendation.secondary_actions],
             rationale=unified_res.recommendation.rationale,
         )
     else:
         rec = ReviewRecommendation(
-            primary_action="Route to support agent",
+            primary_action="STANDARD_SUPPORT_RESPONSE",
             priority="NORMAL",
             secondary_actions=[],
             rationale="Standard complaint triage",

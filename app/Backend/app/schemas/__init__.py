@@ -34,6 +34,10 @@ from app.schemas.message import (
     MessageUpdate,
 )
 from app.schemas.pagination import PaginatedResponse
+from app.schemas.review import (
+    CustomerReviewCreateRequest,
+    CustomerReviewOutput,
+)
 from app.schemas.threat import (
     ConversationSecurityResponse,
     SecurityAnalysisRequest,
@@ -71,6 +75,8 @@ __all__ = [
     "CustomerAnalyticsResponse",
     "CustomerIntelligenceOutput",
     "CustomerIntelligenceSummary",
+    "CustomerReviewCreateRequest",
+    "CustomerReviewOutput",
     "CurrentUserResponse",
     "DashboardOverviewResponse",
     "DirectMessageAnalysisRequest",

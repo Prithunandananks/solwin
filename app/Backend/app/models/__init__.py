@@ -12,6 +12,7 @@ from app.models.enums import (
     UserRole,
 )
 from app.models.message import Message
+from app.models.review import CustomerReview
 from app.models.threat import Threat
 from app.models.user import User
 
@@ -21,6 +22,7 @@ __all__ = [
     "Conversation",
     "ConversationChannel",
     "ConversationStatus",
+    "CustomerReview",
     "Message",
     "Priority",
     "ResolutionStatus",
