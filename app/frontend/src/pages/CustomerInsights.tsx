@@ -74,29 +74,29 @@ export const CustomerInsights: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-4 border-b border-white/[0.08]">
+      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
             </span>
-            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-brand-cyan">
+            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-brand-blue">
               NLP SENTIMENT TELEMETRY
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 font-sans">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-sans">
             <Users size={22} className="text-brand-blue" />
             <span>Customer Support Intelligence</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
             Real-time sentiment velocity, multi-channel problem cluster distribution, and AI triage efficacy metrics.
           </p>
         </div>
 
         <button
           onClick={loadData}
-          className="p-2.5 rounded-xl border border-white/10 bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-white transition-all self-start sm:self-auto shadow-sm"
+          className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition-all self-start sm:self-auto shadow-sm"
           title="Refresh analytics"
         >
           <RefreshCw size={15} />
@@ -106,15 +106,15 @@ export const CustomerInsights: React.FC = () => {
       {/* Row 1: Sentiment Trends & Top Issues */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sentiment Trends Chart */}
-        <div className="bg-surface-card/85 backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
-          <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+              <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
                 Customer Sentiment Velocity (7-Day)
               </h3>
-              <p className="text-xs text-slate-400">Classified by Solwin Sentiment NLP Model</p>
+              <p className="text-xs text-slate-500">Classified by Solwin Sentiment NLP Model</p>
             </div>
-            <span className="text-[10px] font-mono font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/25">
+            <span className="text-[10px] font-mono font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
               ACTIVE TRIAGE
             </span>
           </div>
@@ -124,22 +124,24 @@ export const CustomerInsights: React.FC = () => {
               <AreaChart data={data.sentiment_trends}>
                 <defs>
                   <linearGradient id="colorPositive" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorNegative" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.25} />
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" stroke="#64748b" fontSize={11} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
+                <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#090d16',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    color: '#0f172a',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
                 />
                 <Area
@@ -147,6 +149,7 @@ export const CustomerInsights: React.FC = () => {
                   dataKey="positive"
                   name="Positive %"
                   stroke="#10b981"
+                  strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorPositive)"
                 />
@@ -155,6 +158,7 @@ export const CustomerInsights: React.FC = () => {
                   dataKey="negative"
                   name="Negative %"
                   stroke="#ef4444"
+                  strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorNegative)"
                 />
@@ -164,20 +168,20 @@ export const CustomerInsights: React.FC = () => {
         </div>
 
         {/* Top Problem Categories */}
-        <div className="bg-surface-card/85 backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
-          <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+              <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
                 Top Customer Problem Categories
               </h3>
-              <p className="text-xs text-slate-400">Total volume and share of customer inquiries</p>
+              <p className="text-xs text-slate-500">Total volume and share of customer inquiries</p>
             </div>
           </div>
 
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.top_issues} layout="vertical">
-                <XAxis type="number" stroke="#64748b" fontSize={11} tickLine={false} />
+                <XAxis type="number" stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <YAxis
                   dataKey="category"
                   type="category"
@@ -188,13 +192,15 @@ export const CustomerInsights: React.FC = () => {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#090d16',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    color: '#0f172a',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
                 />
-                <Bar dataKey="count" name="Cases" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" name="Cases" fill="#3b82f6" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -204,12 +210,12 @@ export const CustomerInsights: React.FC = () => {
       {/* Row 2: Priority & Resolution Distributions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Priority Distribution */}
-        <div className="bg-surface-card/85 backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
-          <div className="pb-2 border-b border-white/[0.06]">
-            <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="pb-2 border-b border-slate-100">
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
               Ticket Priority Stratification
             </h3>
-            <p className="text-xs text-slate-400">Critical, High, Medium, Low urgency distribution</p>
+            <p className="text-xs text-slate-500">Critical, High, Medium, Low urgency distribution</p>
           </div>
 
           <div className="h-56 w-full">
@@ -228,22 +234,24 @@ export const CustomerInsights: React.FC = () => {
                   {data.priority_distribution.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={PRIORITY_COLORS[entry.name] || '#6366f1'}
+                      fill={PRIORITY_COLORS[entry.name] || '#3b82f6'}
                     />
                   ))}
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#090d16',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    color: '#0f172a',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
                 />
                 <Legend
                   verticalAlign="bottom"
                   height={36}
-                  formatter={(val) => <span className="text-xs text-slate-300 font-mono">{val}</span>}
+                  formatter={(val) => <span className="text-xs text-slate-700 font-mono">{val}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -251,25 +259,27 @@ export const CustomerInsights: React.FC = () => {
         </div>
 
         {/* Resolution Distribution */}
-        <div className="bg-surface-card/85 backdrop-blur-md border border-white/[0.08] rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
-          <div className="pb-2 border-b border-white/[0.06]">
-            <h3 className="text-sm font-bold text-white tracking-tight font-sans">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-card">
+          <div className="pb-2 border-b border-slate-100">
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight font-sans">
               Resolution Pipeline Status
             </h3>
-            <p className="text-xs text-slate-400">Resolved vs Pending vs Escalated vs Unresolved</p>
+            <p className="text-xs text-slate-500">Resolved vs Pending vs Escalated vs Unresolved</p>
           </div>
 
           <div className="h-56 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.resolution_distribution}>
-                <XAxis dataKey="status" stroke="#64748b" fontSize={11} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
+                <XAxis dataKey="status" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#090d16',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                     borderRadius: '8px',
                     fontSize: '12px',
+                    color: '#0f172a',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   }}
                 />
                 <Bar dataKey="count" name="Tickets" radius={[4, 4, 0, 0]}>

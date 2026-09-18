@@ -74,25 +74,25 @@ export const ConversationDetails: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Top Header & Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div className="flex items-center gap-3.5">
           <button
             onClick={() => navigate('/conversations')}
-            className="p-2 rounded-xl border border-white/10 bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-white transition-all shadow-sm"
+            className="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-900 transition-all shadow-sm"
             title="Back to conversations"
           >
             <ChevronLeft size={18} />
           </button>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs text-brand-cyan font-bold px-1.5 py-0.5 rounded bg-brand-blue/10 border border-brand-blue/20">
+              <span className="font-mono text-xs text-slate-600 font-bold px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200">
                 {id}
               </span>
               {conversation && <RiskBadge level={conversation.security_risk} size="sm" />}
               {conversation && <PriorityBadge priority={conversation.priority} />}
               {conversation && <StatusBadge status={isResolved ? 'Resolved' : conversation.status} />}
             </div>
-            <h1 className="text-lg font-bold text-white mt-1 font-sans flex items-center gap-2">
+            <h1 className="text-lg font-bold text-slate-900 mt-1 font-sans flex items-center gap-2">
               <span>{conversation?.customer_name}</span>
               <span className="text-xs font-mono font-normal text-slate-400">({conversation?.channel})</span>
             </h1>
@@ -107,8 +107,8 @@ export const ConversationDetails: React.FC = () => {
               disabled={containmentApplied}
               className={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold uppercase tracking-wider transition-all flex items-center gap-2 ${
                 containmentApplied
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 cursor-default'
-                  : 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white shadow-glow-danger'
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-default'
+                  : 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm'
               }`}
             >
               {containmentApplied ? (
@@ -127,14 +127,14 @@ export const ConversationDetails: React.FC = () => {
 
           <button
             onClick={() => setIsResolved(!isResolved)}
-            className="px-3.5 py-2 rounded-xl border border-white/10 bg-surface-card hover:bg-surface-elevated text-slate-200 text-xs font-semibold transition-all shadow-sm"
+            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold transition-all shadow-sm"
           >
             {isResolved ? 'Reopen Ticket' : 'Mark as Resolved'}
           </button>
 
           <button
             onClick={loadAllDetails}
-            className="p-2 rounded-xl border border-white/10 bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-white transition-all shadow-sm"
+            className="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-900 transition-all shadow-sm"
             title="Refresh analysis"
           >
             <RefreshCw size={15} />

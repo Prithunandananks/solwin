@@ -95,7 +95,7 @@ export const Threats: React.FC = () => {
       key: 'channel',
       header: 'Vector Channel',
       render: (item) => (
-        <span className="text-xs font-mono uppercase text-slate-400">{item.channel}</span>
+        <span className="text-xs font-mono uppercase text-slate-500">{item.channel}</span>
       ),
     },
     {
@@ -108,11 +108,11 @@ export const Threats: React.FC = () => {
       header: 'Detection Flag',
       render: (item) =>
         item.threat_detected ? (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-rose-400">
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-rose-700">
             <ShieldAlert size={12} /> POSITIVE
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-700 font-semibold">
             <ShieldCheck size={12} /> NEGATIVE
           </span>
         ),
@@ -123,7 +123,7 @@ export const Threats: React.FC = () => {
       render: (item) => (
         <span
           className={`text-xs font-medium ${
-            item.social_engineering ? 'text-amber-400' : 'text-slate-500'
+            item.social_engineering ? 'text-amber-700' : 'text-slate-400'
           }`}
         >
           {item.social_engineering ? 'Yes (Urgency / Impersonation)' : 'No'}
@@ -134,27 +134,27 @@ export const Threats: React.FC = () => {
       key: 'detected_at',
       header: 'Detection Time',
       render: (item) => (
-        <span className="font-mono text-[11px] text-slate-400">{item.detected_at}</span>
+        <span className="font-mono text-[11px] text-slate-500">{item.detected_at}</span>
       ),
     },
     {
       key: 'status',
       header: 'Incident Status',
       render: (item) => {
-        let col = 'bg-surface-elevated text-slate-300 border-white/10';
-        let dot = 'bg-slate-400';
+        let col = 'bg-slate-100 text-slate-700 border-slate-200';
+        let dot = 'bg-slate-500';
         if (item.status === 'Active') {
-          col = 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-glow-danger';
-          dot = 'bg-rose-500 animate-ping';
+          col = 'bg-rose-50 text-rose-800 border-rose-200 shadow-sm';
+          dot = 'bg-rose-600 animate-ping';
         } else if (item.status === 'Investigating') {
-          col = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-          dot = 'bg-amber-400';
+          col = 'bg-amber-50 text-amber-800 border-amber-200';
+          dot = 'bg-amber-600';
         } else if (item.status === 'Mitigated') {
-          col = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
-          dot = 'bg-emerald-400';
+          col = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+          dot = 'bg-emerald-600';
         }
         return (
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-mono border ${col}`}>
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-mono border font-medium ${col}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
             <span className="uppercase tracking-wider">{item.status}</span>
           </span>
@@ -230,32 +230,35 @@ export const Threats: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 pb-4 border-b border-white/[0.08]">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
             </span>
-            <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-rose-400">
-              REAL-TIME IOC SURVEILLANCE
+            <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-rose-700">
+              Zero-Trust Security Radar
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 font-sans">
-            <ShieldAlert size={22} className="text-rose-400" />
-            <span>SOC Threat Directory</span>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/30">
-              {total} Incidents
-            </span>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 font-sans">
+            <span>Threat Intelligence & Quarantine Directory</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
-            Enterprise threat telemetry parsed from incoming customer channels, weaponized attachments, and automated IOC indicators.
+          <p className="text-xs text-slate-500 mt-1">
+            Real-time multi-vector detection logs covering phishing, credential harvesting, lookalike domains, and prompt injections.
           </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono text-slate-700 bg-white border border-slate-200 shadow-sm px-3 py-1.5 rounded-lg">
+            Total Threats: <strong className="text-slate-900">{total}</strong>
+          </span>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="bg-surface-card/85 backdrop-blur-md border border-white/[0.08] rounded-2xl p-4 space-y-3 shadow-sm">
+      {/* Toolbar */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-card">
         <SearchBar
           placeholder="Filter by Threat ID (e.g. THR-2026-*), threat type, IOC, or target customer..."
           value={search}

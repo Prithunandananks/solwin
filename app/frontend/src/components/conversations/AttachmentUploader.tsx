@@ -54,15 +54,15 @@ export const AttachmentUploader: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-900/40 border border-white/5 rounded-xl p-5 space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-white/5">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-4 shadow-card">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
         <div>
-          <h2 className="text-xs font-semibold text-slate-200">
+          <h2 className="text-xs font-semibold text-slate-900">
             Multimodal attachment analysis
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">Upload customer screenshots or invoices for automated OCR and brand mimicry detection.</p>
+          <p className="text-xs text-slate-500 mt-0.5">Upload customer screenshots or invoices for automated OCR and brand mimicry detection.</p>
         </div>
-        <span className="text-[11px] font-mono text-slate-400">
+        <span className="text-[11px] font-mono text-slate-500">
           Vision OCR
         </span>
       </div>
@@ -71,7 +71,7 @@ export const AttachmentUploader: React.FC = () => {
       {!uploadedFile ? (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="border border-dashed border-white/10 hover:border-indigo-500/50 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-950/40 group"
+          className="border border-dashed border-slate-300 hover:border-slate-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-50/50 group"
         >
           <input
             ref={fileInputRef}
@@ -81,10 +81,10 @@ export const AttachmentUploader: React.FC = () => {
             onChange={handleFileSelect}
           />
           <div className="flex flex-col items-center gap-2">
-            <div className="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 group-hover:text-indigo-400 flex items-center justify-center transition-colors">
+            <div className="w-9 h-9 rounded-lg bg-white border border-slate-200 text-slate-600 group-hover:text-slate-900 flex items-center justify-center transition-colors shadow-sm">
               {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
             </div>
-            <p className="text-xs font-medium text-slate-200">
+            <p className="text-xs font-medium text-slate-800">
               {isUploading ? 'Uploading attachment...' : 'Upload screenshot or PDF'}
             </p>
             <p className="text-[11px] text-slate-400">PNG, JPG, or PDF up to 10MB</p>
@@ -92,14 +92,14 @@ export const AttachmentUploader: React.FC = () => {
         </div>
       ) : (
         /* Staged File Item */
-        <div className="bg-slate-950/70 border border-white/5 rounded-lg p-3 flex items-center justify-between">
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded bg-slate-800 text-indigo-400">
+            <div className="p-2 rounded bg-white border border-slate-200 text-slate-700">
               <FileText size={18} />
             </div>
             <div>
-              <div className="text-xs font-medium text-slate-200 truncate max-w-xs">{uploadedFile.name}</div>
-              <div className="text-[11px] text-emerald-400 flex items-center gap-1">
+              <div className="text-xs font-medium text-slate-900 truncate max-w-xs">{uploadedFile.name}</div>
+              <div className="text-[11px] text-emerald-700 flex items-center gap-1 font-medium">
                 <CheckCircle size={11} /> Staged for analysis
               </div>
             </div>
@@ -109,7 +109,7 @@ export const AttachmentUploader: React.FC = () => {
             <button
               onClick={handleRunMultimodalAnalysis}
               disabled={isAnalyzing}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold disabled:opacity-50 transition-colors shadow-sm"
             >
               {isAnalyzing ? (
                 <>
@@ -128,7 +128,7 @@ export const AttachmentUploader: React.FC = () => {
                 setUploadedFile(null);
                 setAnalysisResult(null);
               }}
-              className="text-xs text-slate-400 hover:text-slate-200 px-2 py-1 transition-colors"
+              className="text-xs text-slate-500 hover:text-slate-900 px-2 py-1 transition-colors"
             >
               Clear
             </button>
@@ -137,7 +137,7 @@ export const AttachmentUploader: React.FC = () => {
       )}
 
       {uploadError && (
-        <div className="flex items-center gap-2 text-xs text-rose-300 bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-lg">
+        <div className="flex items-center gap-2 text-xs text-rose-700 bg-rose-50 border border-rose-200 p-2.5 rounded-lg">
           <AlertTriangle size={14} />
           <span>{uploadError}</span>
         </div>
@@ -145,11 +145,11 @@ export const AttachmentUploader: React.FC = () => {
 
       {/* Multimodal Analysis Output */}
       {analysisResult && (
-        <div className="p-4 rounded-xl bg-slate-950/80 border border-white/10 space-y-3 animate-in fade-in">
-          <div className="flex items-center justify-between pb-2 border-b border-white/5">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-card animate-in fade-in">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <ShieldAlert size={16} className="text-rose-400" />
-              <span className="text-xs font-semibold text-slate-200">Vision analysis results</span>
+              <ShieldAlert size={16} className="text-rose-600" />
+              <span className="text-xs font-semibold text-slate-900">Vision analysis results</span>
             </div>
             {analysisResult.phishing_likelihood && (
               <RiskBadge level={analysisResult.phishing_likelihood} size="sm" />
@@ -158,8 +158,8 @@ export const AttachmentUploader: React.FC = () => {
 
           {analysisResult.ocr_summary && (
             <div className="text-xs space-y-1">
-              <span className="text-slate-400 text-[11px] block">OCR text extraction:</span>
-              <p className="bg-slate-900/60 p-2.5 rounded border border-white/5 font-mono text-[11px] text-slate-300 leading-relaxed">
+              <span className="text-slate-500 text-[11px] block">OCR text extraction:</span>
+              <p className="bg-slate-50 p-2.5 rounded border border-slate-200 font-mono text-[11px] text-slate-800 leading-relaxed">
                 {analysisResult.ocr_summary}
               </p>
             </div>
@@ -167,11 +167,11 @@ export const AttachmentUploader: React.FC = () => {
 
           {analysisResult.visual_threat_indicators && (
             <div className="text-xs space-y-1">
-              <span className="text-slate-400 text-[11px] block">Visual threat indicators:</span>
+              <span className="text-slate-500 text-[11px] block">Visual threat indicators:</span>
               <ul className="space-y-1">
                 {analysisResult.visual_threat_indicators.map((ind, i) => (
-                  <li key={i} className="flex items-start gap-2 text-rose-300/90 text-xs">
-                    <span className="text-rose-400 font-bold">•</span>
+                  <li key={i} className="flex items-start gap-2 text-rose-700 text-xs">
+                    <span className="text-rose-600 font-bold">•</span>
                     <span>{ind}</span>
                   </li>
                 ))}
@@ -181,10 +181,10 @@ export const AttachmentUploader: React.FC = () => {
 
           {analysisResult.detected_urls && analysisResult.detected_urls.length > 0 && (
             <div className="text-xs space-y-1">
-              <span className="text-slate-400 text-[11px] block">Extracted URLs:</span>
+              <span className="text-slate-500 text-[11px] block">Extracted URLs:</span>
               <div className="flex flex-wrap gap-2">
                 {analysisResult.detected_urls.map((u, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded bg-slate-900 border border-white/5 text-sky-400 font-mono text-[11px]">
+                  <span key={i} className="px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-800 font-mono text-[11px]">
                     {u}
                   </span>
                 ))}

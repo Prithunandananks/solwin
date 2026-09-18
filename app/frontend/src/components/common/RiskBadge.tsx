@@ -23,36 +23,36 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, showIcon = true, si
     lg: 14,
   }[size];
 
-  let colorClasses = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/25';
-  let dotColor = 'bg-emerald-400';
+  let colorClasses = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+  let dotColor = 'bg-emerald-600';
   let Icon = ShieldCheck;
   let label = 'LOW RISK';
 
   if (norm === 'CRITICAL') {
-    colorClasses = 'bg-rose-500/15 text-rose-300 border-rose-500/35 shadow-glow-danger';
-    dotColor = 'bg-rose-500 animate-ping';
+    colorClasses = 'bg-rose-50 text-rose-800 border-rose-200 shadow-sm';
+    dotColor = 'bg-rose-600 animate-ping';
     Icon = ShieldAlert;
     label = 'CRITICAL RISK';
   } else if (norm === 'HIGH') {
-    colorClasses = 'bg-orange-500/15 text-orange-300 border-orange-500/35';
-    dotColor = 'bg-orange-400';
+    colorClasses = 'bg-orange-50 text-orange-800 border-orange-200';
+    dotColor = 'bg-orange-600';
     Icon = AlertTriangle;
     label = 'HIGH RISK';
   } else if (norm === 'MEDIUM') {
-    colorClasses = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-    dotColor = 'bg-amber-400';
+    colorClasses = 'bg-amber-50 text-amber-800 border-amber-200';
+    dotColor = 'bg-amber-600';
     Icon = AlertTriangle;
     label = 'MEDIUM RISK';
   }
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-lg border backdrop-blur-sm transition-all ${sizeClasses} ${colorClasses}`}
+      className={`inline-flex items-center gap-1.5 rounded-lg border font-medium transition-all ${sizeClasses} ${colorClasses}`}
     >
       {norm === 'CRITICAL' ? (
         <span className="relative flex h-1.5 w-1.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-600"></span>
         </span>
       ) : (
         <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />

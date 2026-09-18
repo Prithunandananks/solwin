@@ -10,19 +10,19 @@ interface SentimentBadgeProps {
 export const SentimentBadge: React.FC<SentimentBadgeProps> = ({ sentiment, showIcon = true }) => {
   const norm = (sentiment || 'Neutral').toLowerCase();
 
-  let styles = 'bg-surface-elevated text-slate-300 border-white/10';
+  let styles = 'bg-slate-100 text-slate-700 border-slate-200';
   let Icon = Meh;
 
   if (norm === 'positive') {
-    styles = 'bg-emerald-500/10 text-emerald-300 border-emerald-500/25';
+    styles = 'bg-emerald-50 text-emerald-800 border-emerald-200';
     Icon = Smile;
   } else if (norm === 'negative') {
-    styles = 'bg-rose-500/15 text-rose-300 border-rose-500/30';
+    styles = 'bg-rose-50 text-rose-800 border-rose-200';
     Icon = Frown;
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-mono border backdrop-blur-sm ${styles}`}>
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-mono border font-medium ${styles}`}>
       {showIcon && <Icon size={12} className="shrink-0" />}
       <span className="uppercase tracking-wide">{sentiment}</span>
     </span>

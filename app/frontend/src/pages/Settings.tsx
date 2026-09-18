@@ -28,30 +28,30 @@ export const Settings: React.FC = () => {
       </div>
 
       {/* Backend API Configuration */}
-      <div className="p-6 rounded-xl bg-slate-900/70 border border-slate-800 space-y-4">
-        <div className="flex items-center gap-2 text-brand-blue">
+      <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-card space-y-4">
+        <div className="flex items-center gap-2 text-slate-900">
           <Server size={18} />
-          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
             Backend REST API Connection
           </h2>
         </div>
 
-        <p className="text-xs text-slate-400 leading-relaxed">
+        <p className="text-xs text-slate-500 leading-relaxed">
           The SOLWIN frontend strictly communicates with your Python/FastAPI backend over REST. Configure the active gateway endpoint below.
         </p>
 
         <form onSubmit={handleSave} className="space-y-4 max-w-xl">
           <div>
-            <label className="text-xs font-mono font-medium text-slate-300 block mb-1">
+            <label className="text-xs font-mono font-medium text-slate-700 block mb-1">
               Gateway Base URL
             </label>
             <input
               type="text"
               value={apiUrl}
               onChange={(e) => setApiUrl(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-blue"
+              className="w-full px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-xs font-mono text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 shadow-sm"
             />
-            <span className="text-[11px] text-slate-500 font-mono mt-1 block">
+            <span className="text-[11px] text-slate-400 font-mono mt-1 block">
               Default: http://localhost:8000/api/v1
             </span>
           </div>
@@ -59,12 +59,12 @@ export const Settings: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-brand-blue hover:bg-brand-blue/90 text-white text-xs font-semibold font-mono uppercase tracking-wider shadow-glow-sm transition-all"
+              className="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold font-mono uppercase tracking-wider shadow-sm transition-all"
             >
               Update Gateway Endpoint
             </button>
             {saved && (
-              <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span className="text-xs font-mono text-emerald-700 flex items-center gap-1">
                 <Check size={14} /> Saved successfully
               </span>
             )}
@@ -73,33 +73,33 @@ export const Settings: React.FC = () => {
       </div>
 
       {/* Analyst Profile Information */}
-      <div className="p-6 rounded-xl bg-slate-900/70 border border-slate-800 space-y-4">
-        <div className="flex items-center gap-2 text-indigo-400">
+      <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-card space-y-4">
+        <div className="flex items-center gap-2 text-slate-900">
           <Shield size={18} />
-          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-200">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
             Operator Session Credentials
           </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-500 block mb-1">Operator Name</span>
-            <span className="font-semibold text-slate-200">{user?.name}</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-[10px] font-mono text-slate-400 block mb-1">Operator Name</span>
+            <span className="font-semibold text-slate-900">{user?.name}</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-500 block mb-1">Authorized Email</span>
-            <span className="font-mono text-slate-200">{user?.email}</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-[10px] font-mono text-slate-400 block mb-1">Authorized Email</span>
+            <span className="font-mono text-slate-900">{user?.email}</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-500 block mb-1">Assigned Role</span>
-            <span className="font-mono text-emerald-400 uppercase font-bold">{user?.role}</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-[10px] font-mono text-slate-400 block mb-1">Assigned Role</span>
+            <span className="font-mono text-emerald-700 uppercase font-bold">{user?.role}</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-500 block mb-1">Session Security</span>
-            <span className="font-mono text-slate-300">JWT Bearer Interceptor Active</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-[10px] font-mono text-slate-400 block mb-1">Session Security</span>
+            <span className="font-mono text-slate-700">JWT Bearer Interceptor Active</span>
           </div>
         </div>
       </div>

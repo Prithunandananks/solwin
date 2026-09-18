@@ -24,8 +24,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange, onReset
 
   return (
     <div className="flex flex-wrap items-center gap-2.5 py-2">
-      <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium mr-1">
-        <Filter size={14} className="text-brand-blue" />
+      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium mr-1">
+        <Filter size={14} className="text-slate-700" />
         <span>Filters:</span>
       </div>
 
@@ -34,7 +34,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange, onReset
           <select
             value={filter.value}
             onChange={(e) => onChange(filter.id, e.target.value)}
-            className="bg-slate-900 border border-slate-700/80 hover:border-slate-600 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-blue/50 transition-colors cursor-pointer"
+            className="bg-white border border-slate-200 hover:border-slate-300 text-slate-800 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-slate-900 transition-colors cursor-pointer shadow-sm"
           >
             <option value="">{filter.label} (All)</option>
             {filter.options.map((opt) => (
@@ -49,7 +49,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ filters, onChange, onReset
       {hasActiveFilters && onReset && (
         <button
           onClick={onReset}
-          className="text-xs text-brand-cyan hover:text-brand-cyan/80 px-2 py-1 rounded transition-colors font-medium"
+          className="text-xs text-slate-700 hover:text-slate-900 px-2 py-1 rounded transition-colors font-medium underline underline-offset-2"
         >
           Reset Filters
         </button>

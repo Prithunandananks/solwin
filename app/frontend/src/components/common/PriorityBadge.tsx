@@ -8,25 +8,25 @@ interface PriorityBadgeProps {
 export const PriorityBadge: React.FC<PriorityBadgeProps> = ({ priority }) => {
   const norm = (priority || 'Low').toLowerCase();
 
-  let styles = 'bg-surface-elevated text-slate-300 border-white/10';
-  let dotColor = 'bg-slate-400';
+  let styles = 'bg-slate-100 text-slate-700 border-slate-200';
+  let dotColor = 'bg-slate-500';
 
   if (norm === 'critical') {
-    styles = 'bg-red-500/15 text-red-300 border-red-500/35 font-semibold';
-    dotColor = 'bg-red-400';
+    styles = 'bg-red-50 text-red-800 border-red-200 font-semibold';
+    dotColor = 'bg-red-600';
   } else if (norm === 'high') {
-    styles = 'bg-orange-500/15 text-orange-300 border-orange-500/35 font-semibold';
-    dotColor = 'bg-orange-400';
+    styles = 'bg-orange-50 text-orange-800 border-orange-200 font-semibold';
+    dotColor = 'bg-orange-600';
   } else if (norm === 'medium') {
-    styles = 'bg-amber-500/15 text-amber-300 border-amber-500/30';
-    dotColor = 'bg-amber-400';
+    styles = 'bg-amber-50 text-amber-800 border-amber-200';
+    dotColor = 'bg-amber-600';
   } else if (norm === 'low') {
-    styles = 'bg-slate-800/80 text-slate-400 border-white/10';
-    dotColor = 'bg-slate-500';
+    styles = 'bg-slate-50 text-slate-600 border-slate-200';
+    dotColor = 'bg-slate-400';
   }
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono border ${styles}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono border font-medium ${styles}`}>
       <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${dotColor}`} />
       <span className="uppercase tracking-wider">{priority}</span>
     </span>

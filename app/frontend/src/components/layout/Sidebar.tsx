@@ -58,13 +58,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-[#070a14]/95 border-r border-white/[0.08] select-none">
+    <div className="flex flex-col h-full bg-white border-r border-slate-200 select-none">
       {/* Mobile Drawer Header */}
-      <div className="p-4 flex items-center justify-between border-b border-white/[0.08] lg:hidden">
-        <span className="font-semibold text-xs text-slate-300 font-mono">SOC NAVIGATION</span>
+      <div className="p-4 flex items-center justify-between border-b border-slate-200 lg:hidden">
+        <span className="font-semibold text-xs text-slate-700 font-mono">SOC NAVIGATION</span>
         <button
           onClick={onClose}
-          className="p-1.5 text-slate-400 hover:text-slate-100 rounded-lg hover:bg-surface-elevated"
+          className="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100"
         >
           <X size={18} />
         </button>
@@ -75,7 +75,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {sections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             {section.title && (
-              <p className="px-3 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              <p className="px-3 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400 mb-2">
                 {section.title}
               </p>
             )}
@@ -90,21 +90,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className={({ isActive }) =>
                       `relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group ${
                         isActive
-                          ? 'bg-surface-elevated/90 text-white font-semibold shadow-sm border border-white/10'
-                          : 'text-slate-400 hover:text-slate-100 hover:bg-surface-elevated/40 border border-transparent'
+                          ? 'bg-slate-100 text-slate-900 font-semibold border border-slate-200/80 shadow-sm'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent'
                       }`
                     }
                   >
                     {({ isActive }) => (
                       <>
                         {isActive && (
-                          <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-gradient-to-b from-brand-blue to-brand-indigo shadow-glow-sm" />
+                          <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-slate-900" />
                         )}
                         <div className="flex items-center gap-2.5">
                           <Icon
                             size={16}
                             className={`shrink-0 transition-colors ${
-                              isActive ? 'text-brand-cyan' : 'text-slate-500 group-hover:text-slate-300'
+                              isActive ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-700'
                             }`}
                           />
                           <span>{item.label}</span>
@@ -112,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         {item.badge && (
                           <span
                             className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-medium ${
-                              item.badgeColor || 'bg-surface-elevated text-slate-300'
+                              item.badgeColor || 'bg-slate-100 text-slate-700'
                             }`}
                           >
                             {item.badge}
@@ -129,19 +129,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       </nav>
 
       {/* Footer System Diagnostics Card */}
-      <div className="p-3 border-t border-white/[0.08]">
-        <div className="p-3 rounded-xl bg-surface-card/60 border border-white/[0.06] space-y-2">
+      <div className="p-3 border-t border-slate-200">
+        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-              <Zap size={13} className="text-amber-400" />
+            <span className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
+              <Zap size={13} className="text-amber-500" />
               <span>SOC Agent AI</span>
             </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-semibold border border-emerald-500/30">
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
               OPERATIONAL
             </span>
           </div>
-          <div className="w-full bg-surface-elevated rounded-full h-1 overflow-hidden">
-            <div className="bg-gradient-to-r from-brand-blue to-brand-cyan h-full w-[94%]" />
+          <div className="w-full bg-slate-200 rounded-full h-1 overflow-hidden">
+            <div className="bg-slate-900 h-full w-[94%]" />
           </div>
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono">
             <span>Model Latency</span>
