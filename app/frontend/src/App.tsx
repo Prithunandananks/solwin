@@ -1,0 +1,60 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
+import { MainLayout } from './components/layout/MainLayout';
+
+// Pages
+import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
+import { Conversations } from './pages/Conversations';
+import { ConversationDetails } from './pages/ConversationDetails';
+import { Threats } from './pages/Threats';
+import { ThreatDetails } from './pages/ThreatDetails';
+import { CampaignRadar } from './pages/CampaignRadar';
+import { CampaignDetails } from './pages/CampaignDetails';
+import { CustomerInsights } from './pages/CustomerInsights';
+import { SecurityAnalytics } from './pages/SecurityAnalytics';
+import { Settings } from './pages/Settings';
+
+export const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Login */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected Application Routes */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <MainLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/conversations" element={<Conversations />} />
+              <Route path="/conversations/:id" element={<ConversationDetails />} />
+              <Route path="/threats" element={<Threats />} />
+              <Route path="/threats/:id" element={<ThreatDetails />} />
+              <Route path="/campaigns" element={<CampaignRadar />} />
+              <Route path="/campaigns/:id" element={<CampaignDetails />} />
+              <Route path="/insights/customer" element={<CustomerInsights />} />
+              <Route path="/analytics/security" element={<SecurityAnalytics />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
+
+            {/* Catch-all fallback */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+};
+
+export default App;
