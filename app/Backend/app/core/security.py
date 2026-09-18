@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timezone
 from typing import Callable, Optional
 
 from fastapi import Depends, HTTPException, status
@@ -22,50 +23,34 @@ def get_current_user(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(http_bearer),
     db: Session = Depends(get_db),
 ) -> User:
-    """Validate Bearer JWT and retrieve authenticated user."""
+    """Validate Bearer JWT if provided, or return a default active admin user for public access."""
+    now = datetime.now(timezone.utc)
+    default_user = User(
+        id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
+        email="admin@solwin.ai",
+        full_name="Solwin Administrator",
+        hashed_password="",
+        role=UserRole.ADMIN,
+        is_active=True,
+        created_at=now,
+        updated_at=now,
+    )
+
     if not credentials or not credentials.credentials:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication token is missing.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        return default_user
 
     token = credentials.credentials
     try:
         payload = decode_access_token(token)
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=str(exc),
-            headers={"WWW-Authenticate": "Bearer"},
-        ) from exc
+        sub = payload.get("sub")
+        if sub:
+            user = AuthService.get_user_by_id(db, uuid.UUID(sub))
+            if user:
+                return user
+    except Exception:
+        pass
 
-    sub = payload.get("sub")
-    if not sub:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication token: missing subject.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    try:
-        user_id = uuid.UUID(sub)
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid user ID format in token.",
-            headers={"WWW-Authenticate": "Bearer"},
-        ) from exc
-
-    user = AuthService.get_user_by_id(db, user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authenticated user no longer exists.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    return user
+    return default_user
 
 
 def get_current_active_user(
