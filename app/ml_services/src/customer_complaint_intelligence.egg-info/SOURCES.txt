@@ -10,6 +10,8 @@ src/ml_service/main.py
 src/ml_service/api/__init__.py
 src/ml_service/api/routes.py
 src/ml_service/api/schemas.py
+src/ml_service/classification/__init__.py
+src/ml_service/classification/classifier.py
 src/ml_service/core/__init__.py
 src/ml_service/core/config.py
 src/ml_service/core/logging.py

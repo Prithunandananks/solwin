@@ -2,13 +2,20 @@ import logging
 import time
 import uuid
 from collections.abc import Awaitable, Callable
+from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 
+from ml_service.analytics.frequency import FrequencyTracker
 from ml_service.api.routes import router
+from ml_service.classification.classifier import ComplaintClassifier
+from ml_service.clustering.clusterer import ComplaintClusterer
 from ml_service.core.config import get_settings
 from ml_service.core.logging import configure_logging, safe_log
 from ml_service.core.model_registry import ModelRegistry
+from ml_service.recommendation.engine import RecommendationEngine
+from ml_service.resolution.detector import ResolutionDetector
+from ml_service.urgency.detector import UrgencyDetector
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +25,27 @@ def create_app() -> FastAPI:
     configure_logging(settings.log_level)
     app = FastAPI(title="Customer Complaint Intelligence ML Service", version="0.1.0")
     app.state.model_registry = ModelRegistry(settings.model_registry_path)
+
+    # Initialize models once on startup
+    primary_model_path = settings.model_dir / "complaint_classifier_v1.joblib"
+    fg_model_path = settings.model_dir / "intent_classifier_v1.joblib"
+    app.state.classifier = ComplaintClassifier(
+        model_path=primary_model_path,
+        confidence_threshold=settings.model_confidence_threshold,
+        fine_grained_model_path=fg_model_path,
+    )
+
+    cluster_model_path = settings.model_dir / "clusterer_v1.joblib"
+    cluster_meta_path = settings.model_dir / "clusters_metadata.json"
+    app.state.clusterer = ComplaintClusterer(
+        model_path=cluster_model_path,
+        metadata_path=cluster_meta_path,
+    )
+
+    app.state.frequency_tracker = FrequencyTracker()
+    app.state.urgency_detector = UrgencyDetector()
+    app.state.resolution_detector = ResolutionDetector()
+    app.state.recommendation_engine = RecommendationEngine(Path("config/action_rules.yaml"))
 
     @app.middleware("http")
     async def observability(

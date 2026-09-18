@@ -1,0 +1,251 @@
+{
+  "clusters": [
+    {
+      "cluster_id": 13,
+      "name": "Delivery Shipping Problem: product, delivery",
+      "size": 6612,
+      "percentage": 32.64,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "product",
+        "delivery",
+        "return",
+        "time",
+        "helpful"
+      ],
+      "representative_examples": [
+        "Product less",
+        "Dublicate product",
+        "Riteran product"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 7,
+      "name": "Delivery Shipping Problem: customer, good",
+      "size": 5234,
+      "percentage": 25.84,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "customer",
+        "good",
+        "support",
+        "service",
+        "excellent"
+      ],
+      "representative_examples": [
+        "Customer support is greatlyVery good",
+        "It's a good consecration with customer care",
+        "Very good responsibil customer care"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 1,
+      "name": "Delivery Shipping Problem: good",
+      "size": 3058,
+      "percentage": 15.1,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "good"
+      ],
+      "representative_examples": [
+        "Very good",
+        "Good"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 12,
+      "name": "Delivery Shipping Problem: general, feedback",
+      "size": 2826,
+      "percentage": 13.95,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "general",
+        "feedback"
+      ],
+      "representative_examples": [
+        "H",
+        "Bakvas",
+        "??"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 8,
+      "name": "Delivery Shipping Problem: nice",
+      "size": 599,
+      "percentage": 2.96,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "nice"
+      ],
+      "representative_examples": [
+        "Nice"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 9,
+      "name": "Delivery Shipping Problem: thanks",
+      "size": 463,
+      "percentage": 2.29,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "thanks"
+      ],
+      "representative_examples": [
+        "No thanks",
+        "Thanks"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 6,
+      "name": "Delivery Shipping Problem: thank",
+      "size": 460,
+      "percentage": 2.27,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "thank"
+      ],
+      "representative_examples": [
+        "Thank u",
+        "Thank you??",
+        "Thank you"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 14,
+      "name": "Delivery Shipping Problem: happy, happy shopzilla",
+      "size": 249,
+      "percentage": 1.23,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "happy",
+        "happy shopzilla",
+        "shopzilla",
+        "support"
+      ],
+      "representative_examples": [
+        "I am so happy",
+        "not happy",
+        "I'm happy"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 2,
+      "name": "Delivery Shipping Problem: good service, service",
+      "size": 233,
+      "percentage": 1.15,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "good service",
+        "service",
+        "good"
+      ],
+      "representative_examples": [
+        "Good service"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 4,
+      "name": "Delivery Shipping Problem: bad, bad service",
+      "size": 212,
+      "percentage": 1.05,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "bad",
+        "bad service",
+        "service",
+        "service shopzilla",
+        "shopzilla"
+      ],
+      "representative_examples": [
+        "Very bad",
+        "Not bad"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 10,
+      "name": "Delivery Shipping Problem: best, best service",
+      "size": 124,
+      "percentage": 0.61,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "best",
+        "best service",
+        "service",
+        "sarvice"
+      ],
+      "representative_examples": [
+        "Best",
+        "You are so best"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 5,
+      "name": "Delivery Shipping Problem: good communication, communication",
+      "size": 96,
+      "percentage": 0.47,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "good communication",
+        "communication",
+        "good",
+        "communication skill",
+        "skill"
+      ],
+      "representative_examples": [
+        "Good communication with ankita",
+        "She was a good in communication",
+        "Good communication"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 11,
+      "name": "Delivery Shipping Problem: thanks shopzilla, thanks",
+      "size": 86,
+      "percentage": 0.42,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "thanks shopzilla",
+        "thanks",
+        "shopzilla",
+        "shopzilla team",
+        "team"
+      ],
+      "representative_examples": [
+        "Thanks To Shopzilla",
+        "Thanks for Shopzilla",
+        "Thanks Shopzilla"
+      ],
+      "model_version": "1.0.0"
+    },
+    {
+      "cluster_id": 3,
+      "name": "Delivery Shipping Problem: nice, nice nice",
+      "size": 5,
+      "percentage": 0.02,
+      "dominant_category": "DELIVERY_SHIPPING_PROBLEM",
+      "keywords": [
+        "nice",
+        "nice nice"
+      ],
+      "representative_examples": [
+        "This customer us very nice",
+        "my experience is very nice",
+        "Nice nice"
+      ],
+      "model_version": "1.0.0"
+    }
+  ],
+  "total_clusters": 14
+}

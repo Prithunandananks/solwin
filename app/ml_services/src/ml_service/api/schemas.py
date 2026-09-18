@@ -60,3 +60,99 @@ class ClassificationResult(BaseModel):
     model_version: str
     fine_grained_intent: str | None = None
 
+
+class ClusterMetadata(BaseModel):
+    cluster_id: int
+    name: str
+    size: int
+    percentage: float
+    dominant_category: BusinessCategory
+    keywords: list[str]
+    representative_examples: list[str]
+    model_version: str
+
+
+class ClusterAssignment(BaseModel):
+    cluster_id: int
+    cluster_name: str
+    dominant_category: BusinessCategory
+    distance: float
+    keywords: list[str]
+
+
+class BatchClusterRequest(BaseModel):
+    complaints: list[ComplaintInput] = Field(min_length=1, max_length=500)
+
+
+class BatchClusterResponse(BaseModel):
+    assignments: list[ClusterAssignment]
+    total_processed: int
+
+
+class FrequencyReport(BaseModel):
+    total_live_reports: int
+    by_category: dict[str, int]
+    by_cluster: dict[str, int]
+    timestamp: datetime
+    data_source: str = "live_production_telemetry"
+
+
+class UrgencyLevel(StrEnum):
+    CRITICAL = "CRITICAL"
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+
+
+class UrgencyResult(BaseModel):
+    urgency: UrgencyLevel
+    confidence: float = Field(ge=0.0, le=1.0)
+    signals: list[str]
+    reasons: list[str]
+
+
+class ResolutionStatus(StrEnum):
+    RESOLVED = "RESOLVED"
+    UNRESOLVED = "UNRESOLVED"
+    PARTIALLY_RESOLVED = "PARTIALLY_RESOLVED"
+    UNKNOWN = "UNKNOWN"
+
+
+class ResolutionResult(BaseModel):
+    status: ResolutionStatus
+    confidence: float = Field(ge=0.0, le=1.0)
+    signals: list[str]
+    pending_items: list[str]
+
+
+class ActionType(StrEnum):
+    REQUEST_MORE_INFORMATION = "REQUEST_MORE_INFORMATION"
+    ESCALATE_TO_PAYMENT_TEAM = "ESCALATE_TO_PAYMENT_TEAM"
+    ESCALATE_TO_SECURITY_TEAM = "ESCALATE_TO_SECURITY_TEAM"
+    ESCALATE_TO_TECHNICAL_TEAM = "ESCALATE_TO_TECHNICAL_TEAM"
+    ESCALATE_TO_BILLING_TEAM = "ESCALATE_TO_BILLING_TEAM"
+    ESCALATE_TO_DELIVERY_TEAM = "ESCALATE_TO_DELIVERY_TEAM"
+    INITIATE_REFUND_REVIEW = "INITIATE_REFUND_REVIEW"
+    VERIFY_CUSTOMER_IDENTITY = "VERIFY_CUSTOMER_IDENTITY"
+    RESET_ACCOUNT_ACCESS = "RESET_ACCOUNT_ACCESS"
+    MONITOR = "MONITOR"
+    STANDARD_SUPPORT_RESPONSE = "STANDARD_SUPPORT_RESPONSE"
+    HUMAN_REVIEW = "HUMAN_REVIEW"
+
+
+class ActionRecommendation(BaseModel):
+    primary_action: ActionType
+    secondary_actions: list[ActionType] = Field(default_factory=list)
+    rationale: str
+    matched_rule_id: str
+
+
+class RecommendationRequest(BaseModel):
+    complaint: ComplaintInput
+    category: BusinessCategory | None = None
+    urgency: UrgencyLevel | None = None
+    resolution: ResolutionStatus | None = None
+    security_risk: str | None = None
+
+
+

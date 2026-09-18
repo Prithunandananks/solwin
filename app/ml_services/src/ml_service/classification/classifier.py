@@ -42,7 +42,7 @@ class ComplaintClassifier:
         subject: str | None = None,
         threshold: float | None = None,
     ) -> ClassificationResult:
-        """Classify complaint into 11 business categories with calibrated probabilities and abstention."""
+        """Classify complaint into 11 business categories with calibrated probabilities."""
         if not self.is_loaded:
             raise RuntimeError("Classifier model artifact is not loaded.")
 
@@ -65,7 +65,8 @@ class ComplaintClassifier:
         classes = self.pipeline.classes_
 
         prob_dict: dict[str, float] = {
-            cls_name: round(float(prob), 4) for cls_name, prob in zip(classes, probabilities, strict=False)
+            cls_name: round(float(prob), 4)
+            for cls_name, prob in zip(classes, probabilities, strict=False)
         }
 
         # Find best class

@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-"""Train customer complaint classifier benchmark (TF-IDF + Calibrated LinearSVC vs Logistic Regression).
+"""Train customer complaint classifier benchmark (TF-IDF + SVM vs Logistic Regression).
 
 Selects best model based on validation macro F1, serializes artifact,
 and updates config/model_registry.yaml.
 """
 
 import argparse
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import joblib
-import numpy as np
 import pandas as pd
 import yaml
 from sklearn.calibration import CalibratedClassifierCV
@@ -64,7 +63,10 @@ def train_and_select_best(
     val_preds_svm = pipe_svm.predict(X_val)
     macro_f1_svm = float(f1_score(y_val, val_preds_svm, average="macro"))
     weighted_f1_svm = float(f1_score(y_val, val_preds_svm, average="weighted"))
-    print(f"Candidate 1 (Calibrated SVM) - Macro F1: {macro_f1_svm:.4f}, Weighted F1: {weighted_f1_svm:.4f}")
+    print(
+        f"Candidate 1 (Calibrated SVM) - Macro F1: {macro_f1_svm:.4f}, "
+        f"Weighted F1: {weighted_f1_svm:.4f}"
+    )
 
     # Candidate 2: TF-IDF + Logistic Regression
     print("Training Candidate 2: TF-IDF + Logistic Regression...")
@@ -94,7 +96,10 @@ def train_and_select_best(
     val_preds_lr = pipe_lr.predict(X_val)
     macro_f1_lr = float(f1_score(y_val, val_preds_lr, average="macro"))
     weighted_f1_lr = float(f1_score(y_val, val_preds_lr, average="weighted"))
-    print(f"Candidate 2 (Logistic Regression) - Macro F1: {macro_f1_lr:.4f}, Weighted F1: {weighted_f1_lr:.4f}")
+    print(
+        f"Candidate 2 (Logistic Regression) - Macro F1: {macro_f1_lr:.4f}, "
+        f"Weighted F1: {weighted_f1_lr:.4f}"
+    )
 
     # Select best candidate
     if macro_f1_svm >= macro_f1_lr:
@@ -154,7 +159,7 @@ def train_and_select_best(
     print(f"Saved fine-grained model to: {fg_artifact_path}")
 
     # Register model in model_registry.yaml
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    today = datetime.now(UTC).strftime("%Y-%m-%d")
     registry_entry = {
         "models": [
             {

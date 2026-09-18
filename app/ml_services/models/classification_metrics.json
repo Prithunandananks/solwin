@@ -1,0 +1,113 @@
+{
+  "model_name": "complaint-classifier",
+  "version": "1.0.0",
+  "dataset": "data/processed/test.csv",
+  "total_test_samples": 4341,
+  "overall_metrics": {
+    "accuracy": 0.1659,
+    "macro_f1": 0.1065,
+    "weighted_f1": 0.2099,
+    "macro_precision": 0.1332,
+    "macro_recall": 0.1389
+  },
+  "per_class_metrics": {
+    "PAYMENT_TRANSACTION_ISSUE": {
+      "precision": 0.0455,
+      "recall": 0.0902,
+      "f1_score": 0.0605,
+      "support": 133
+    },
+    "ACCOUNT_LOGIN_PROBLEM": {
+      "precision": 0.0105,
+      "recall": 0.25,
+      "f1_score": 0.0201,
+      "support": 32
+    },
+    "PRODUCT_ISSUE": {
+      "precision": 0.2151,
+      "recall": 0.1796,
+      "f1_score": 0.1958,
+      "support": 746
+    },
+    "DELIVERY_SHIPPING_PROBLEM": {
+      "precision": 0.5922,
+      "recall": 0.174,
+      "f1_score": 0.269,
+      "support": 1994
+    },
+    "REFUND_REQUEST": {
+      "precision": 0.2534,
+      "recall": 0.1436,
+      "f1_score": 0.1833,
+      "support": 787
+    },
+    "SUBSCRIPTION_ISSUE": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 16
+    },
+    "TECHNICAL_PROBLEM": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 3
+    },
+    "SERVICE_QUALITY": {
+      "precision": 0.0925,
+      "recall": 0.1636,
+      "f1_score": 0.1182,
+      "support": 220
+    },
+    "BILLING_PROBLEM": {
+      "precision": 0.0397,
+      "recall": 0.1846,
+      "f1_score": 0.0654,
+      "support": 65
+    },
+    "SECURITY_CONCERN": {
+      "precision": 0.132,
+      "recall": 0.1571,
+      "f1_score": 0.1435,
+      "support": 210
+    },
+    "OTHER": {
+      "precision": 0.0839,
+      "recall": 0.1852,
+      "f1_score": 0.1155,
+      "support": 135
+    }
+  },
+  "abstention_analysis": {
+    "0.3": {
+      "abstained_count": 3820,
+      "total_count": 4341,
+      "abstention_rate": 0.88
+    },
+    "0.4": {
+      "abstained_count": 4159,
+      "total_count": 4341,
+      "abstention_rate": 0.9581
+    },
+    "0.5": {
+      "abstained_count": 4233,
+      "total_count": 4341,
+      "abstention_rate": 0.9751
+    },
+    "0.6": {
+      "abstained_count": 4299,
+      "total_count": 4341,
+      "abstention_rate": 0.9903
+    },
+    "0.7": {
+      "abstained_count": 4318,
+      "total_count": 4341,
+      "abstention_rate": 0.9947
+    },
+    "0.8": {
+      "abstained_count": 4328,
+      "total_count": 4341,
+      "abstention_rate": 0.997
+    }
+  }
+}
