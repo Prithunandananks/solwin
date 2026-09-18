@@ -126,7 +126,7 @@ def test_customer_intelligence_invalid_output_json():
 # ==========================================
 from fastapi import FastAPI
 from app.api.v1.analysis import router as analysis_router
-from app.core.security import get_current_active_user, get_current_user
+from app.core.auth import get_current_active_user, get_current_user
 from app.models.enums import UserRole
 from app.models.user import User
 

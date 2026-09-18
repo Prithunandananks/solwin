@@ -4,8 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import require_role
-from app.models.enums import UserRole
 from app.schemas.unified import (
     DirectMessageAnalysisRequest,
     UnifiedAnalysisRequest,
@@ -19,16 +17,6 @@ from app.services.unified_intelligence import (
 router = APIRouter(
     prefix="/analyze",
     tags=["Unified Intelligence Pipeline"],
-    dependencies=[
-        Depends(
-            require_role(
-                UserRole.SUPPORT_AGENT,
-                UserRole.SUPPORT_MANAGER,
-                UserRole.SECURITY_ANALYST,
-                UserRole.ADMIN,
-            )
-        )
-    ],
 )
 
 
