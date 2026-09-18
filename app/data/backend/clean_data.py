@@ -9,13 +9,13 @@ def clean_csv_data(file_path: str = None) -> pd.DataFrame:
     - Drops duplicate records.
     """
     if not file_path:
-        # Resolve path relative to project structure
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # Resolve path relative to project structure (app/data)
+        data_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         possible_paths = [
-            os.path.join(base_dir, "app/data/unified_customer_phishing_data.csv"),
-            os.path.join(base_dir, "app/data/unified_customer_phishing_data.csv"),
-            os.path.join(base_dir, "data", "unified_customer_phishing_data_subset.csv"),
-            os.path.join(base_dir, "data", "unified_customer_phishing_data_subset (1).csv"),
+            os.path.join(data_dir, "unified_customer_phishing_data (1).csv"),
+            os.path.join(data_dir, "unified_customer_phishing_data.csv"),
+            os.path.join(data_dir, "unified_customer_phishing_data_subset.csv"),
+            os.path.join(data_dir, "unified_customer_phishing_data_subset (1).csv"),
         ]
         file_path = None
         for p in possible_paths:

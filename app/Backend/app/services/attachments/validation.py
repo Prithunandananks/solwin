@@ -24,11 +24,13 @@ def sanitize_filename(filename: str | None) -> str:
     """Safely normalize and sanitize uploaded filename, preventing path traversal."""
     if not filename:
         return "unnamed_attachment"
-    # Extract just file name, stripping paths
-    name = Path(filename).name
+    # Normalize Windows backslashes and extract just file name
+    clean_path = filename.replace("\\", "/")
+    name = Path(clean_path).name
     # Replace any potentially dangerous path characters
     name = name.replace("..", "_").replace("/", "_").replace("\\", "_").strip()
     return name if name else "unnamed_attachment"
+
 
 
 def calculate_sha256(data: bytes | BinaryIO) -> str:

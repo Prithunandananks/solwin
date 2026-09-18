@@ -181,7 +181,7 @@ def create_reproducible_splits(
     )
 
     if not rare_groups.empty:
-        train_groups = pd.concat([train_groups, rare_groups], ignore_index=True)
+        train_groups = pd.concat([train_groups, rare_groups], ignore_index=True)  # type: ignore[list-item]
 
     train_set = set(train_groups["_norm_text"])
     val_set = set(val_groups["_norm_text"])

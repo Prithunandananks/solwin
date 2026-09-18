@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "default-development-secret-key-change-in-prod"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ML_SERVICE_URL: str = "http://localhost:8000"
 
     # Attachments & Storage
     ATTACHMENTS_STORAGE_DIR: str = "storage/attachments"
