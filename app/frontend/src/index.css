@@ -25,211 +25,241 @@
   --text-muted: #64748b;
 }
 
-/* Light Theme: Cloud Minimalist UI Architect Spec */
-/* - Base Layer: #f8fafc */
-/* - Surface Layer: #ffffff for cards, panels, modals */
-/* - Borders: #e2e8f0 with rounded-xl / rounded-2xl */
-/* - Elevation: soft shadows, NO dark mode glows */
-/* - Typography: primary text-slate-900, secondary text-slate-500, data font-mono text-[11px] uppercase tracking-widest */
+/* Light Theme: Premium Utilitarian Minimalism & Editorial UI Spec */
+/* - Canvas / Background: Pure White #FFFFFF or Warm Bone/Off-White #F7F6F3 / #FBFBFA */
+/* - Primary Surface (Cards): #FFFFFF */
+/* - Structural Borders: Ultra-light gray #EAEAEA / 1px solid #EAEAEA */
+/* - Elevation: Practically non-existent or ultra-diffuse low opacity (< 0.05) */
+/* - Text: Charcoal #111111 / #2F3437 for body, muted gray #787774 for secondary */
+/* - Pastels: Pale Red (#FDEBEC / #9F2F2D), Pale Blue (#E1F3FE / #1F6C9F), Pale Green (#EDF3EC / #346538), Pale Yellow (#FBF3DB / #956400) */
 html.light {
   color-scheme: light;
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-surface-card: #ffffff;
-  --color-surface-elevated: #f1f5f9;
-  --color-surface-lighter: #f8fafc;
-  --color-surface-border: #e2e8f0;
-  --color-surface-border-active: rgba(2, 132, 199, 0.4);
+  --color-bg: #FBFBFA;
+  --color-surface: #FFFFFF;
+  --color-surface-card: #FFFFFF;
+  --color-surface-elevated: #F7F6F3;
+  --color-surface-lighter: #FBFBFA;
+  --color-surface-border: #EAEAEA;
+  --color-surface-border-active: #111111;
   --color-surface-glow: transparent;
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-  --shadow-elevated: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-  --grid-line-color: rgba(15, 23, 42, 0.025);
-  --scrollbar-track: #f8fafc;
-  --scrollbar-thumb: #cbd5e1;
-  --scrollbar-thumb-hover: #94a3b8;
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-elevated: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
+  --shadow-dropdown: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+  --grid-line-color: rgba(0, 0, 0, 0.03);
+  --scrollbar-track: #FBFBFA;
+  --scrollbar-thumb: #D4D4D4;
+  --scrollbar-thumb-hover: #A3A3A3;
+  --text-primary: #111111;
+  --text-secondary: #787774;
+  --text-muted: #999999;
 }
 
 body {
   margin: 0;
   background-color: var(--color-bg);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* =========================================================
-   Cloud Minimalist Light Theme Overrides (Per Skill Spec)
+   Light Theme Comprehensive Global Overrides (Per Minimalist UI)
    ========================================================= */
 
-/* Typography */
+/* Typography & Text Contrast */
 html.light h1,
 html.light h2,
 html.light h3,
 html.light h4,
-html.light .text-white {
-  color: #0f172a !important;
-}
-
+html.light .text-white,
 html.light .text-slate-100 {
-  color: #0f172a !important;
+  color: #111111 !important;
 }
 
-html.light .text-slate-200 {
-  color: #1e293b !important;
-}
-
+html.light .text-slate-200,
 html.light .text-slate-300 {
-  color: #334155 !important;
+  color: #2F3437 !important;
 }
 
 html.light .text-slate-400 {
-  color: #64748b !important;
+  color: #787774 !important;
 }
 
 html.light .text-slate-500 {
-  color: #64748b !important;
+  color: #787774 !important;
 }
 
-/* Surfaces: Pure white for cards, panels, modals */
+html.light .text-slate-600 {
+  color: #4A4A4A !important;
+}
+
+/* Surfaces & Containers */
+html.light .bg-surface,
 html.light .bg-surface-card {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  background-color: #FFFFFF !important;
+  border-color: #EAEAEA !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
 }
 
-html.light .bg-surface-elevated {
-  background-color: #f8fafc !important;
-  border-color: #e2e8f0 !important;
-}
-
+html.light .bg-surface-elevated,
+html.light .bg-surface-elevated\/40,
+html.light .bg-surface-elevated\/50,
 html.light .bg-surface-elevated\/60,
 html.light .bg-surface-elevated\/70,
-html.light .bg-surface-elevated\/80 {
-  background-color: #f8fafc !important;
-  border-color: #e2e8f0 !important;
+html.light .bg-surface-elevated\/80,
+html.light .bg-surface-elevated\/90 {
+  background-color: #F7F6F3 !important;
+  border-color: #EAEAEA !important;
+}
+
+html.light .bg-slate-50,
+html.light .bg-slate-100 {
+  background-color: #F7F6F3 !important;
+  border-color: #EAEAEA !important;
+  color: #2F3437 !important;
 }
 
 html.light .bg-slate-800,
 html.light .bg-slate-800\/40,
 html.light .bg-slate-800\/60,
-html.light .bg-slate-800\/80 {
-  background-color: #f1f5f9 !important;
-}
-
+html.light .bg-slate-800\/80,
 html.light .bg-slate-900,
-html.light .bg-slate-900\/50 {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
+html.light .bg-slate-900\/50,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-950 {
+  background-color: #F7F6F3 !important;
+  border-color: #EAEAEA !important;
+  color: #111111 !important;
 }
 
-html.light .border-surface-border {
-  border-color: #e2e8f0 !important;
-}
-
+/* Borders & Dividers */
+html.light .border-surface-border,
 html.light .border-slate-700,
-html.light .border-slate-800 {
-  border-color: #e2e8f0 !important;
+html.light .border-slate-800,
+html.light .border-slate-900 {
+  border-color: #EAEAEA !important;
 }
 
-html.light .divide-surface-border > :not([hidden]) ~ :not([hidden]) {
-  border-color: #f1f5f9 !important;
+html.light .divide-surface-border > :not([hidden]) ~ :not([hidden]),
+html.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #EAEAEA !important;
 }
 
-/* Elevation (No Glows): Disable all glow shadows in light mode */
+/* Strip all heavy glows & shadows in light mode */
+html.light .shadow-card,
+html.light .shadow-elevated,
 html.light .shadow-glow-cyan,
 html.light .shadow-glow-rose,
 html.light .shadow-glow-indigo,
 html.light .shadow-glow-emerald,
-html.light .shadow-glow-rose\/10,
-html.light .shadow-glow-rose\/15,
-html.light .shadow-glow-rose\/20,
-html.light .shadow-glow-cyan\/20,
-html.light .shadow-glow-cyan\/25,
-html.light .shadow-glow-cyan\/30,
-html.light .shadow-glow-indigo\/20,
-html.light .shadow-glow-indigo\/30,
-html.light .shadow-glow-emerald\/20 {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+html.light .shadow-glow-amber,
+html.light [class*="shadow-glow-"] {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
 }
 
-/* Semantic Badges: Deep saturated colors on light 50 backgrounds */
+/* Muted Pastels per Minimalist UI Protocol */
+/* Pale Green: #EDF3EC / Text: #346538 */
 html.light .bg-emerald-500\/10,
 html.light .bg-emerald-500\/15,
-html.light .bg-emerald-500\/20 {
-  background-color: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
-  color: #047857 !important;
+html.light .bg-emerald-500\/20,
+html.light .bg-emerald-50 {
+  background-color: #EDF3EC !important;
+  border-color: #D3E4D1 !important;
+  color: #346538 !important;
 }
 
 html.light .text-emerald-300,
-html.light .text-emerald-400 {
-  color: #047857 !important;
+html.light .text-emerald-400,
+html.light .text-emerald-500,
+html.light .text-emerald-700 {
+  color: #346538 !important;
 }
 
+/* Pale Red: #FDEBEC / Text: #9F2F2D */
 html.light .bg-rose-500\/10,
 html.light .bg-rose-500\/15,
-html.light .bg-rose-500\/20 {
-  background-color: #fff1f2 !important;
-  border-color: #fecdd3 !important;
-  color: #be123c !important;
+html.light .bg-rose-500\/20,
+html.light .bg-rose-50 {
+  background-color: #FDEBEC !important;
+  border-color: #F8D1D4 !important;
+  color: #9F2F2D !important;
 }
 
 html.light .text-rose-200,
 html.light .text-rose-300,
-html.light .text-rose-400 {
-  color: #be123c !important;
+html.light .text-rose-400,
+html.light .text-rose-500,
+html.light .text-rose-700 {
+  color: #9F2F2D !important;
 }
 
+/* Pale Blue / Cyan: #E1F3FE / Text: #1F6C9F */
+html.light .bg-cyan-500\/10,
+html.light .bg-cyan-500\/15,
+html.light .bg-cyan-500\/20,
+html.light .bg-blue-50 {
+  background-color: #E1F3FE !important;
+  border-color: #C2E5FC !important;
+  color: #1F6C9F !important;
+}
+
+html.light .text-cyan-300,
+html.light .text-cyan-400,
+html.light .text-cyan-500,
+html.light .text-brand-cyan,
+html.light .text-blue-950,
+html.light .text-blue-700 {
+  color: #1F6C9F !important;
+}
+
+/* Pale Yellow / Amber: #FBF3DB / Text: #956400 */
 html.light .bg-amber-500\/10,
 html.light .bg-amber-500\/15,
-html.light .bg-amber-500\/20 {
-  background-color: #fffbeb !important;
-  border-color: #fde68a !important;
-  color: #b45309 !important;
+html.light .bg-amber-500\/20,
+html.light .bg-amber-50 {
+  background-color: #FBF3DB !important;
+  border-color: #F5E5B8 !important;
+  color: #956400 !important;
 }
 
 html.light .text-amber-300,
-html.light .text-amber-400 {
-  color: #b45309 !important;
+html.light .text-amber-400,
+html.light .text-amber-500,
+html.light .text-amber-700 {
+  color: #956400 !important;
 }
 
-html.light .bg-cyan-500\/10,
-html.light .bg-cyan-500\/15,
-html.light .bg-cyan-500\/20 {
-  background-color: #ecfeff !important;
-  border-color: #a5f3fc !important;
-  color: #0e7490 !important;
+/* Pale Purple / Violet: #F3EEFA / Text: #6940A5 */
+html.light .bg-violet-500\/10,
+html.light .bg-violet-500\/15,
+html.light .bg-purple-500\/10,
+html.light .bg-purple-500\/15 {
+  background-color: #F3EEFA !important;
+  border-color: #E2D5F3 !important;
+  color: #6940A5 !important;
 }
 
-html.light .bg-indigo-500\/10,
-html.light .bg-indigo-500\/15,
-html.light .bg-indigo-500\/20 {
-  background-color: #eef2ff !important;
-  border-color: #c7d2fe !important;
-  color: #4338ca !important;
+html.light .text-violet-300,
+html.light .text-violet-400,
+html.light .text-purple-400 {
+  color: #6940A5 !important;
 }
 
-html.light .text-indigo-300,
-html.light .text-indigo-400 {
-  color: #4338ca !important;
-}
-
-/* Form controls */
+/* Form inputs */
 html.light input,
-html.light select {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+html.light select,
+html.light textarea {
+  background-color: #FFFFFF !important;
+  color: #111111 !important;
+  border-color: #EAEAEA !important;
 }
 
 html.light input::placeholder {
-  color: #94a3b8 !important;
+  color: #999999 !important;
 }
 
 /* Subtle tactical cyber grid background */

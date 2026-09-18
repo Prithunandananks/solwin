@@ -35,8 +35,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"Geist"', '"SF Pro Display"', '-apple-system', 'sans-serif'],
+        serif: ['"Newsreader"', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', '"SF Mono"', 'monospace'],
       },
       boxShadow: {
         'card': 'var(--shadow-card)',

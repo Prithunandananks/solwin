@@ -23,24 +23,24 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({ level, showIcon = true, si
     lg: 14,
   }[size];
 
-  let colorClasses = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
-  let dotColor = 'bg-emerald-400';
+  let colorClasses = 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30';
+  let dotColor = 'bg-emerald-500 dark:bg-emerald-400';
   let Icon = ShieldCheck;
   let label = 'LOW RISK';
 
   if (norm === 'CRITICAL') {
-    colorClasses = 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-glow-rose';
-    dotColor = 'bg-rose-400';
+    colorClasses = 'bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-500/40 shadow-sm dark:shadow-glow-rose';
+    dotColor = 'bg-rose-600 dark:bg-rose-400';
     Icon = ShieldAlert;
     label = 'CRITICAL RISK';
   } else if (norm === 'HIGH') {
-    colorClasses = 'bg-orange-500/15 text-orange-300 border-orange-500/35';
-    dotColor = 'bg-orange-400';
+    colorClasses = 'bg-orange-50 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-500/35';
+    dotColor = 'bg-orange-500 dark:bg-orange-400';
     Icon = AlertTriangle;
     label = 'HIGH RISK';
   } else if (norm === 'MEDIUM') {
-    colorClasses = 'bg-amber-500/15 text-amber-300 border-amber-500/35';
-    dotColor = 'bg-amber-400';
+    colorClasses = 'bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/35';
+    dotColor = 'bg-amber-500 dark:bg-amber-400';
     Icon = AlertTriangle;
     label = 'MEDIUM RISK';
   }

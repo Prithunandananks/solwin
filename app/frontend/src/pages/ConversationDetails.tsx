@@ -13,6 +13,7 @@ import { AttachmentUploader } from '../components/conversations/AttachmentUpload
 import { PriorityBadge } from '../components/common/PriorityBadge';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { StatusBadge } from '../components/common/StatusBadge';
+import { SentimentBadge } from '../components/common/SentimentBadge';
 import { ErrorState } from '../components/common/ErrorState';
 import {
   ChevronLeft,
@@ -74,27 +75,28 @@ export const ConversationDetails: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       {/* Top Header & Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-surface-border">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface rounded-2xl border border-surface-border shadow-card">
         <div className="flex items-center gap-3.5">
           <button
             onClick={() => navigate('/conversations')}
-            className="p-2 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-white transition-all shadow-sm"
+            className="p-2 rounded-xl border border-surface-border bg-surface-elevated hover:bg-slate-200 dark:hover:bg-surface-lighter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
             title="Back to conversations"
           >
             <ChevronLeft size={18} />
           </button>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs text-brand-cyan font-bold px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30">
+              <span className="font-mono text-xs text-brand-cyan dark:text-brand-cyan font-bold px-2.5 py-0.5 rounded-lg bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/30">
                 {id}
               </span>
               {conversation && <RiskBadge level={conversation.security_risk} size="sm" />}
               {conversation && <PriorityBadge priority={conversation.priority} />}
               {conversation && <StatusBadge status={isResolved ? 'Resolved' : conversation.status} />}
+              {conversation && <SentimentBadge sentiment={conversation.sentiment} />}
             </div>
-            <h1 className="text-lg font-bold text-white mt-1 font-sans flex items-center gap-2">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white mt-1.5 font-sans flex items-center gap-2">
               <span>{conversation?.customer_name}</span>
-              <span className="text-xs font-mono font-normal text-slate-400">({conversation?.channel})</span>
+              <span className="text-xs font-mono font-normal text-slate-500 dark:text-slate-400">({conversation?.channel})</span>
             </h1>
           </div>
         </div>
@@ -107,8 +109,8 @@ export const ConversationDetails: React.FC = () => {
               disabled={containmentApplied}
               className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold uppercase tracking-wider transition-all flex items-center gap-2 ${
                 containmentApplied
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-default shadow-glow-emerald/20'
-                  : 'bg-rose-600 hover:bg-rose-500 text-white shadow-glow-rose font-bold'
+                  ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 cursor-default'
+                  : 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm font-bold'
               }`}
             >
               {containmentApplied ? (
@@ -127,14 +129,14 @@ export const ConversationDetails: React.FC = () => {
 
           <button
             onClick={() => setIsResolved(!isResolved)}
-            className="px-4 py-2 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-200 text-xs font-mono font-semibold transition-all shadow-sm"
+            className="px-4 py-2 rounded-xl border border-surface-border bg-surface-elevated hover:bg-slate-200 dark:hover:bg-surface-lighter text-slate-800 dark:text-slate-200 text-xs font-mono font-semibold transition-all shadow-sm"
           >
             {isResolved ? 'Reopen Ticket' : 'Mark as Resolved'}
           </button>
 
           <button
             onClick={loadAllDetails}
-            className="p-2 rounded-xl border border-surface-border bg-surface-card hover:bg-surface-elevated text-slate-400 hover:text-white transition-all shadow-sm"
+            className="p-2 rounded-xl border border-surface-border bg-surface-elevated hover:bg-slate-200 dark:hover:bg-surface-lighter text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
             title="Refresh analysis"
           >
             <RefreshCw size={15} />
@@ -143,15 +145,15 @@ export const ConversationDetails: React.FC = () => {
       </div>
 
       {/* Two-Column Workspace Layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Messages & Attachment Analysis (7 cols) */}
-        <div className="xl:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-6">
           {conversation && <ConversationTimeline conversation={conversation} />}
           <AttachmentUploader />
         </div>
 
         {/* Right Column: AI Customer Intelligence + Security Intelligence (5 cols) */}
-        <div className="xl:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-6">
           <AiInsightPanel intelligence={customerAi} isLoading={isLoading} />
           <SecurityInsightPanel intelligence={securityAi} isLoading={isLoading} />
         </div>
